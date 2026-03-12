@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+:root {
+  --bg-color: #ffffff;
+  --text-primary: #121212;
+  --text-secondary: #666666;
+  --border-color: #e5e5e5;
+  --accent-color: #000000;
+
+  --font-mono: 'Inter', sans-serif;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 4rem;
+  --spacing-xxl: 8rem;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+::selection,
+*::selection {
+  background: #222DFF !important;
+  color: #ffffff !important;
+}
+
+::-moz-selection,
+*::-moz-selection {
+  background: #222DFF !important;
+  color: #ffffff !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Navigation Hover States */
+.nav-item {
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+}
+
+.nav-item:hover {
+  background-color: #F0F0F0;
+}
+
+.contact-btn {
+  background-color: #F0F0F0;
+}
+
+.contact-btn:hover {
+  background-color: #E6E6E6;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Typography styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  letter-spacing: -0.01em;
+}
+
+p {
+  font-size: 1rem;
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Utilities */
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.section {
+  padding: var(--spacing-xxl) 0;
+}
