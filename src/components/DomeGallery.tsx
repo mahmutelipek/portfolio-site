@@ -118,10 +118,10 @@ export default function DomeGallery({
   images = DEFAULT_IMAGES,
   fit = 0.5,
   fitBasis = 'auto',
-  minRadius = 600,
-  maxRadius = Infinity,
+  minRadius = 200,
+  maxRadius = 650,
   padFactor = 0.25,
-  overlayBlurColor = '#ffffff', // Set to white as per user request
+  overlayBlurColor = '#030303', // Set to dark as per user request
   maxVerticalRotationDeg = DEFAULTS.maxVerticalRotationDeg,
   dragSensitivity = DEFAULTS.dragSensitivity,
   enlargeTransitionMs = DEFAULTS.enlargeTransitionMs,
@@ -210,7 +210,12 @@ export default function DomeGallery({
           basis = aspect >= 1.3 ? w : minDim;
       }
       let radius = basis * fit;
-      const heightGuard = h * 1.35;
+      // On small screens, we want a tighter radius to keep it within view
+      if (w < 768) {
+        radius = basis * 0.8; 
+      }
+      
+      const heightGuard = h * 1.5;
       radius = Math.min(radius, heightGuard);
       radius = clamp(radius, minRadius, maxRadius);
       lockedRadiusRef.current = Math.round(radius);

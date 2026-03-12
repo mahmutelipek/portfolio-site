@@ -1,6 +1,10 @@
 .sphere-root {
   position: relative;
-  width: 100%;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
   height: 600px;
   --radius: 520px;
   --viewer-pad: 72px;
@@ -9,6 +13,18 @@
   --rot-x: calc((360deg / var(--segments-y)) / 2);
   --item-width: calc(var(--circ) / var(--segments-x));
   --item-height: calc(var(--circ) / var(--segments-y));
+}
+
+@media (max-width: 1024px) {
+  .sphere-root {
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sphere-root {
+    height: 350px;
+  }
 }
 
 .sphere-root * {
@@ -30,8 +46,7 @@ main.sphere-main {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  background: white;
-  /* Changed to white */
+  background: transparent;
 }
 
 .stage {
@@ -59,13 +74,12 @@ main.sphere-main {
 }
 
 .overlay {
-  background-image: radial-gradient(rgba(255, 255, 255, 0) 65%, var(--overlay-blur-color, #ffffff) 100%);
-  /* White gradient */
+  background-image: radial-gradient(rgba(3, 3, 3, 0) 65%, var(--overlay-blur-color, #030303) 100%);
 }
 
 .overlay--blur {
-  -webkit-mask-image: radial-gradient(rgba(255, 255, 255, 0) 70%, var(--overlay-blur-color, #ffffff) 90%);
-  mask-image: radial-gradient(rgba(255, 255, 255, 0) 70%, var(--overlay-blur-color, #ffffff) 90%);
+  -webkit-mask-image: radial-gradient(rgba(3, 3, 3, 0) 70%, var(--overlay-blur-color, #030303) 90%);
+  mask-image: radial-gradient(rgba(3, 3, 3, 0) 70%, var(--overlay-blur-color, #030303) 90%);
   backdrop-filter: blur(3px);
 }
 
@@ -113,7 +127,7 @@ main.sphere-main {
   pointer-events: none;
   backface-visibility: hidden;
   filter: var(--image-filter, none);
-  background: white;
+  background: transparent;
 }
 
 .viewer {
@@ -145,8 +159,8 @@ main.sphere-main {
   position: absolute;
   inset: 0;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.4);
-  /* White scrim */
+  background: rgba(3, 3, 3, 0.6);
+  /* Dark scrim */
   pointer-events: none;
   opacity: 0;
   transition: opacity 500ms ease;
@@ -176,7 +190,7 @@ main.sphere-main {
   height: 100%;
   object-fit: contain;
   filter: var(--image-filter, none);
-  background: white;
+  background: transparent;
 }
 
 .sphere-root .enlarge-closing img {
@@ -190,8 +204,8 @@ main.sphere-main {
   height: 120px;
   z-index: 5;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--overlay-blur-color, #ffffff));
-  /* White fade */
+  background: linear-gradient(to bottom, transparent, var(--overlay-blur-color, #030303));
+  /* Dark fade */
 }
 
 .edge-fade--top {

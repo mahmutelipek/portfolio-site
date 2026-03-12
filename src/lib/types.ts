@@ -1,3 +1,10 @@
+export interface ContentBlock {
+  id: string;
+  type: 'text' | 'image';
+  title?: string; // Section title (e.g. Overview)
+  value: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -5,16 +12,24 @@ export interface Project {
   client: string;
   date: string;
   cover_image_url: string;
-  gallery: string[];
-  content_body: string;
+  gallery?: string[];
+  content_body?: string;
   roles: string[];
   sort_order?: number;
+  content_blocks?: ContentBlock[]; // New flexible content
 }
+
 export interface Logo {
   id: string;
-  name: string;
   url: string;
+  name: string;
   website_url?: string;
   sort_order?: number;
-  created_at?: string;
+}
+
+export interface AboutImage {
+  id: string;
+  url: string;
+  alt?: string;
+  sort_order: number;
 }

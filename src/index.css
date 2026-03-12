@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 :root {
-  --bg-color: #ffffff;
-  --text-primary: #121212;
-  --text-secondary: #666666;
-  --border-color: #e5e5e5;
-  --accent-color: #000000;
+  --bg-color: #030303;
+  --text-primary: #F5F5F7;
+  --text-secondary: #86868B;
+  --border-color: #1D1D1F;
+  --accent-color: #FFFFFF;
 
   --font-mono: 'Inter', sans-serif;
 
@@ -71,11 +71,11 @@ button {
 }
 
 .nav-item:hover {
-  background-color: #F0F0F0;
+  background-color: #1D1D1F;
 }
 
 .contact-btn {
-  background-color: #F0F0F0;
+  background-color: #FFFFFF;
 }
 
 .contact-btn:hover {
@@ -126,7 +126,7 @@ p {
 /* Utilities */
 .container {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
 }
@@ -149,4 +149,22 @@ p {
 
 .section {
   padding: var(--spacing-xxl) 0;
+}
+
+/* Hero Scaling Fix */
+.hero-title {
+  font-size: clamp(2.5rem, 12vw, 172.8px);
+}
+
+.hero-subtitle {
+  font-size: clamp(0.85rem, 1.5vw, 21.6px);
+}
+
+@media (min-width: 1280px) {
+  .hero-title {
+    font-size: 172.8px !important;
+  }
+  .hero-subtitle {
+    font-size: 21.6px !important;
+  }
 }

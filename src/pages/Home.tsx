@@ -94,17 +94,17 @@ export function Home() {
       {!loading && projects.length > 0 && (
         <>
           <SelectedWorks projects={projects} />
-          <section id="teams" style={{ padding: '8rem 2rem', background: '#ffffff' }}>
-            <div style={{ maxWidth: '1440px', margin: '0 auto' }}>
+          <section id="teams" style={{ padding: '8rem 0', background: '#030303', overflowX: 'hidden' }}>
+            <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 2rem' }}>
               <h2 style={{
                 marginBottom: '40px',
                 fontSize: '22px',
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
-                color: '#121212',
+                color: 'var(--text-primary)',
                 textAlign: 'center'
               }}>
-                Teams I've worked with
+                and more...
               </h2>
             </div>
             <DomeGallery images={logos.map(l => ({ src: l.url, alt: l.name, link: l.website_url }))} />

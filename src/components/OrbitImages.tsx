@@ -52,7 +52,7 @@ export default function OrbitImages({
             rx={radiusX} 
             ry={radiusY} 
             fill="none" 
-            stroke="#EBEBEB" 
+            stroke="var(--border-color)" 
             strokeWidth="1.5"
             strokeDasharray="4 4"
           />
@@ -81,22 +81,22 @@ export default function OrbitImages({
                 height: itemSize,
                 x,
                 y,
-                transformOrigin: 'center center'
+                transformOrigin: 'center center',
+                zIndex: 20,
+                transform: `rotate(${-rotation}deg)` // Counter-rotate to keep image upright
               }}
             >
-              <div style={{ transform: `rotate(${-rotation}deg)`, width: '100%', height: '100%' }}>
-                <img 
-                  src={src} 
-                  alt={`Orbit ${index}`} 
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                  }} 
-                />
-              </div>
+              <img 
+                src={src} 
+                alt={`Orbit ${index}`} 
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                }} 
+              />
             </motion.div>
           );
         })}

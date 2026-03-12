@@ -67,7 +67,7 @@ const ParticleSwarm = () => {
         cz * spread + (cz / r) * displacement
       );
 
-      color.set('#E6E6E6');
+      color.set('#666666');
 
 
       // USER CODE END
@@ -89,10 +89,10 @@ const ParticleSwarm = () => {
 
 export function Hero() {
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#ffffff', position: 'relative', overflow: 'hidden' }}>
-      <Canvas camera={{ position: [0, 0, 100], fov: 60 }}>
-        <color attach="background" args={['#ffffff']} />
-        <fog attach="fog" args={['#ffffff', 0.01]} />
+    <div style={{ width: '100vw', height: '100vh', background: '#030303', position: 'relative', overflow: 'hidden' }}>
+      <Canvas camera={{ position: [0, 0, 110], fov: 60 }}>
+        <color attach="background" args={['#030303']} />
+        <fog attach="fog" args={['#030303', 0.01]} />
         <ParticleSwarm />
         <OrbitControls autoRotate={true} enableZoom={false} enablePan={false} />
       </Canvas>
@@ -108,10 +108,10 @@ export function Hero() {
       }}>
         <div style={{
           width: '100%',
-          maxWidth: '1440px',
+          maxWidth: '1280px',
           height: '100%',
           position: 'relative',
-          padding: '2rem'
+          padding: '8rem 5rem'
         }}>
 
           {/* Center: Name + Subtitle */}
@@ -124,10 +124,9 @@ export function Hero() {
             width: '100%',
             padding: '0 2rem'
           }}>
-            <h1 style={{
-              color: '#121212',
+            <h1 className="hero-title" style={{
+              color: 'var(--text-primary)',
               fontWeight: 400,
-              fontSize: 'clamp(2.5rem, 12vw, 180px)',
               letterSpacing: '-0.04em',
               margin: 0,
               lineHeight: 0.95,
@@ -143,13 +142,13 @@ export function Hero() {
               />
             </h1>
 
-            <p style={{
-              color: '#888',
-              fontSize: 'clamp(0.85rem, 1.5vw, 26px)',
+            <p className="hero-subtitle" style={{
+              color: '#EBEBEB',
               fontWeight: 500,
               letterSpacing: '-0.01em',
               marginTop: '1.5rem',
-              maxWidth: '600px',
+              maxWidth: '700px',
+              width: '90%',
               marginLeft: 'auto',
               marginRight: 'auto',
               lineHeight: 1.8
@@ -161,9 +160,9 @@ export function Hero() {
           {/* Bottom row */}
           <div style={{
             position: 'absolute',
-            bottom: '2rem',
-            left: '2rem',
-            right: '2rem',
+            bottom: '5rem',
+            left: '5rem',
+            right: '5rem',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-end'
@@ -173,7 +172,7 @@ export function Hero() {
               fontSize: '12px',
               letterSpacing: '0.05em',
               textTransform: 'uppercase',
-              color: '#121212',
+              color: 'var(--text-secondary)',
               lineHeight: 1.6
             }}>
               <div>Based in Istanbul, TR</div>
@@ -184,17 +183,17 @@ export function Hero() {
               fontSize: '12px',
               letterSpacing: '0.05em',
               textTransform: 'uppercase',
-              color: '#121212',
+              color: 'var(--text-secondary)',
               textAlign: 'right',
               lineHeight: 1.6,
               pointerEvents: 'auto'
             }}>
               <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                <a href="https://x.com/mahmutelipk" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ color: '#121212', textDecoration: 'none' }}>X</a>
+                <a href="https://x.com/mahmutelipk" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>X</a>
                 <span style={{ opacity: 0.3 }}>·</span>
-                <a href="https://www.linkedin.com/in/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ color: '#121212', textDecoration: 'none' }}>LinkedIn</a>
+                <a href="https://www.linkedin.com/in/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>LinkedIn</a>
                 <span style={{ opacity: 0.3 }}>·</span>
-                <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ color: '#121212', textDecoration: 'none' }}>Layers</a>
+                <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Layers</a>
               </div>
             </div>
           </div>

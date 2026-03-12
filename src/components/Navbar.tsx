@@ -30,13 +30,13 @@ export function Navbar() {
         display: 'flex',
         justifyContent: 'center',
         zIndex: 50,
-        color: '#121212'
+        color: 'var(--text-primary)'
       }}
     >
       <div style={{
         width: '100%',
-        maxWidth: '1440px',
-        padding: '2rem',
+        maxWidth: '1280px',
+        padding: '1rem 5rem',
         display: 'grid',
         gridTemplateColumns: '1fr auto 1fr',
         alignItems: 'center'
@@ -108,7 +108,7 @@ export function Navbar() {
               textDecoration: 'none'
             }}
           >
-            <ShinyText text="Contact" speed={3} color="#121212" shineColor="#ffffff" />
+            <ShinyText text="Contact" speed={3} color="#000000" shineColor="#FFFFFF" />
           </a>
         </div>
       </div>

@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
-import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   useEffect(() => {
     async function fetchProject() {
@@ -85,6 +88,7 @@ export function ProjectDetail() {
     );
   }
 
+
   return (
     <motion.article 
       initial={{ opacity: 0 }}
@@ -92,67 +96,102 @@ export function ProjectDetail() {
       transition={{ duration: 0.8 }}
       style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem' }}
     >
-      {/* Title & Meta Info First */}
+      {/* Title & Meta Info */}
       <section style={{ padding: '0 2rem 4rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <h1 style={{ fontSize: '4rem', fontWeight: 500, letterSpacing: '-0.03em', marginBottom: '4rem' }}>
+        <h1 style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 500, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4rem' }}>
           {project.title}
         </h1>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', borderTop: '1px solid #e5e5e5', paddingTop: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', borderTop: '1px solid #e5e5e5', paddingTop: '2.5rem' }}>
           <div>
-            <h4 style={{ fontSize: '0.875rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Client</h4>
-            <p>{project.client}</p>
+            <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Client</h4>
+            <p style={{ fontSize: '1rem' }}>{project.client}</p>
           </div>
           <div>
-            <h4 style={{ fontSize: '0.875rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Role</h4>
-            <p>{project.roles?.join(', ') || 'Design & Development'}</p>
+            <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Role</h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              {project.roles?.map((role, i) => (
+                <span key={i} style={{ fontSize: '1rem' }}>{role}{i < project.roles!.length - 1 ? ',' : ''}</span>
+              ))}
+            </div>
           </div>
           <div>
-            <h4 style={{ fontSize: '0.875rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Date</h4>
-            <p>{format(new Date(project.date), 'MM/dd/yyyy')}</p>
+            <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Year</h4>
+            <p style={{ fontSize: '1rem' }}>{new Date(project.date).getFullYear()}</p>
           </div>
         </div>
       </section>
 
-      {project.content_body && (
-        <section style={{ padding: '0 2rem 4rem', maxWidth: '800px', margin: '0 auto', fontSize: '1.125rem', lineHeight: 1.6 }}>
-          {project.content_body.split('\n\n').map((block, i) => {
-            const lines = block.split('\n');
-            return (
-              <div key={i} style={{ marginBottom: '2.5rem' }}>
-                {lines.map((line, j) => {
-                  if (line.startsWith('### ')) {
-                    return (
-                      <h3 key={j} style={{ fontSize: '1.5rem', fontWeight: 500, letterSpacing: '-0.02em', color: '#121212', marginBottom: '1rem', marginTop: i !== 0 && j === 0 ? '3rem' : '0' }}>
-                        {line.replace('### ', '')}
+      {/* Main Content Area: Fully Flexible Block-based Layout */}
+      <section style={{ padding: '0 2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+          {project.content_blocks && project.content_blocks.length > 0 ? (
+            project.content_blocks.map((block) => (
+              <div key={block.id}>
+                {block.type === 'text' ? (
+                  <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    {block.title && (
+                      <h3 style={{ fontSize: '24px', fontWeight: 500, letterSpacing: '-0.02em', color: '#121212', marginBottom: '1.25rem' }}>
+                        {block.title}
                       </h3>
-                    );
-                  }
-                  return <p key={j} style={{ color: '#666', marginBottom: '1rem' }}>{line}</p>;
-                })}
+                    )}
+                    {block.value.split('\n').map((line, j) => (
+                      <p key={j} style={{ fontSize: '16px', lineHeight: 1.6, color: '#121212', marginBottom: '1rem', fontWeight: 400, opacity: 0.8 }}>
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <motion.div 
+                    initial={{ y: 30, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    style={{ width: '100%', aspectRatio: '3 / 2', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}
+                  >
+                    <img 
+                      src={block.value} 
+                      alt="Project visual"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </motion.div>
+                )}
               </div>
-            );
-          })}
-        </section>
-      )}
-
-      {/* Media: Single Column, 3:2 Aspect Ratio Images */}
-      <section style={{ padding: '0 2rem', maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '4rem' }}>
-        {/* Cover Image */}
-        <div style={{ width: '100%', aspectRatio: '3 / 2', backgroundColor: '#f0f0f0', overflow: 'hidden' }}>
-          <img 
-            src={project.cover_image_url} 
-            alt={`${project.title} cover`}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
+            ))
+          ) : (
+            /* Fallback for projects that don't have blocks yet (using old fields if available) */
+            <>
+              {project.content_body && (
+                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                  {project.content_body.split('\n').map((line, j) => (
+                    <p key={j} style={{ fontSize: '16px', lineHeight: 1.6, color: '#121212', marginBottom: '1rem' }}>{line}</p>
+                  ))}
+                </div>
+              )}
+              {project.cover_image_url && (
+                <div style={{ width: '100%', aspectRatio: '3 / 2', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}>
+                  <img src={project.cover_image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              )}
+            </>
+          )}
         </div>
+      </section>
 
-        {/* Gallery Images */}
-        {project.gallery && project.gallery.length > 0 && project.gallery.map((img: string, i: number) => (
-          <div key={i} style={{ width: '100%', aspectRatio: '3 / 2', backgroundColor: '#f0f0f0', overflow: 'hidden' }}>
-            <img src={img} alt={`${project.title} gallery item`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-        ))}
+      {/* Footer Navigation */}
+      <section style={{ padding: '8rem 2rem 0', maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+        <Link 
+          to="/" 
+          style={{ 
+            fontSize: '1.5rem', 
+            textDecoration: 'none', 
+            color: '#121212', 
+            fontWeight: 500,
+            borderBottom: '1px solid #121212'
+          }}
+        >
+          Back to all works
+        </Link>
       </section>
     </motion.article>
   );
