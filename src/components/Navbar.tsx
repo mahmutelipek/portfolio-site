@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import ShinyText from './ShinyText';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const isAboutPage = location.pathname === '/about';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,20 +42,7 @@ export function Navbar() {
         {/* Left: Branding */}
         <div style={{ fontSize: '12px', letterSpacing: '0.05em', textTransform: 'uppercase', position: 'relative', height: '18px' }}>
           <AnimatePresence mode="wait">
-            {isAboutPage ? (
-              <motion.div
-                key="about-branding"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.3 }}
-                style={{ position: 'absolute' }}
-              >
-                <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                  Mahmut Elİpek
-                </Link>
-              </motion.div>
-            ) : !scrolled ? (
+            {!scrolled ? (
               <motion.div
                 key="portfolio"
                 initial={{ opacity: 0, y: -10 }}
@@ -87,9 +72,6 @@ export function Navbar() {
         <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <Link to="/" className="nav-item" style={{ fontSize: '12px', letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>
             Home
-          </Link>
-          <Link to="/about" className="nav-item" style={{ fontSize: '12px', letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>
-            About
           </Link>
         </nav>
 

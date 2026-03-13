@@ -7,7 +7,7 @@ import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Sav
 export function Admin() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'projects' | 'logos' | 'about'>(() => {
+  const [activeTab, setActiveTab] = useState<'projects' | 'logos'>(() => {
     return (localStorage.getItem('admin_active_tab') as any) || 'projects';
   });
 
@@ -22,7 +22,6 @@ export function Admin() {
   // Data State
   const [projects, setProjects] = useState<Project[]>([]);
   const [logos, setLogos] = useState<Logo[]>([]);
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [hoveredLogoId, setHoveredLogoId] = useState<string | null>(null);
@@ -41,7 +40,6 @@ export function Admin() {
       setSession(session);
       if (session) {
         fetchData();
-        fetchAboutBlocks();
       }
       setLoading(false);
     });
@@ -50,7 +48,6 @@ export function Admin() {
       setSession(session);
       if (session) {
         fetchData();
-        fetchAboutBlocks();
       }
     });
 
@@ -66,13 +63,6 @@ export function Admin() {
     if (lData) setLogos(lData);
 
     // Fetch Avatar
-    try {
-      const { data: sData, error: sError } = await supabase.from('site_settings').select('value').eq('key', 'avatar_url').single();
-      if (!sError && sData) setAvatarUrl(sData.value);
-    } catch (e) {
-      console.log('Site settings table may not exist yet.');
-    }
-    fetchAboutBlocks();
   }
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -177,53 +167,6 @@ export function Admin() {
     if (!e1 && !e2) fetchData();
   };
 
-  // --- ABOUT BLOCKS ---
-  const [aboutBlocks, setAboutBlocks] = useState<any[]>([]);
-  const [editingBlock, setEditingBlock] = useState<any>(null);
-
-  const fetchAboutBlocks = async () => {
-    const { data } = await supabase.from('about_blocks').select('*').order('sort_order', { ascending: true });
-    if (data) setAboutBlocks(data);
-  };
-
-  const saveAboutBlock = async () => {
-    if (!editingBlock) return;
-    
-    if (editingBlock.id) {
-      await supabase.from('about_blocks').update(editingBlock).eq('id', editingBlock.id);
-    } else {
-      // Get next sort order
-      const nextOrder = aboutBlocks.length > 0 ? Math.max(...aboutBlocks.map(b => b.sort_order)) + 1 : 0;
-      await supabase.from('about_blocks').insert({ ...editingBlock, sort_order: nextOrder });
-    }
-    setEditingBlock(null);
-    fetchAboutBlocks();
-  };
-
-  const deleteAboutBlock = async (id: string) => {
-    await supabase.from('about_blocks').delete().eq('id', id);
-    fetchAboutBlocks();
-  };
-
-  const reorderAboutBlock = async (index: number, direction: 'up' | 'down') => {
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= aboutBlocks.length) return;
-
-    const b1 = aboutBlocks[index];
-    const b2 = aboutBlocks[newIndex];
-
-    if (b1.sort_order === b2.sort_order) {
-      for (let i = 0; i < aboutBlocks.length; i++) {
-        await supabase.from('about_blocks').update({ sort_order: i }).eq('id', aboutBlocks[i].id);
-      }
-      fetchAboutBlocks();
-      return;
-    }
-
-    await supabase.from('about_blocks').update({ sort_order: b2.sort_order }).eq('id', b1.id);
-    await supabase.from('about_blocks').update({ sort_order: b1.sort_order }).eq('id', b2.id);
-    fetchAboutBlocks();
-  };
 
   const saveProject = async () => {
     if (!editingProject) return;
@@ -269,18 +212,18 @@ export function Admin() {
 
   if (!session) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9f9f9' }}>
-        <form onSubmit={handleLogin} style={{ background: 'white', padding: '3rem', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', width: '400px' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center' }}>Admin Access</h2>
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0a' }}>
+        <form onSubmit={handleLogin} style={{ background: '#141414', padding: '3rem', borderRadius: '12px', border: '1px solid #222', width: '400px' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: '#fff' }}>Admin Access</h2>
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '6px' }} required />
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#888' }}>Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '0.75rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '6px', color: '#fff' }} required />
           </div>
           <div style={{ marginBottom: '2rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '6px' }} required />
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#888' }}>Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '0.75rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '6px', color: '#fff' }} required />
           </div>
-          <button type="submit" style={{ width: '100%', padding: '1rem', background: '#121212', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 500 }}>
+          <button type="submit" style={{ width: '100%', padding: '1rem', background: '#fff', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>
             Login
           </button>
         </form>
@@ -289,12 +232,12 @@ export function Admin() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f5f5', padding: '2rem' }}>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', padding: '2rem', color: '#fff' }}>
       <header style={{ maxWidth: '1200px', margin: '0 auto 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Link to="/" style={{ textDecoration: 'none', color: '#121212' }}>
+        <Link to="/" style={{ textDecoration: 'none', color: '#fff' }}>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 600, cursor: 'pointer' }}>CMS Dashboard</h1>
         </Link>
-        <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666', border: 'none', background: 'none', cursor: 'pointer' }}>
+        <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#888', border: 'none', background: 'none', cursor: 'pointer' }}>
           <LogOut size={18} /> Sign Out
         </button>
       </header>
@@ -302,14 +245,13 @@ export function Admin() {
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem' }}>
         {/* Sidebar Tabs */}
         <aside style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <button onClick={() => setActiveTab('projects')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'projects' ? '#121212' : 'transparent', color: activeTab === 'projects' ? 'white' : '#121212', cursor: 'pointer' }}>Projects</button>
-          <button onClick={() => setActiveTab('logos')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'logos' ? '#121212' : 'transparent', color: activeTab === 'logos' ? 'white' : '#121212', cursor: 'pointer' }}>Teams (Logos)</button>
-          <button onClick={() => setActiveTab('about')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'about' ? '#121212' : 'transparent', color: activeTab === 'about' ? 'white' : '#121212', cursor: 'pointer' }}>About Page</button>
+          <button onClick={() => setActiveTab('projects')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'projects' ? '#fff' : 'transparent', color: activeTab === 'projects' ? '#000' : '#888', cursor: 'pointer', fontWeight: 500 }}>Projects</button>
+          <button onClick={() => setActiveTab('logos')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'logos' ? '#fff' : 'transparent', color: activeTab === 'logos' ? '#000' : '#888', cursor: 'pointer', fontWeight: 500 }}>Teams (Logos)</button>
         </aside>
 
         {/* --- PROJECTS TAB (TABLE MODE) --- */}
         {activeTab === 'projects' && (
-          <main style={{ background: 'white', borderRadius: '12px', padding: '2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+          <main style={{ background: '#141414', borderRadius: '12px', padding: '2rem', border: '1px solid #222' }}>
             {!editingProject ? (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -324,7 +266,7 @@ export function Admin() {
                       cover_image_url: '',
                       date: new Date().toISOString().split('T')[0] 
                     })}
-                    style={{ padding: '0.75rem 1.5rem', background: '#121212', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                   >
                     <Plus size={18} /> New Project
                   </button>
@@ -333,21 +275,21 @@ export function Admin() {
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
-                      <tr style={{ borderBottom: '2px solid #eee' }}>
-                        <th style={{ padding: '1rem', color: '#666', fontWeight: 500 }}>Cover</th>
-                        <th style={{ padding: '1rem', color: '#666', fontWeight: 500 }}>Order</th>
-                        <th style={{ padding: '1rem', color: '#666', fontWeight: 500 }}>Title</th>
-                        <th style={{ padding: '1rem', color: '#666', fontWeight: 500 }}>Client</th>
-                        <th style={{ padding: '1rem', color: '#666', fontWeight: 500 }}>Date/Year</th>
-                        <th style={{ padding: '1rem', color: '#666', fontWeight: 500 }}>Case Study</th>
-                        <th style={{ padding: '1rem', color: '#666', fontWeight: 500, textAlign: 'right' }}>Actions</th>
+                      <tr style={{ borderBottom: '1px solid #222' }}>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Cover</th>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order</th>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Title</th>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Client</th>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date/Year</th>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Case Study</th>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {projects.map((p, index) => (
-                        <tr key={p.id} style={{ borderBottom: '1px solid #f5f5f5' }}>
+                        <tr key={p.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
                           <td style={{ padding: '1rem' }}>
-                            <div style={{ width: '60px', height: '40px', background: '#eee', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{ width: '60px', height: '40px', background: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                               {p.cover_image_url && <img src={p.cover_image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                             </div>
                           </td>
@@ -358,9 +300,10 @@ export function Admin() {
                                 disabled={index === 0} 
                                 style={{ 
                                   padding: '0.4rem',
-                                  background: '#f5f5f5',
-                                  border: '1px solid #ddd',
+                                  background: '#1a1a1a',
+                                  border: '1px solid #333',
                                   borderRadius: '6px',
+                                  color: '#fff',
                                   cursor: index === 0 ? 'default' : 'pointer',
                                   opacity: index === 0 ? 0.2 : 1,
                                   display: 'flex',
@@ -375,9 +318,10 @@ export function Admin() {
                                 disabled={index === projects.length - 1} 
                                 style={{ 
                                   padding: '0.4rem',
-                                  background: '#f5f5f5',
-                                  border: '1px solid #ddd',
+                                  background: '#1a1a1a',
+                                  border: '1px solid #333',
                                   borderRadius: '6px',
+                                  color: '#fff',
                                   cursor: index === projects.length - 1 ? 'default' : 'pointer',
                                   opacity: index === projects.length - 1 ? 0.2 : 1,
                                   display: 'flex',
@@ -395,17 +339,17 @@ export function Admin() {
                           <td style={{ padding: '1rem' }}>
                              <button 
                               onClick={() => setEditingProject(p)}
-                              style={{ padding: '0.4rem 0.8rem', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>
+                              style={{ padding: '0.4rem 0.8rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', color: '#fff' }}>
                               Edit Blocks ({p.content_blocks?.length || 0})
                              </button>
                           </td>
                           <td style={{ padding: '1rem', textAlign: 'right' }}>
                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
-                              <button onClick={() => setEditingProject(p)} style={{ border: 'none', background: 'none', color: '#121212', cursor: 'pointer' }}><ImageIcon size={18} /></button>
+                              <button onClick={() => setEditingProject(p)} style={{ border: 'none', background: 'none', color: '#fff', cursor: 'pointer' }}><ImageIcon size={18} /></button>
                               
                               {deletingProjectId === p.id ? (
-                                <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', background: '#fff0f0', padding: '0.2rem 0.4rem', borderRadius: '6px', border: '1px solid #ffcccc' }}>
-                                  <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#cc0000' }}>Confirm?</span>
+                                <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', background: '#2d0000', padding: '0.2rem 0.4rem', borderRadius: '6px', border: '1px solid #ff4444' }}>
+                                  <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#ff4444' }}>Confirm?</span>
                                   <button 
                                     onClick={async () => {
                                       const { error } = await supabase.from('projects').delete().eq('id', p.id);
@@ -418,7 +362,7 @@ export function Admin() {
                                   </button>
                                   <button 
                                     onClick={() => setDeletingProjectId(null)}
-                                    style={{ padding: '0.2rem 0.4rem', background: '#eee', color: '#121212', border: 'none', borderRadius: '4px', fontSize: '0.65rem', cursor: 'pointer' }}
+                                    style={{ padding: '0.2rem 0.4rem', background: '#333', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.65rem', cursor: 'pointer' }}
                                   >
                                     No
                                   </button>
@@ -426,7 +370,7 @@ export function Admin() {
                               ) : (
                                 <button 
                                   onClick={() => setDeletingProjectId(p.id)} 
-                                  style={{ border: 'none', background: 'none', color: '#cc0000', cursor: 'pointer' }}
+                                  style={{ border: 'none', background: 'none', color: '#ff4444', cursor: 'pointer' }}
                                 >
                                   <Trash2 size={18} />
                                 </button>
@@ -444,19 +388,19 @@ export function Admin() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Editing: {editingProject.title || 'New Project'}</h2>
                   <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button onClick={() => setEditingProject(null)} style={{ padding: '0.75rem 1.5rem', background: 'white', border: '1px solid #ddd', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
-                    <button onClick={saveProject} style={{ padding: '0.75rem 1.5rem', background: '#121212', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <button onClick={() => setEditingProject(null)} style={{ padding: '0.75rem 1.5rem', background: 'transparent', border: '1px solid #333', borderRadius: '8px', cursor: 'pointer', color: '#fff' }}>Cancel</button>
+                    <button onClick={saveProject} style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
                       <Save size={18} /> Save & Close
                     </button>
                   </div>
                 </div>
 
                 {/* Main Settings & Cover */}
-                <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem', background: '#fafafa', padding: '1.5rem', borderRadius: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem', background: '#1a1a1a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #222' }}>
                   {/* Cover Upload */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#121212' }}>Cover Image (Required)</label>
-                    <div style={{ width: '100%', aspectRatio: '3/2', background: '#eee', borderRadius: '8px', overflow: 'hidden', position: 'relative', border: '1px solid #ddd' }}>
+                    <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#fff' }}>Cover Image (Required)</label>
+                    <div style={{ width: '100%', aspectRatio: '3/2', background: '#0a0a0a', borderRadius: '8px', overflow: 'hidden', position: 'relative', border: '1px solid #333' }}>
                       {editingProject.cover_image_url ? (
                         <img src={editingProject.cover_image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
@@ -483,24 +427,24 @@ export function Admin() {
                   {/* Fields */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                     <div style={{ gridColumn: 'span 2' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500 }}>Project Title</label>
-                      <input type="text" value={editingProject.title} onChange={e => setEditingProject({...editingProject, title: e.target.value})} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '8px' }} placeholder="e.g. Modern Coffee App" />
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Project Title</label>
+                      <input type="text" value={editingProject.title} onChange={e => setEditingProject({...editingProject, title: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Modern Coffee App" />
                     </div>
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500 }}>Client</label>
-                      <input type="text" value={editingProject.client} onChange={e => setEditingProject({...editingProject, client: e.target.value})} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '8px' }} placeholder="e.g. Acme Corp" />
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Client</label>
+                      <input type="text" value={editingProject.client} onChange={e => setEditingProject({...editingProject, client: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Acme Corp" />
                     </div>
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500 }}>URL Slug</label>
-                      <input type="text" value={editingProject.slug} onChange={e => setEditingProject({...editingProject, slug: e.target.value})} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '8px' }} placeholder="modern-coffee-app" />
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>URL Slug</label>
+                      <input type="text" value={editingProject.slug} onChange={e => setEditingProject({...editingProject, slug: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="modern-coffee-app" />
                     </div>
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500 }}>Date</label>
-                      <input type="date" value={editingProject.date} onChange={e => setEditingProject({...editingProject, date: e.target.value})} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '8px' }} />
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Date</label>
+                      <input type="date" value={editingProject.date} onChange={e => setEditingProject({...editingProject, date: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500 }}>Roles (separated by comma)</label>
-                      <input type="text" value={editingProject.roles?.join(', ')} onChange={e => setEditingProject({...editingProject, roles: e.target.value.split(',').map(r => r.trim())})} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '8px' }} placeholder="UI/UX, Branding" />
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Roles (separated by comma)</label>
+                      <input type="text" value={editingProject.roles?.join(', ')} onChange={e => setEditingProject({...editingProject, roles: e.target.value.split(',').map(r => r.trim())})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="UI/UX, Branding" />
                     </div>
                   </div>
                 </div>
@@ -511,16 +455,16 @@ export function Admin() {
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     {editingProject.content_blocks?.map((block, index) => (
-                      <div key={block.id} style={{ background: '#fcfcfc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #eee', position: 'relative' }}>
+                      <div key={block.id} style={{ background: '#1a1a1a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333', position: 'relative' }}>
                         <div style={{ position: 'absolute', right: '1rem', top: '1rem', display: 'flex', gap: '0.5rem' }}>
-                           <button onClick={() => moveBlock(index, 'up')} style={{ border: 'none', background: 'white', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', borderRadius: '4px', cursor: 'pointer', padding: '4px' }}><ArrowUp size={14} /></button>
-                           <button onClick={() => moveBlock(index, 'down')} style={{ border: 'none', background: 'white', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', borderRadius: '4px', cursor: 'pointer', padding: '4px' }}><ArrowDown size={14} /></button>
-                           <button onClick={() => deleteBlock(block.id)} style={{ border: 'none', background: '#fff0f0', borderRadius: '4px', cursor: 'pointer', padding: '4px', color: '#cc0000' }}><Trash2 size={14} /></button>
+                           <button onClick={() => moveBlock(index, 'up')} style={{ border: '1px solid #333', background: '#0a0a0a', borderRadius: '4px', cursor: 'pointer', padding: '4px', color: '#fff' }}><ArrowUp size={14} /></button>
+                           <button onClick={() => moveBlock(index, 'down')} style={{ border: '1px solid #333', background: '#0a0a0a', borderRadius: '4px', cursor: 'pointer', padding: '4px', color: '#fff' }}><ArrowDown size={14} /></button>
+                           <button onClick={() => deleteBlock(block.id)} style={{ border: 'none', background: '#2d0000', borderRadius: '4px', cursor: 'pointer', padding: '4px', color: '#ff4444' }}><Trash2 size={14} /></button>
                         </div>
 
                         {block.type === 'text' ? (
                           <div style={{ display: 'grid', gap: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#121212', fontWeight: 600 }}><Type size={16} /> Text Section</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontWeight: 600 }}><Type size={16} /> Text Section</div>
                             <div>
                               <input 
                                 type="text" 
@@ -531,21 +475,21 @@ export function Admin() {
                                   blocks[index].title = e.target.value;
                                   setEditingProject({...editingProject, content_blocks: blocks});
                                 }}
-                                style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '8px', marginBottom: '0.75rem', fontWeight: 500 }}
+                                style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', marginBottom: '0.75rem', fontWeight: 500, color: '#fff' }}
                               />
                               <textarea 
                                 value={block.value} 
                                 onChange={e => updateBlock(block.id, e.target.value)}
                                 placeholder="Description text..."
-                                style={{ width: '100%', minHeight: '100px', border: '1px solid #ddd', borderRadius: '8px', padding: '0.75rem', fontSize: '0.9rem' }}
+                                style={{ width: '100%', minHeight: '100px', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', padding: '0.75rem', fontSize: '0.9rem', color: '#fff' }}
                               />
                             </div>
                           </div>
                         ) : (
                           <div style={{ display: 'grid', gap: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#121212', fontWeight: 600 }}><ImageIcon size={16} /> Image Section</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontWeight: 600 }}><ImageIcon size={16} /> Image Section</div>
                             <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                               <div style={{ width: '150px', aspectRatio: '3/2', background: '#eee', borderRadius: '8px', overflow: 'hidden' }}>
+                               <div style={{ width: '150px', aspectRatio: '3/2', background: '#0a0a0a', borderRadius: '8px', overflow: 'hidden', border: '1px solid #333' }}>
                                  {block.value && <img src={block.value} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                                </div>
                                <input type="file" accept="image/*" onChange={async e => {
@@ -562,10 +506,10 @@ export function Admin() {
                     ))}
 
                     <div style={{ display: 'flex', gap: '1rem' }}>
-                       <button onClick={() => addBlock('text')} style={{ flex: 1, padding: '1.5rem', background: '#f5f5f5', border: '2px dashed #ddd', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#666' }}>
+                       <button onClick={() => addBlock('text')} style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #333', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#888' }}>
                          <Plus size={20} /> Add Text Section (Title + Desc)
                        </button>
-                       <button onClick={() => addBlock('image')} style={{ flex: 1, padding: '1.5rem', background: '#f5f5f5', border: '2px dashed #ddd', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#666' }}>
+                       <button onClick={() => addBlock('image')} style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #333', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#888' }}>
                          <Plus size={20} /> Add Image Section
                        </button>
                     </div>
@@ -578,15 +522,15 @@ export function Admin() {
 
         {/* --- LOGOS TAB --- */}
         {activeTab === 'logos' && (
-          <main style={{ background: 'white', borderRadius: '12px', padding: '2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+          <main style={{ background: '#141414', borderRadius: '12px', padding: '2rem', border: '1px solid #222' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.25rem' }}>Logos</h2>
+              <h2 style={{ fontSize: '1.25rem', color: '#fff' }}>Logos</h2>
               <button 
                 onClick={async () => {
                   const { error } = await supabase.from('logos').insert({ name: 'Logo', url: '', sort_order: logos.length });
                   if (!error) fetchData();
                 }}
-                style={{ padding: '0.75rem 1.5rem', background: '#121212', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
               >
                 <Plus size={18} /> Add Logo
               </button>
@@ -601,16 +545,17 @@ export function Admin() {
                   }}
                   style={{ 
                     aspectRatio: '1/1', 
-                    border: '1px solid #eee', 
+                    border: '1px solid #222', 
                     borderRadius: '12px', 
                     position: 'relative', 
                     overflow: 'hidden',
-                    background: '#fcfcfc',
+                    background: '#1a1a1a',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '1rem',
-                    cursor: 'default'
+                    cursor: 'default',
+                    color: '#fff'
                   }}
                 >
                   {logo.url ? (
@@ -626,7 +571,7 @@ export function Admin() {
                   <div style={{ 
                     position: 'absolute', 
                     inset: 0, 
-                    background: 'rgba(255,255,255,0.98)', 
+                    background: '#0d0d0dfc', 
                     display: 'flex', 
                     flexDirection: 'column', 
                     alignItems: 'center', 
@@ -641,7 +586,7 @@ export function Admin() {
                   >
                     {deletingLogoId === logo.id ? (
                       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#cc0000' }}>Confirm Delete?</span>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#ff4444' }}>Confirm Delete?</span>
                         <div style={{ display: 'flex', gap: '0.4rem' }}>
                           <button 
                             onClick={async () => {
@@ -656,7 +601,7 @@ export function Admin() {
                           </button>
                           <button 
                             onClick={() => setDeletingLogoId(null)}
-                            style={{ padding: '0.4rem 0.6rem', background: '#eee', color: '#121212', border: 'none', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer' }}
+                            style={{ padding: '0.4rem 0.6rem', background: '#333', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer' }}
                           >
                             No
                           </button>
@@ -690,14 +635,14 @@ export function Admin() {
                               const { error } = await supabase.from('logos').update({ website_url: val }).eq('id', logo.id);
                               if (!error) setSaveStatus(`logo-${logo.id}`);
                             }}
-                            style={{ width: '100%', padding: '4px 6px', fontSize: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }}
+                             style={{ width: '100%', padding: '4px 6px', fontSize: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '4px', color: '#fff' }}
                           />
                         </div>
 
-                        <div style={{ display: 'flex', gap: '0.4rem', width: '100%' }}>
-                          <button onClick={() => reorderLogo(index, 'left')} disabled={index === 0} style={{ flex: 1, padding: '0.4rem', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer', opacity: index === 0 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowUp size={14} style={{ transform: 'rotate(-90deg)' }} /></button>
-                          <button onClick={() => reorderLogo(index, 'right')} disabled={index === logos.length - 1} style={{ flex: 1, padding: '0.4rem', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer', opacity: index === logos.length - 1 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowDown size={14} style={{ transform: 'rotate(-90deg)' }} /></button>
-                        </div>
+                         <div style={{ display: 'flex', gap: '0.4rem', width: '100%' }}>
+                           <button onClick={() => reorderLogo(index, 'left')} disabled={index === 0} style={{ flex: 1, padding: '0.4rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', color: '#fff', cursor: 'pointer', opacity: index === 0 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowUp size={14} style={{ transform: 'rotate(-90deg)' }} /></button>
+                           <button onClick={() => reorderLogo(index, 'right')} disabled={index === logos.length - 1} style={{ flex: 1, padding: '0.4rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', color: '#fff', cursor: 'pointer', opacity: index === logos.length - 1 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowDown size={14} style={{ transform: 'rotate(-90deg)' }} /></button>
+                         </div>
                           <div style={{ display: 'flex', gap: '0.4rem', width: '100%' }}>
                             <label style={{ 
                               flex: 1,
@@ -728,17 +673,20 @@ export function Admin() {
                               />
                             </label>
                             <button 
-                              onClick={() => setDeletingLogoId(logo.id)} 
-                              style={{ 
-                                padding: '0.4rem 0.6rem', 
-                                background: '#fff0f0', 
-                                color: '#cc0000', 
-                                border: '1px solid #ffcccc', 
-                                borderRadius: '4px', 
-                                fontSize: '0.7rem', 
-                                cursor: 'pointer'
-                              }}
-                            >
+                               onClick={() => setDeletingLogoId(logo.id)} 
+                               style={{ 
+                                 flex: 1,
+                                 padding: '0.4rem 0.6rem', 
+                                 background: '#2d0000', 
+                                 color: '#ff4444', 
+                                 border: '1px solid #ff4444', 
+                                 borderRadius: '4px', 
+                                 fontSize: '0.7rem', 
+                                 cursor: 'pointer',
+                                 fontWeight: 600,
+                                 textAlign: 'center'
+                               }}
+                             >
                               Delete
                             </button>
                           </div>
@@ -755,7 +703,7 @@ export function Admin() {
                 }}
                 style={{ 
                   aspectRatio: '1/1', 
-                  border: '2px dashed #eee', 
+                  border: '2px dashed #333', 
                   borderRadius: '12px', 
                   background: 'transparent',
                   cursor: 'pointer',
@@ -776,139 +724,6 @@ export function Admin() {
           </main>
         )}
 
-        {/* --- ABOUT TAB --- */}
-        {activeTab === 'about' && (
-          <div style={{ padding: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>About Page Blocks</h2>
-              <button 
-                onClick={() => setEditingBlock({ type: 'text', title: '', content: '' })}
-                style={{ padding: '0.75rem 1.5rem', background: '#121212', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 500 }}
-              >
-                Add Block
-              </button>
-            </div>
-
-            {/* Avatar Section */}
-            <div style={{ background: '#f9f9f9', padding: '1.5rem', borderRadius: '12px', marginBottom: '2rem', border: '1px solid #eee' }}>
-              <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>Profile Picture (Avatar)</h3>
-              <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                <div style={{ width: '120px', height: '120px', borderRadius: '12px', overflow: 'hidden', background: '#eee' }}>
-                  {avatarUrl && <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                </div>
-                <div>
-                  <label style={{ padding: '0.6rem 1.2rem', background: '#121212', color: 'white', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem' }}>
-                    Upload New Avatar
-                    <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const url = await uploadImage(file);
-                        if (url) {
-                          await supabase.from('site_settings').upsert({ key: 'avatar_url', value: url });
-                          setAvatarUrl(url);
-                        }
-                      }
-                    }} />
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {aboutBlocks.map((block, index) => (
-                <div key={block.id} style={{ background: 'white', padding: '1rem', borderRadius: '12px', border: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <button onClick={() => reorderAboutBlock(index, 'up')} disabled={index === 0} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: index === 0 ? 0.2 : 1 }}><ArrowUp size={16} /></button>
-                      <button onClick={() => reorderAboutBlock(index, 'down')} disabled={index === aboutBlocks.length - 1} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: index === aboutBlocks.length - 1 ? 0.2 : 1 }}><ArrowDown size={16} /></button>
-                    </div>
-                    <div>
-                      <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#999', display: 'block', marginBottom: '0.25rem' }}>{block.type}</span>
-                      <h4 style={{ margin: 0, fontSize: '1rem' }}>{block.title || (block.type === 'orbit' ? 'Orbiting Images Component' : 'Untitled Block')}</h4>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => setEditingBlock(block)} style={{ padding: '0.4rem 0.8rem', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Edit</button>
-                    <button onClick={() => deleteAboutBlock(block.id)} style={{ padding: '0.4rem 0.8rem', background: '#fff0f0', color: '#cc0000', border: '1px solid #ffcccc', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Delete</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {editingBlock && (
-              <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', width: '90%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
-                  <h3 style={{ marginBottom: '1.5rem' }}>{editingBlock.id ? 'Edit' : 'Add'} About Block</h3>
-                  
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem' }}>TYPE</label>
-                    <select 
-                      value={editingBlock.type} 
-                      onChange={e => setEditingBlock({...editingBlock, type: e.target.value})}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
-                    >
-                      <option value="text">Text / Paragraph</option>
-                      <option value="image">Single Image</option>
-                      <option value="orbit">Orbit (Rotation Project List)</option>
-                    </select>
-                  </div>
-
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem' }}>LABEL / TITLE (Internal)</label>
-                    <input 
-                      type="text" 
-                      value={editingBlock.title || ''} 
-                      onChange={e => setEditingBlock({...editingBlock, title: e.target.value})}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
-                    />
-                  </div>
-
-                  {editingBlock.type === 'text' && (
-                    <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem' }}>CONTENT (Paragraph Text)</label>
-                      <textarea 
-                        rows={5}
-                        value={editingBlock.content || ''} 
-                        onChange={e => setEditingBlock({...editingBlock, content: e.target.value})}
-                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd', fontFamily: 'inherit' }}
-                      />
-                    </div>
-                  )}
-
-                  {editingBlock.type === 'image' && (
-                    <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem' }}>IMAGE</label>
-                      {editingBlock.content && (
-                        <img src={editingBlock.content} style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }} />
-                      )}
-                      <label style={{ display: 'inline-block', padding: '0.6rem 1.2rem', background: '#121212', color: 'white', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem' }}>
-                        {editingBlock.content ? 'Change Image' : 'Upload Image'}
-                        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            const url = await uploadImage(file);
-                            if (url) setEditingBlock({...editingBlock, content: url});
-                          }
-                        }} />
-                      </label>
-                    </div>
-                  )}
-
-                  {editingBlock.type === 'orbit' && (
-                    <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f5f5f5', borderRadius: '8px' }}>
-                      <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>This block will render the orbiting project images component at its position in the list.</p>
-                    </div>
-                  )}
-
-                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                    <button onClick={() => setEditingBlock(null)} style={{ padding: '0.75rem 1.5rem', background: 'none', border: '1px solid #ddd', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
-                    <button onClick={saveAboutBlock} style={{ padding: '0.75rem 1.5rem', background: '#121212', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 500 }}>Save Block</button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

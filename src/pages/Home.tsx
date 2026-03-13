@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Hero } from '../components/Hero';
+import { AuraHero } from '../components/AuraHero';
 import { SelectedWorks } from '../components/SelectedWorks';
 import DomeGallery from '../components/DomeGallery';
 import type { Project, Logo } from '../lib/types';
@@ -90,7 +90,7 @@ export function Home() {
 
   return (
     <main>
-      <Hero />
+      <AuraHero />
       {!loading && projects.length > 0 && (
         <>
           <SelectedWorks projects={projects} />
