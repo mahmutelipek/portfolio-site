@@ -17,7 +17,7 @@ export function Footer() {
       marginTop: 'auto'
     }}>
       <div style={{ 
-        maxWidth: '1200px', 
+        maxWidth: '1280px', 
         margin: '0 auto', 
         display: 'flex', 
         flexDirection: isMobile ? 'column-reverse' : 'row',
@@ -25,13 +25,13 @@ export function Footer() {
         alignItems: 'center',
         gap: isMobile ? '1.5rem' : '0'
       }}>
-        <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: 0 }}>
-          © {new Date().getFullYear()} ME. All rights reserved.
+        <p style={{ fontSize: '13px', color: 'white', opacity: 0.6, margin: 0, fontWeight: 500 }}>
+          © 2026 ME. All rights reserved.
         </p>
         <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
-          <a href="https://x.com/mahmutelipk" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.05em', textDecoration: 'none', color: 'var(--text-secondary)' }}>X</a>
-          <a href="https://www.linkedin.com/in/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.05em', textDecoration: 'none', color: 'var(--text-secondary)' }}>LinkedIn</a>
-          <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-item" style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.05em', textDecoration: 'none', color: 'var(--text-secondary)' }}>Layers</a>
+          <a href="https://x.com/mahmutelipk" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', textDecoration: 'none', color: 'white', fontWeight: 500 }}>X</a>
+          <a href="https://www.linkedin.com/in/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', textDecoration: 'none', color: 'white', fontWeight: 500 }}>LinkedIn</a>
+          <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', textDecoration: 'none', color: 'white', fontWeight: 500 }}>Layers</a>
         </div>
       </div>
     </footer>

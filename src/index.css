@@ -8,7 +8,7 @@
   --border-color: #1D1D1F;
   --accent-color: #FFFFFF;
 
-  --font-mono: 'Inter', sans-serif;
+  --font-mono: 'Mona Sans', sans-serif;
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -41,13 +41,13 @@ body {
 
 ::selection,
 *::selection {
-  background: #222DFF !important;
+  background: #067FFF !important;
   color: #ffffff !important;
 }
 
 ::-moz-selection,
 *::-moz-selection {
-  background: #222DFF !important;
+  background: #067FFF !important;
   color: #ffffff !important;
 }
 

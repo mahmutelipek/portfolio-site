@@ -9,9 +9,17 @@ export function ProjectDetail() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchProject() {
@@ -97,46 +105,75 @@ export function ProjectDetail() {
       style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem' }}
     >
       {/* Title & Meta Info */}
-      <section style={{ padding: '0 2rem 4rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <h1 style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 500, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4rem' }}>
-          {project.title}
-        </h1>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', borderTop: '1px solid #e5e5e5', paddingTop: '2.5rem' }}>
-          <div>
-            <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Client</h4>
-            <p style={{ fontSize: '1rem' }}>{project.client}</p>
-          </div>
-          <div>
-            <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Role</h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-              {project.roles?.map((role, i) => (
-                <span key={i} style={{ fontSize: '1rem' }}>{role}{i < project.roles!.length - 1 ? ',' : ''}</span>
-              ))}
+      <section style={{ padding: isMobile ? '0 1.5rem 4rem' : '0 5rem 4rem' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <h1 style={{ 
+            fontSize: 'clamp(3rem, 8vw, 6rem)', 
+            fontWeight: 500, 
+            letterSpacing: '-0.04em', 
+            lineHeight: 1, 
+            marginBottom: '4rem',
+            marginTop: '4rem',
+            overflowWrap: 'anywhere',
+            wordBreak: 'break-word'
+          }}>
+            {project.title}
+          </h1>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', borderTop: '1px solid #333', paddingTop: '2.5rem' }}>
+            <div>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Client</h4>
+              <p style={{ fontSize: '1rem' }}>{project.client}</p>
             </div>
-          </div>
-          <div>
-            <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Year</h4>
-            <p style={{ fontSize: '1rem' }}>{new Date(project.date).getFullYear()}</p>
+            <div>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Role</h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {project.roles?.map((role, i) => (
+                  <span key={i} style={{ fontSize: '1rem' }}>{role}{i < project.roles!.length - 1 ? ',' : ''}</span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Year</h4>
+              <p style={{ fontSize: '1rem' }}>{new Date(project.date).getFullYear()}</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Main Content Area: Fully Flexible Block-based Layout */}
-      <section style={{ padding: '0 2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <section style={{ padding: isMobile ? '0 1.5rem' : '0 5rem' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
           {project.content_blocks && project.content_blocks.length > 0 ? (
             project.content_blocks.map((block) => (
               <div key={block.id}>
                 {block.type === 'text' ? (
-                  <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                  <div style={{ textAlign: 'left', maxWidth: '1280px' }}>
                     {block.title && (
-                      <h3 style={{ fontSize: '24px', fontWeight: 500, letterSpacing: '-0.02em', color: '#121212', marginBottom: '1.25rem' }}>
+                      <h3 style={{ 
+                        fontSize: '24px', 
+                        fontWeight: 500, 
+                        letterSpacing: '-0.02em', 
+                        color: 'white', 
+                        marginBottom: '1.25rem',
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word'
+                      }}>
                         {block.title}
                       </h3>
                     )}
                     {block.value.split('\n').map((line, j) => (
-                      <p key={j} style={{ fontSize: '16px', lineHeight: 1.6, color: '#121212', marginBottom: '1rem', fontWeight: 400, opacity: 0.8 }}>
+                      <p key={j} style={{ 
+                        fontSize: '16px', 
+                        lineHeight: 1.6, 
+                        color: 'white', 
+                        marginBottom: '1rem', 
+                        fontWeight: 400, 
+                        opacity: 0.8,
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word'
+                      }}>
                         {line}
                       </p>
                     ))}
@@ -147,7 +184,7 @@ export function ProjectDetail() {
                     whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{ width: '100%', aspectRatio: '3 / 2', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}
+                    style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}
                   >
                     <img 
                       src={block.value} 
@@ -162,37 +199,30 @@ export function ProjectDetail() {
             /* Fallback for projects that don't have blocks yet (using old fields if available) */
             <>
               {project.content_body && (
-                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <div style={{ textAlign: 'left', maxWidth: '1280px' }}>
                   {project.content_body.split('\n').map((line, j) => (
-                    <p key={j} style={{ fontSize: '16px', lineHeight: 1.6, color: '#121212', marginBottom: '1rem' }}>{line}</p>
+                    <p key={j} style={{ 
+                      fontSize: '16px', 
+                      lineHeight: 1.6, 
+                      color: 'white', 
+                      marginBottom: '1rem',
+                      overflowWrap: 'anywhere',
+                      wordBreak: 'break-word'
+                    }}>{line}</p>
                   ))}
                 </div>
               )}
               {project.cover_image_url && (
-                <div style={{ width: '100%', aspectRatio: '3 / 2', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}>
+                <div style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}>
                   <img src={project.cover_image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               )}
             </>
           )}
         </div>
+        </div>
       </section>
 
-      {/* Footer Navigation */}
-      <section style={{ padding: '8rem 2rem 0', maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-        <Link 
-          to="/" 
-          style={{ 
-            fontSize: '1.5rem', 
-            textDecoration: 'none', 
-            color: '#121212', 
-            fontWeight: 500,
-            borderBottom: '1px solid #121212'
-          }}
-        >
-          Back to all works
-        </Link>
-      </section>
     </motion.article>
   );
 }

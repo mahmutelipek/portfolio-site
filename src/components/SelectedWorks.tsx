@@ -17,14 +17,14 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
   }, []);
 
   return (
-    <section id="works" className="section" style={{ padding: isMobile ? '4rem 1.5rem' : '8rem 5rem' }}>
+    <section id="works" className="section" style={{ padding: isMobile ? '4rem 1.5rem' : '9rem 5rem' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <h2 style={{
           marginBottom: '40px',
           fontSize: '22px',
           textTransform: 'uppercase',
           letterSpacing: '0.1em',
-          color: 'var(--text-primary)',
+          color: '#ffffff',
           textAlign: 'center'
         }}>
           Selected Works

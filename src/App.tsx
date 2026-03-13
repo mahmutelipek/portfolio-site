@@ -7,19 +7,18 @@ import { Footer } from './components/Footer';
 
 function AppContent() {
   const location = useLocation();
-  const isHome = location.pathname === '/';
   const isAdmin = location.pathname === '/admin';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {!isAdmin && !isHome && <Navbar />}
+      {!isAdmin && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/works/:slug" element={<ProjectDetail />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {!isAdmin && !isHome && <Footer />}
+      {!isAdmin && <Footer />}
     </div>
   );
 }
