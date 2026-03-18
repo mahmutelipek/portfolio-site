@@ -1,20 +1,32 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ShinyText from './ShinyText';
 
 export function Navbar() {
-  const location = useLocation();
-  const isProjectPage = location.pathname.startsWith('/works/');
-  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > 100) {
+        if (currentScrollY > lastScrollY) {
+          setVisible(false);
+        } else {
+          setVisible(true);
+        }
+      } else {
+        setVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -91,7 +103,7 @@ export function Navbar() {
 
         {/* Disciplines */}
         <AnimatePresence>
-          {!scrolled && (
+          {visible && (
             <motion.div 
               className="nav-col-disciplines" 
               initial={{ opacity: 0, y: -20 }}
@@ -104,22 +116,16 @@ export function Navbar() {
                 lineHeight: 1.3
               }}
             >
-              {isProjectPage ? (
-                "Product & Experience Designer"
-              ) : (
-                <>
-                  Product & Experience Designer<br />
-                  Design Systems · UX<br />
-                  3D · Motion · WebGL
-                </>
-              )}
+              Product & Experience Designer<br />
+              Design Systems · UX<br />
+              3D · Motion · WebGL
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Social Links (replacing Opportunities) */}
         <AnimatePresence>
-          {!scrolled && (
+          {visible && (
             <motion.div 
               className="nav-col-navigation" 
               initial={{ opacity: 0, y: -20 }}

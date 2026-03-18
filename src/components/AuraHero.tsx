@@ -7,89 +7,97 @@ import { motion } from 'framer-motion';
 
 extend({ UnrealBloomPass });
 
+// Pre-computed constants
+const SIDE = 18;
+const COUNT = SIDE * SIDE * SIDE; // 5832
+const SEP = 2.5;
+const HALF_EXTENT = (SIDE * SEP) / 2;
+const LERP_FACTOR = 0.1;
+const PARTICLE_COLOR = 0x00aaff;
+
 const ParticleSwarm = () => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
-  const s = 27; // Side length for perfect cube symmetry
-  const count = s * s * s; // 19,683 particles
-  const speedMult = 1;
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  const target = useMemo(() => new THREE.Vector3(), []);
-  const pColor = useMemo(() => new THREE.Color(), []);
+  const colorObj = useMemo(() => new THREE.Color(PARTICLE_COLOR), []);
 
+  // Pre-compute grid targets once — they never change
+  const targets = useMemo(() => {
+    const arr = new Float32Array(COUNT * 3);
+    for (let i = 0; i < COUNT; i++) {
+      const z = Math.floor(i / (SIDE * SIDE));
+      const y = Math.floor((i % (SIDE * SIDE)) / SIDE);
+      const x = i % SIDE;
+      arr[i * 3]     = x * SEP - HALF_EXTENT;
+      arr[i * 3 + 1] = y * SEP - HALF_EXTENT;
+      arr[i * 3 + 2] = z * SEP - HALF_EXTENT;
+    }
+    return arr;
+  }, []);
+
+  // Current positions — start random, lerp toward targets
   const positions = useMemo(() => {
-    const pos = [];
-    for (let i = 0; i < count; i++) pos.push(new THREE.Vector3((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 100, (Math.random() - 0.5) * 100));
-    return pos;
-  }, [count]);
+    const arr = new Float32Array(COUNT * 3);
+    for (let i = 0; i < COUNT * 3; i++) {
+      arr[i] = (Math.random() - 0.5) * 100;
+    }
+    return arr;
+  }, []);
 
-  // Material & Geom
-  const material = useMemo(() => new THREE.ShaderMaterial({
-    uniforms: {
-      uTime: { value: 0 }
-    },
-    vertexShader: `
-        varying vec3 vNormal;
-        varying vec3 vViewPosition;
-        varying vec3 vColor;
-        void main() {
-            vec4 mvPosition = modelViewMatrix * instanceMatrix * vec4(position, 1.0);
-            vNormal = normalize(normalMatrix * mat3(instanceMatrix) * normal);
-            vViewPosition = -mvPosition.xyz;
-            vColor = instanceColor;
-            gl_Position = projectionMatrix * mvPosition;
-        }
-    `,
-    fragmentShader: `
-        varying vec3 vNormal;
-        varying vec3 vViewPosition;
-        varying vec3 vColor;
-        void main() {
-            float fresnel = dot(normalize(vNormal), normalize(vViewPosition));
-            fresnel = clamp(1.0 - fresnel, 0.0, 1.0);
-            fresnel = pow(fresnel, 2.0);
-            vec3 col = vColor * fresnel + vec3(0.05); 
-            gl_FragColor = vec4(col, 0.3 + fresnel * 0.7);
-        }
-    `,
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  }), []);
+  // Track whether initial lerp animation has settled
+  const settled = useRef(false);
 
-  const geometry = useMemo(() => new THREE.SphereGeometry(0.3, 16, 16), []);
+  // Material & Geometry (created once, shared across all instances)
+  const material = useMemo(() => new THREE.MeshBasicMaterial({ color: 0xffffff }), []);
+  const geometry = useMemo(() => new THREE.TetrahedronGeometry(0.25), []);
 
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    const time = state.clock.getElapsedTime() * speedMult;
+  // Set instance colors once on mount (they never change)
+  useFrame(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
 
-    if (material.uniforms.uTime) {
-      material.uniforms.uTime.value = time;
+    // One-time color init: set all instance colors on first frame
+    if (!mesh.userData.colorsSet) {
+      for (let i = 0; i < COUNT; i++) {
+        mesh.setColorAt(i, colorObj);
+      }
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+      mesh.userData.colorsSet = true;
     }
 
-    const sep = 2.5;
-    const off = ((s - 1) * sep) / 2; // Precise offset for centering
+    // Skip matrix updates once animation has converged
+    if (settled.current) return;
 
-    for (let i = 0; i < count; i++) {
-      // Grid logic - perfect cube indexing
-      let z = Math.floor(i / (s * s));
-      let y = Math.floor((i % (s * s)) / s);
-      let x = i % s;
+    let maxDelta = 0;
 
-      target.set(x * sep - off, y * sep - off, z * sep - off);
-      pColor.setHex(0x00aaff);
+    for (let i = 0; i < COUNT; i++) {
+      const i3 = i * 3;
+      // Lerp each axis
+      positions[i3]     += (targets[i3]     - positions[i3])     * LERP_FACTOR;
+      positions[i3 + 1] += (targets[i3 + 1] - positions[i3 + 1]) * LERP_FACTOR;
+      positions[i3 + 2] += (targets[i3 + 2] - positions[i3 + 2]) * LERP_FACTOR;
 
-      positions[i].lerp(target, 0.1);
-      dummy.position.copy(positions[i]);
+      // Track convergence
+      const dx = targets[i3]     - positions[i3];
+      const dy = targets[i3 + 1] - positions[i3 + 1];
+      const dz = targets[i3 + 2] - positions[i3 + 2];
+      const dist = dx * dx + dy * dy + dz * dz;
+      if (dist > maxDelta) maxDelta = dist;
+
+      dummy.position.set(positions[i3], positions[i3 + 1], positions[i3 + 2]);
       dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
-      meshRef.current.setColorAt(i, pColor);
+      mesh.setMatrixAt(i, dummy.matrix);
     }
-    meshRef.current.instanceMatrix.needsUpdate = true;
-    if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
+
+    mesh.instanceMatrix.needsUpdate = true;
+
+    // Once all particles are within 0.01 units of their target, stop updating
+    if (maxDelta < 0.0001) {
+      settled.current = true;
+    }
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[geometry, material, count]} />
+    <instancedMesh ref={meshRef} args={[geometry, material, COUNT]} />
   );
 };
 
@@ -111,12 +119,12 @@ export const AuraHero = () => {
       <style>{`
         #hero .row-bottom { bottom: 2rem; left: 2rem; right: 2rem; padding: 0; }
         #hero .expertise-mobile-wrap { white-space: nowrap; }
-        #hero h1 { font-size: 5.5rem; line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
+        #hero h1 { font-size: 6.2rem; line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
 
         @media (max-width: 1310px) {
-          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-          #hero .expertise-mobile-wrap { order: 1; width: 100%; margin-bottom: 0px; white-space: nowrap; }
-          #hero .title-mobile-wrap { order: 2; width: 100%; }
+          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; width: calc(100% - 3rem) !important; }
+          #hero .expertise-mobile-wrap { order: 1; width: 100% !important; margin-bottom: 0px; white-space: normal; }
+          #hero .title-mobile-wrap { order: 2; width: 100% !important; }
           #hero .location-mobile-wrap { display: none; }
           #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); }
         }
@@ -132,13 +140,13 @@ export const AuraHero = () => {
 
       {/* Background Particle Swarm */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-        <Canvas camera={{ position: [0, 0, 200], fov: 60 }}>
+        <Canvas camera={{ position: [0, 0, 96], fov: 60 }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} />
           <Effects disableGamma>
             {/* @ts-ignore */}
-            <unrealBloomPass threshold={0} strength={1.8} radius={0.4} />
+            <unrealBloomPass threshold={0} strength={2.59} radius={0.4} />
           </Effects>
         </Canvas>
       </div>
@@ -162,7 +170,13 @@ export const AuraHero = () => {
         }}>
           {/* Expertise/Keywords */}
           <div className="expertise-mobile-wrap" style={{ width: 'calc(28% - 2rem)', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
-            Curious about systems, visuals, and everyday details.
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Curious about systems, visuals, and everyday details.
+            </motion.div>
           </div>
 
           {/* Main Title */}
@@ -170,7 +184,7 @@ export const AuraHero = () => {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <h1>Mahmut Elipek</h1>
             </motion.div>
@@ -178,7 +192,13 @@ export const AuraHero = () => {
 
           {/* Location Tag */}
           <div className="location-mobile-wrap" style={{ flexGrow: 1, textAlign: 'right', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
-            Based in Istanbul, TR
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Based in Istanbul, TR
+            </motion.div>
           </div>
         </div>
       </div>
