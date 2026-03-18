@@ -103,9 +103,22 @@ const ParticleSwarm = () => {
 
 export const AuraHero = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [heroHeight, setHeroHeight] = useState('100vh');
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    // Lock initial exact height to avoid iOS Safari dynamic UI jumps
+    setHeroHeight(`${window.innerHeight}px`);
+    let lastWidth = window.innerWidth;
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+      // Only recalculate height on real orientation/width change, not vertical URL bar collapse
+      if (window.innerWidth !== lastWidth) {
+        setHeroHeight(`${window.innerHeight}px`);
+        lastWidth = window.innerWidth;
+      }
+    };
+    
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -115,7 +128,7 @@ export const AuraHero = () => {
       id="hero"
       style={{
         width: '100%',
-        height: '100svh',
+        height: heroHeight,
         backgroundColor: '#000',
         color: 'white',
         fontFamily: '"Mona Sans", sans-serif',
