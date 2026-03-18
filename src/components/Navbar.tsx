@@ -93,6 +93,7 @@ export function Navbar() {
       `}</style>
 
       <div className="nav-container">
+        {/* Logo */}
         <div className="nav-col-logo">
           <Link 
             to="/" 
@@ -102,6 +103,8 @@ export function Navbar() {
               if (window.location.pathname === '/') {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                window.scrollTo(0, 0);
               }
             }}
           >
