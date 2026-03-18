@@ -132,11 +132,11 @@ export const AuraHero = () => {
         #hero h1 { font-size: clamp(3.5rem, 5vw, 6.2rem); line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
 
         @media (max-width: 1024px) {
-          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; width: calc(100% - 3rem) !important; }
-          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; }
-          #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; text-align: left; }
+          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: center; gap: 1.5rem; width: calc(100% - 3rem) !important; }
+          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; text-align: center; }
+          #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; text-align: center; }
           #hero .location-mobile-wrap { display: none; }
-          #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); text-align: left; }
+          #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); text-align: center; }
         }
 
         @media (max-width: 480px) {

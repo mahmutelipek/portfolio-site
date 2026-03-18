@@ -77,19 +77,19 @@ export function Navbar() {
 
         @media (max-width: 1024px) {
           .nav-container { padding: 1.5rem; flex-wrap: nowrap; gap: 1rem; align-items: center; justify-content: space-between; }
-          .nav-col-logo { width: auto; flex: 0 0 auto; order: 1; margin-bottom: 0px; flex-shrink: 0; display: flex; align-items: center; }
-          .nav-col-navigation { width: auto; order: 2; display: flex; justify-content: center; flex-grow: 1; align-items: center; }
-          .nav-col-contact { width: auto; flex: 0 0 auto; order: 3; margin-left: 0; flex-shrink: 0; display: flex; align-items: center; }
+          .nav-col-logo { width: auto; flex: 1; order: 1; margin-bottom: 0px; display: flex; align-items: center; justify-content: flex-start; }
+          .nav-col-navigation { width: auto; flex: 0 0 auto; order: 2; display: flex; justify-content: center; align-items: center; }
+          .nav-col-contact { width: auto; flex: 1; order: 3; margin-left: 0; display: flex; align-items: center; justify-content: flex-end; }
           .nav-col-disciplines { display: none; margin-right: 0; }
           .social-links { gap: 0.25rem; }
         }
 
         @media (max-width: 640px) {
           .nav-container { padding: 1rem; flex-wrap: nowrap; align-items: center; justify-content: space-between; }
+          .nav-col-logo { flex: 1; display: flex; align-items: center; gap: 0.25rem; justify-content: flex-start; }
           .nav-col-disciplines { display: none; }
-          .nav-col-logo { flex-direction: row; align-items: center; gap: 0.25rem; }
-          .nav-col-navigation { display: flex; justify-content: center; align-items: center; }
-          .nav-col-contact { display: flex; align-items: center; }
+          .nav-col-navigation { flex: 0 0 auto; display: flex; justify-content: center; align-items: center; }
+          .nav-col-contact { flex: 1; display: flex; align-items: center; justify-content: flex-end; }
         }
       `}</style>
 
