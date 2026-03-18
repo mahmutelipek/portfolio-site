@@ -52,10 +52,10 @@ export function Navbar() {
           box-sizing: border-box;
           pointer-events: auto;
         }
-        .nav-col-logo { width: 25%; }
-        .nav-col-disciplines { width: 25%; }
-        .nav-col-navigation { width: 25%; }
-        .nav-col-contact { width: 25%; text-align: right; }
+        .nav-col-logo { width: calc(28% - 2rem); display: flex; align-items: baseline; gap: 1rem; }
+        .nav-col-disciplines { width: calc(55% - 28%); }
+        .nav-col-navigation { width: auto; flex-grow: 1; }
+        .nav-col-contact { width: auto; text-align: right; }
 
         .social-links {
           display: flex;
@@ -96,9 +96,9 @@ export function Navbar() {
         <div className="nav-col-logo">
           <Link to="/" className="nav-link" style={{ textDecoration: 'none', color: '#ffffff', pointerEvents: 'auto' }}>
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               style={{ fontWeight: 700, fontSize: '14px', letterSpacing: '-0.02em' }}
             >
               [me.]
