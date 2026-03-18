@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap');
 
 :root {
-  --bg-color: #000000;
+  --bg-color: #030303;
   --text-primary: #ffffff;
   --text-secondary: #999999;
   --border-color: #1D1D1F;
@@ -29,9 +29,13 @@
 
 html,
 body {
-  background-color: #000;
-  color: var(--text-primary);
-  font-family: var(--font-mono);
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #030303;
+  color: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;

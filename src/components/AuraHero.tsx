@@ -116,7 +116,7 @@ export const AuraHero = () => {
       style={{
         width: '100%',
         height: '100dvh',
-        backgroundColor: '#000',
+        backgroundColor: '#030303',
         color: 'white',
         fontFamily: '"Mona Sans", sans-serif',
         overflow: 'hidden',
@@ -151,7 +151,7 @@ export const AuraHero = () => {
       {/* Background Particle Swarm */}
       <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 0, height: isMobile ? '90%' : '100%' }}>
         <Canvas style={{ pointerEvents: 'none', touchAction: 'auto' }} camera={{ position: [0, 0, 106], fov: 60 }}>
-          <fog attach="fog" args={['#000000', 0.01]} />
+          <fog attach="fog" args={['#030303', 0.01]} />
           <ParticleSwarm />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
           <Effects disableGamma>
