@@ -48,14 +48,15 @@ export function Navbar() {
           width: 100%;
           display: flex;
           align-items: baseline;
+          justify-content: space-between;
           padding: 2rem;
           box-sizing: border-box;
           pointer-events: auto;
         }
-        .nav-col-logo { width: calc(28% - 2rem); display: flex; align-items: baseline; gap: 1rem; }
-        .nav-col-disciplines { width: calc(55% - 28%); }
-        .nav-col-navigation { width: auto; flex-grow: 1; }
-        .nav-col-contact { width: auto; text-align: right; }
+        .nav-col-logo { flex: 1; display: flex; align-items: baseline; gap: 1rem; }
+        .nav-col-disciplines { flex: 0 0 auto; margin-right: 6vw; text-align: left; }
+        .nav-col-navigation { flex: 0 0 auto; }
+        .nav-col-contact { flex: 1; display: flex; justify-content: flex-end; }
 
         .social-links {
           display: flex;
@@ -76,14 +77,14 @@ export function Navbar() {
 
         @media (max-width: 1024px) {
           .nav-container { padding: 1.5rem; flex-wrap: nowrap; gap: 1rem; align-items: center; justify-content: space-between; }
-          .nav-col-logo { width: auto; order: 1; margin-bottom: 0px; flex-shrink: 0; display: flex; align-items: center; }
+          .nav-col-logo { width: auto; flex: 0 0 auto; order: 1; margin-bottom: 0px; flex-shrink: 0; display: flex; align-items: center; }
           .nav-col-navigation { width: auto; order: 2; display: flex; justify-content: center; flex-grow: 1; align-items: center; }
-          .nav-col-contact { width: auto; order: 3; margin-left: 0; flex-shrink: 0; display: flex; align-items: center; }
-          .nav-col-disciplines { display: none; }
+          .nav-col-contact { width: auto; flex: 0 0 auto; order: 3; margin-left: 0; flex-shrink: 0; display: flex; align-items: center; }
+          .nav-col-disciplines { display: none; margin-right: 0; }
         }
 
         @media (max-width: 640px) {
-          .nav-container { padding: 1rem; flex-wrap: nowrap; align-items: center; }
+          .nav-container { padding: 1rem; flex-wrap: nowrap; align-items: center; justify-content: space-between; }
           .nav-col-disciplines { display: none; }
           .nav-col-logo { flex-direction: row; align-items: center; gap: 0.25rem; }
           .nav-col-navigation { display: flex; justify-content: center; align-items: center; }

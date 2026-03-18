@@ -117,16 +117,18 @@ export const AuraHero = () => {
       }}
     >
       <style>{`
-        #hero .row-bottom { bottom: 2rem; left: 2rem; right: 2rem; padding: 0; }
-        #hero .expertise-mobile-wrap { white-space: nowrap; }
+        #hero .row-bottom { bottom: 2rem; left: 2rem; right: 2rem; padding: 0; width: calc(100% - 4rem); }
+        #hero .expertise-mobile-wrap { flex: 1; white-space: nowrap; }
+        #hero .title-mobile-wrap { flex-shrink: 0; text-align: center; }
+        #hero .location-mobile-wrap { flex: 1; text-align: right; }
         #hero h1 { font-size: 6.2rem; line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
 
         @media (max-width: 1420px) {
           #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; width: calc(100% - 3rem) !important; }
-          #hero .expertise-mobile-wrap { order: 1; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; }
-          #hero .title-mobile-wrap { order: 2; width: 100% !important; }
+          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; }
+          #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; text-align: left; }
           #hero .location-mobile-wrap { display: none; }
-          #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); }
+          #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); text-align: left; }
         }
 
         @media (max-width: 480px) {
@@ -165,11 +167,10 @@ export const AuraHero = () => {
           position: 'absolute',
           display: 'flex',
           alignItems: 'baseline',
-          pointerEvents: 'none',
-          width: 'calc(100% - 4rem)'
+          pointerEvents: 'none'
         }}>
           {/* Expertise/Keywords */}
-          <div className="expertise-mobile-wrap" style={{ width: 'calc(28% - 2rem)', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
+          <div className="expertise-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -180,7 +181,7 @@ export const AuraHero = () => {
           </div>
 
           {/* Main Title */}
-          <div className="title-mobile-wrap" style={{ width: 'calc(55% - 28%)', pointerEvents: 'auto' }}>
+          <div className="title-mobile-wrap" style={{ pointerEvents: 'auto' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -191,7 +192,7 @@ export const AuraHero = () => {
           </div>
 
           {/* Location Tag */}
-          <div className="location-mobile-wrap" style={{ flexGrow: 1, textAlign: 'right', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
+          <div className="location-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
