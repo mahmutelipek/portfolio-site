@@ -94,10 +94,15 @@ export function Navbar() {
       <div className="nav-container">
         {/* Logo */}
         <div className="nav-col-logo">
-          <Link to="/" className="nav-link" style={{ pointerEvents: 'auto' }}>
-            <div style={{ fontSize: '13px', fontWeight: 500, letterSpacing: '0.025em', lineHeight: 1 }}>
-              me.
-            </div>
+          <Link to="/" className="nav-link" style={{ textDecoration: 'none', color: '#ffffff', pointerEvents: 'auto' }}>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              style={{ fontWeight: 700, fontSize: '14px', letterSpacing: '-0.02em' }}
+            >
+              [me.]
+            </motion.div>
           </Link>
         </div>
 
