@@ -123,8 +123,10 @@ export function Navbar() {
               }}
             >
               Product & Experience Designer<br />
-              Design Systems · UX<br />
-              3D · Motion · WebGL
+              <span style={{ opacity: 0.5 }}>
+                Design Systems · UX<br />
+                3D · Motion · WebGL
+              </span>
             </motion.div>
           )}
         </AnimatePresence>
