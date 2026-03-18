@@ -115,7 +115,7 @@ export const AuraHero = () => {
       id="hero"
       style={{
         width: '100%',
-        height: '100dvh',
+        height: '100svh',
         backgroundColor: '#000',
         color: 'white',
         fontFamily: '"Mona Sans", sans-serif',
