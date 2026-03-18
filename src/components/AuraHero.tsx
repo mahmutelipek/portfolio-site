@@ -169,7 +169,7 @@ export const AuraHero = () => {
           width: 'calc(100% - 4rem)'
         }}>
           {/* Expertise/Keywords */}
-          <div className="expertise-mobile-wrap" style={{ width: 'calc(28% - 2rem)', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
+          <div className="expertise-mobile-wrap" style={{ width: '30%', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -179,19 +179,19 @@ export const AuraHero = () => {
             </motion.div>
           </div>
 
-          {/* Main Title */}
-          <div className="title-mobile-wrap" style={{ width: 'calc(55% - 28%)', pointerEvents: 'auto' }}>
+          {/* Main Title - Perfectly Centered */}
+          <div className="title-mobile-wrap" style={{ width: '40%', textAlign: 'center', pointerEvents: 'auto' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h1>Mahmut Elipek</h1>
+              <h1 style={{ whiteSpace: 'nowrap' }}>Mahmut Elipek</h1>
             </motion.div>
           </div>
 
           {/* Location Tag */}
-          <div className="location-mobile-wrap" style={{ flexGrow: 1, textAlign: 'right', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
+          <div className="location-mobile-wrap" style={{ width: '30%', textAlign: 'right', pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}

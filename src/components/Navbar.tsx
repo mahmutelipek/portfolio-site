@@ -52,10 +52,10 @@ export function Navbar() {
           box-sizing: border-box;
           pointer-events: auto;
         }
-        .nav-col-logo { width: calc(28% - 2rem); display: flex; align-items: baseline; gap: 1rem; }
-        .nav-col-disciplines { width: calc(55% - 28%); }
-        .nav-col-navigation { width: auto; flex-grow: 1; }
-        .nav-col-contact { width: auto; text-align: right; }
+        .nav-col-logo { width: 25%; }
+        .nav-col-disciplines { width: 25%; }
+        .nav-col-navigation { width: 25%; }
+        .nav-col-contact { width: 25%; text-align: right; }
 
         .social-links {
           display: flex;
