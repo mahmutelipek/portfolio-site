@@ -121,7 +121,7 @@ export default function DomeGallery({
   minRadius = 200,
   maxRadius = 650,
   padFactor = 0.25,
-  overlayBlurColor = '#000000', // Set to dark as per user request
+  overlayBlurColor = '#030303', // Set to dark as per user request
   maxVerticalRotationDeg = DEFAULTS.maxVerticalRotationDeg,
   dragSensitivity = DEFAULTS.dragSensitivity,
   enlargeTransitionMs = DEFAULTS.enlargeTransitionMs,

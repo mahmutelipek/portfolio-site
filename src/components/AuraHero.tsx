@@ -116,7 +116,7 @@ export const AuraHero = () => {
       style={{
         width: '100%',
         height: '100dvh',
-        backgroundColor: '#000000',
+        backgroundColor: '#000',
         color: 'white',
         fontFamily: '"Mona Sans", sans-serif',
         overflow: 'hidden',
@@ -125,14 +125,14 @@ export const AuraHero = () => {
       }}
     >
       <style>{`
-        #hero .row-bottom { bottom: 2rem; left: 0; right: 0; margin: 0 auto; max-width: 1440px; padding: 0 5rem; width: 100%; }
+        #hero .row-bottom { bottom: 2rem; left: 2rem; right: 2rem; padding: 0; width: calc(100% - 4rem); }
         #hero .expertise-mobile-wrap { flex: 1; white-space: normal; }
         #hero .title-mobile-wrap { flex-shrink: 0; text-align: center; }
         #hero .location-mobile-wrap { flex: 1; text-align: right; }
         #hero h1 { font-size: clamp(3.5rem, 5vw, 6.2rem); line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
 
         @media (max-width: 1024px) {
-          #hero .row-bottom { bottom: 1.5rem; padding: 0 1.5rem; flex-direction: column; align-items: center; gap: 1.5rem; width: 100% !important; }
+          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: center; gap: 1.5rem; width: calc(100% - 3rem) !important; }
           #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; text-align: center; }
           #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; text-align: center; }
           #hero .location-mobile-wrap { display: none; }
@@ -140,7 +140,7 @@ export const AuraHero = () => {
         }
 
         @media (max-width: 480px) {
-          #hero .row-bottom { bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); padding: 0 1.5rem; gap: 0.75rem; }
+          #hero .row-bottom { bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); left: 1.5rem; right: 1.5rem; gap: 0.5rem; }
           #hero h1 { font-size: calc((100vw - 3rem) / 6.8); text-align: center; white-space: nowrap; }
           #hero .expertise-mobile-wrap { font-size: 11px; }
           #hero .disciplines { display: none; }
@@ -150,7 +150,7 @@ export const AuraHero = () => {
 
       {/* Background Particle Swarm */}
       <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 0, height: isMobile ? '90%' : '100%' }}>
-        <Canvas style={{ pointerEvents: 'none', touchAction: 'auto' }} camera={{ position: [0, 0, 106], fov: 60 }}>
+        <Canvas camera={{ position: [0, 0, 106], fov: 60 }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
@@ -182,7 +182,7 @@ export const AuraHero = () => {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               Curious about systems, visuals, and everyday details.
             </motion.div>
@@ -193,7 +193,7 @@ export const AuraHero = () => {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <h1>Mahmut Elipek</h1>
             </motion.div>
@@ -204,7 +204,7 @@ export const AuraHero = () => {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               Based in Istanbul, TR
             </motion.div>
