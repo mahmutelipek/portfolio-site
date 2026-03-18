@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, extend } from '@react-three/fiber';
 import { OrbitControls, Effects } from '@react-three/drei';
 import { UnrealBloomPass } from 'three-stdlib';
@@ -102,6 +102,14 @@ const ParticleSwarm = () => {
 };
 
 export const AuraHero = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <section
       id="hero"
@@ -124,7 +132,7 @@ export const AuraHero = () => {
         #hero h1 { font-size: clamp(3.5rem, 5vw, 6.2rem); line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
 
         @media (max-width: 1024px) {
-          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; width: calc(100% - 3rem) !important; }
+          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; width: calc(100% - 3rem) !important; }
           #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; }
           #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; text-align: left; }
           #hero .location-mobile-wrap { display: none; }
@@ -145,7 +153,7 @@ export const AuraHero = () => {
         <Canvas camera={{ position: [0, 0, 106], fov: 60 }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm />
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} />
+          <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
           <Effects disableGamma>
             {/* @ts-ignore */}
             <unrealBloomPass threshold={0} strength={2.59} radius={0.4} />

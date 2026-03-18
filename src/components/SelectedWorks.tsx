@@ -21,7 +21,7 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <h2 style={{
           marginBottom: '40px',
-          fontSize: '22px',
+          fontSize: isMobile ? '18px' : '22px',
           textTransform: 'uppercase',
           letterSpacing: '0.1em',
           color: '#ffffff',
@@ -30,7 +30,7 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
           Selected Works
         </h2>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '48px' : '6rem' }}>
           {projects.map((project, index) => (
             <motion.div
               key={project.id}

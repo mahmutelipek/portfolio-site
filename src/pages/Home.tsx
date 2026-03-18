@@ -9,6 +9,13 @@ export function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [logos, setLogos] = useState<Logo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -94,7 +101,7 @@ export function Home() {
       {!loading && projects.length > 0 && (
         <>
           <SelectedWorks projects={projects} />
-          <section id="teams" style={{ padding: '8rem 0', background: '#030303', overflowX: 'hidden' }}>
+          <section id="teams" style={{ paddingTop: isMobile ? '64px' : '8rem', paddingBottom: '8rem', background: '#030303', overflowX: 'hidden' }}>
             <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 2rem' }}>
               <h2 style={{
                 marginBottom: '40px',

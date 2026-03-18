@@ -81,6 +81,7 @@ export function Navbar() {
           .nav-col-navigation { width: auto; order: 2; display: flex; justify-content: center; flex-grow: 1; align-items: center; }
           .nav-col-contact { width: auto; flex: 0 0 auto; order: 3; margin-left: 0; flex-shrink: 0; display: flex; align-items: center; }
           .nav-col-disciplines { display: none; margin-right: 0; }
+          .social-links { gap: 0.25rem; }
         }
 
         @media (max-width: 640px) {
