@@ -105,7 +105,7 @@ export function ProjectDetail() {
       style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem' }}
     >
       {/* Title & Meta Info */}
-      <section style={{ padding: isMobile ? '0 1.5rem 4rem' : '0 5rem 4rem' }}>
+      <section style={{ padding: isMobile ? '0 1rem 4rem' : '0 5rem 4rem' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <h1 style={{ 
             fontSize: 'clamp(3rem, 8vw, 6rem)', 
@@ -142,7 +142,7 @@ export function ProjectDetail() {
       </section>
 
       {/* Main Content Area: Fully Flexible Block-based Layout */}
-      <section style={{ padding: isMobile ? '0 1.5rem' : '0 5rem' }}>
+      <section style={{ padding: isMobile ? '0 1rem' : '0 5rem' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
           {project.content_blocks && project.content_blocks.length > 0 ? (
@@ -163,7 +163,7 @@ export function ProjectDetail() {
                         {block.title}
                       </h3>
                     )}
-                    {block.value.split('\n').map((line, j) => (
+                    {block.value.split('\n').filter(l => l.trim().length > 0).map((line, j) => (
                       <p key={j} style={{ 
                         fontSize: '16px', 
                         lineHeight: 1.6, 
@@ -184,7 +184,7 @@ export function ProjectDetail() {
                     whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}
+                    style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#0a0a0a', overflow: 'hidden', borderRadius: '4px' }}
                   >
                     <img 
                       src={block.value} 
@@ -200,20 +200,34 @@ export function ProjectDetail() {
             <>
               {project.content_body && (
                 <div style={{ textAlign: 'left', maxWidth: '1280px' }}>
-                  {project.content_body.split('\n').map((line, j) => (
-                    <p key={j} style={{ 
-                      fontSize: '16px', 
-                      lineHeight: 1.6, 
-                      color: 'white', 
-                      marginBottom: '1rem',
-                      overflowWrap: 'anywhere',
-                      wordBreak: 'break-word'
-                    }}>{line}</p>
-                  ))}
+                  {project.content_body.split('\n').filter(l => l.trim().length > 0).map((line, j) => {
+                    const isTitle = line.startsWith('#');
+                    const cleanText = line.replace(/^#+\s*/, '');
+                    if (isTitle) {
+                      return (
+                        <h3 key={j} style={{ fontSize: '24px', fontWeight: 500, color: 'white', margin: '2.5rem 0 1.25rem 0', letterSpacing: '-0.02em' }}>
+                          {cleanText}
+                        </h3>
+                      );
+                    }
+                    return (
+                      <p key={j} style={{ 
+                        fontSize: '16px', 
+                        lineHeight: 1.6, 
+                        color: 'white', 
+                        opacity: 0.8, 
+                        marginBottom: '1rem',
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word'
+                      }}>
+                        {cleanText}
+                      </p>
+                    );
+                  })}
                 </div>
               )}
               {project.cover_image_url && (
-                <div style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#f5f5f5', overflow: 'hidden', borderRadius: '4px' }}>
+                <div style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#0a0a0a', overflow: 'hidden', borderRadius: '4px' }}>
                   <img src={project.cover_image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               )}
