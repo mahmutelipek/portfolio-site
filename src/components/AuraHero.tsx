@@ -115,7 +115,7 @@ export const AuraHero = () => {
       id="hero"
       style={{
         width: '100%',
-        height: '100vh',
+        height: '100dvh',
         backgroundColor: '#000',
         color: 'white',
         fontFamily: '"Mona Sans", sans-serif',
@@ -140,7 +140,7 @@ export const AuraHero = () => {
         }
 
         @media (max-width: 480px) {
-          #hero .row-bottom { bottom: 4rem; left: 1.5rem; right: 1.5rem; gap: 0.25rem; }
+          #hero .row-bottom { bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); left: 1.5rem; right: 1.5rem; gap: 0.25rem; }
           #hero h1 { font-size: 3.8rem; }
           #hero .expertise-mobile-wrap { font-size: 11px; }
           #hero .disciplines { display: none; }
