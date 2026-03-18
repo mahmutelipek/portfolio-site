@@ -140,7 +140,7 @@ export const AuraHero = () => {
         }
 
         @media (max-width: 480px) {
-          #hero .row-bottom { bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); left: 1rem; right: 1rem; gap: 0.5rem; }
+          #hero .row-bottom { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); left: 1rem; right: 1rem; gap: 0.5rem; }
           #hero h1 { font-size: calc((100vw - 2rem) / 6.8); text-align: center; white-space: nowrap; }
           #hero .expertise-mobile-wrap { font-size: 11px; }
           #hero .disciplines { display: none; }
@@ -149,8 +149,8 @@ export const AuraHero = () => {
       `}</style>
 
       {/* Background Particle Swarm */}
-      <div style={{ pointerEvents: 'none', position: 'absolute', left: 0, right: 0, top: isMobile ? '5%' : 0, bottom: isMobile ? '5%' : 0, zIndex: 0 }}>
-        <Canvas camera={{ position: [0, 0, 106], fov: 60 }}>
+      <div style={{ pointerEvents: isMobile ? 'none' : 'auto', position: 'absolute', left: 0, right: 0, top: isMobile ? '5%' : 0, bottom: isMobile ? '5%' : 0, zIndex: 0 }}>
+        <Canvas camera={{ position: [0, 0, 106], fov: 60 }} style={{ pointerEvents: isMobile ? 'none' : 'auto', touchAction: 'auto' }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
