@@ -140,7 +140,7 @@ export const AuraHero = () => {
         }
 
         @media (max-width: 480px) {
-          #hero .row-bottom { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); left: 1rem; right: 1rem; gap: 0.5rem; }
+          #hero .row-bottom { bottom: 5rem; left: 1rem; right: 1rem; gap: 0.5rem; }
           #hero h1 { font-size: calc((100vw - 2rem) / 6.8); text-align: center; white-space: nowrap; }
           #hero .expertise-mobile-wrap { font-size: 11px; }
           #hero .disciplines { display: none; }
