@@ -93,9 +93,18 @@ export function Navbar() {
       `}</style>
 
       <div className="nav-container">
-        {/* Logo */}
         <div className="nav-col-logo">
-          <Link to="/" className="nav-link" style={{ textDecoration: 'none', color: '#ffffff', pointerEvents: 'auto' }}>
+          <Link 
+            to="/" 
+            className="nav-link" 
+            style={{ textDecoration: 'none', color: '#ffffff', pointerEvents: 'auto' }}
+            onClick={(e) => {
+              if (window.location.pathname === '/') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          >
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
