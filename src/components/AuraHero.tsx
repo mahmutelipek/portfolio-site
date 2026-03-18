@@ -121,7 +121,7 @@ export const AuraHero = () => {
         #hero .expertise-mobile-wrap { flex: 1; white-space: normal; }
         #hero .title-mobile-wrap { flex-shrink: 0; text-align: center; }
         #hero .location-mobile-wrap { flex: 1; text-align: right; }
-        #hero h1 { font-size: clamp(4.5rem, 6.5vw, 6.2rem); line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
+        #hero h1 { font-size: clamp(3.5rem, 5vw, 6.2rem); line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
 
         @media (max-width: 1024px) {
           #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; width: calc(100% - 3rem) !important; }
