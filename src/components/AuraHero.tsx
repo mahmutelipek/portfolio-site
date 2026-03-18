@@ -141,7 +141,7 @@ export const AuraHero = () => {
 
         @media (max-width: 480px) {
           #hero .row-bottom { bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); left: 1.5rem; right: 1.5rem; gap: 0.25rem; }
-          #hero h1 { font-size: min(3.8rem, 12.5vw); }
+          #hero h1 { font-size: min(3.8rem, 10.5vw); }
           #hero .expertise-mobile-wrap { font-size: 11px; }
           #hero .disciplines { display: none; }
           #hero .title-container { bottom: 4.5rem; }
@@ -149,7 +149,7 @@ export const AuraHero = () => {
       `}</style>
 
       {/* Background Particle Swarm */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0, height: isMobile ? '80%' : '100%' }}>
+      <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 0, height: isMobile ? '80%' : '100%' }}>
         <Canvas camera={{ position: [0, 0, 106], fov: 60 }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm />
