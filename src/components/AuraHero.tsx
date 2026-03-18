@@ -11,7 +11,7 @@ extend({ UnrealBloomPass });
 const SIDE = 18;
 const COUNT = SIDE * SIDE * SIDE; // 5832
 const SEP = 2.5;
-const HALF_EXTENT = (SIDE * SEP) / 2;
+const HALF_EXTENT = ((SIDE - 1) * SEP) / 2;
 const LERP_FACTOR = 0.1;
 const PARTICLE_COLOR = 0x00aaff;
 
@@ -149,7 +149,7 @@ export const AuraHero = () => {
       `}</style>
 
       {/* Background Particle Swarm */}
-      <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 0, height: isMobile ? '90%' : '100%' }}>
+      <div style={{ pointerEvents: 'none', position: 'absolute', left: 0, right: 0, top: isMobile ? '5%' : 0, bottom: isMobile ? '5%' : 0, zIndex: 0 }}>
         <Canvas camera={{ position: [0, 0, 106], fov: 60 }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm />
