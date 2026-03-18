@@ -54,7 +54,7 @@ export function Navbar() {
           pointer-events: auto;
         }
         .nav-col-logo { flex: 1; display: flex; align-items: baseline; gap: 1rem; }
-        .nav-col-disciplines { flex: 0 0 auto; margin-right: 6vw; text-align: left; }
+        .nav-col-disciplines { flex: 0 0 auto; margin-right: 16vw; text-align: left; }
         .nav-col-navigation { flex: 0 0 auto; }
         .nav-col-contact { flex: 1; display: flex; justify-content: flex-end; }
 
