@@ -166,7 +166,7 @@ export const AuraHero = () => {
         <div className="row-bottom" style={{
           position: 'absolute',
           display: 'flex',
-          alignItems: 'baseline',
+          alignItems: 'flex-end',
           pointerEvents: 'none'
         }}>
           {/* Expertise/Keywords */}
