@@ -101,7 +101,7 @@ export function Home() {
       {!loading && projects.length > 0 && (
         <>
           <SelectedWorks projects={projects} />
-          <section id="teams" style={{ paddingTop: isMobile ? '64px' : '8rem', paddingBottom: '8rem', background: '#030303', overflowX: 'hidden' }}>
+          <section id="teams" style={{ paddingTop: isMobile ? '64px' : '8rem', paddingBottom: '8rem', background: '#000000', overflowX: 'hidden' }}>
             <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 2rem' }}>
               <h2 style={{
                 marginBottom: '40px',
