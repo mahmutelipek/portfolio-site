@@ -114,7 +114,7 @@ export function Navbar() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 fontSize: '13px',
                 fontWeight: 500,
@@ -136,7 +136,7 @@ export function Navbar() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: 0.05 }}
+              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 fontSize: '13px',
                 fontWeight: 500,
@@ -154,21 +154,27 @@ export function Navbar() {
           )}
         </AnimatePresence>
 
-        {/* Contact Action */}
-        <div className="nav-col-contact" style={{ marginLeft: 'auto' }}>
-          <a
-            href="mailto:mahmutelipk@gmail.com"
-            style={{
-              fontSize: '13px',
-              fontWeight: 500,
-              color: 'white',
-              textDecoration: 'none',
-              transition: 'color 0.2s ease',
-              lineHeight: 1.3
-            }}
+        {/* Contact Button */}
+        <div className="nav-col-contact">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <ShinyText text="Get in Touch" speed={3} color="white" shineColor="rgba(255,255,255,0.5)" />
-          </a>
+            <a 
+              href="#contact" 
+              style={{ 
+                textDecoration: 'none', 
+                color: 'white',
+                fontSize: '13px',
+                fontWeight: 500,
+                letterSpacing: '0.025em',
+                lineHeight: 1.3
+              }}
+            >
+              <ShinyText text="Get in Touch" speed={3} color="white" shineColor="rgba(255,255,255,0.5)" />
+            </a>
+          </motion.div>
         </div>
       </div>
     </motion.header>
