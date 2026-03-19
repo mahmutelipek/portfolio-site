@@ -170,7 +170,7 @@ export function ProjectDetail() {
                         color: 'white', 
                         marginBottom: '1rem', 
                         fontWeight: 400, 
-                        opacity: 0.8,
+                        opacity: 0.5,
                         overflowWrap: 'anywhere',
                         wordBreak: 'break-word'
                       }}>
@@ -215,7 +215,7 @@ export function ProjectDetail() {
                         fontSize: '16px', 
                         lineHeight: 1.6, 
                         color: 'white', 
-                        opacity: 0.8, 
+                        opacity: 0.5, 
                         marginBottom: '1rem',
                         overflowWrap: 'anywhere',
                         wordBreak: 'break-word'
