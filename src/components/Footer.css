@@ -81,8 +81,10 @@
   transition: opacity 0.3s ease;
 }
 
-.huge-title:hover {
-  opacity: 0.6;
+@media (hover: hover) {
+  .huge-title:hover {
+    opacity: 0.6;
+  }
 }
 
 
