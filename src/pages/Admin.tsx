@@ -435,12 +435,16 @@ export function Admin() {
                       <input type="text" value={editingProject.client} onChange={e => setEditingProject({...editingProject, client: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Acme Corp" />
                     </div>
                     <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Industries</label>
+                      <input type="text" value={editingProject.industries || ''} onChange={e => setEditingProject({...editingProject, industries: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Expense Management" />
+                    </div>
+                    <div>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>URL Slug</label>
                       <input type="text" value={editingProject.slug} onChange={e => setEditingProject({...editingProject, slug: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="modern-coffee-app" />
                     </div>
                     <div>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Date</label>
-                      <input type="date" value={editingProject.date} onChange={e => setEditingProject({...editingProject, date: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} />
+                      <input type="text" value={editingProject.date} onChange={e => setEditingProject({...editingProject, date: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. 2023-2024" />
                     </div>
                     <div>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Roles (separated by comma)</label>
@@ -559,7 +563,7 @@ export function Admin() {
                   }}
                 >
                   {logo.url ? (
-                    <img src={logo.url} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    <img src={logo.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ color: '#ccc', textAlign: 'center' }}>
                       <ImageIcon size={24} style={{ marginBottom: '0.25rem' }} />
@@ -609,36 +613,6 @@ export function Admin() {
                       </div>
                     ) : (
                       <>
-                        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <label style={{ fontSize: '0.65rem', fontWeight: 600, color: '#888' }}>WEBSITE URL</label>
-                            {saveStatus === `logo-${logo.id}` && <span style={{ fontSize: '0.6rem', color: '#2ecc71', fontWeight: 600 }}>SAVED!</span>}
-                          </div>
-                          <input 
-                            type="text" 
-                            placeholder="google.com" 
-                            value={logo.website_url || ''} 
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              const newLogos = [...logos];
-                              newLogos[index].website_url = val;
-                              setLogos(newLogos);
-                            }}
-                            onBlur={async (e) => {
-                              let val = e.target.value.trim();
-                              if (val && !val.startsWith('http')) {
-                                val = `https://${val}`;
-                              }
-                              const newLogos = [...logos];
-                              newLogos[index].website_url = val;
-                              setLogos(newLogos);
-                              const { error } = await supabase.from('logos').update({ website_url: val }).eq('id', logo.id);
-                              if (!error) setSaveStatus(`logo-${logo.id}`);
-                            }}
-                             style={{ width: '100%', padding: '4px 6px', fontSize: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '4px', color: '#fff' }}
-                          />
-                        </div>
-
                          <div style={{ display: 'flex', gap: '0.4rem', width: '100%' }}>
                            <button onClick={() => reorderLogo(index, 'left')} disabled={index === 0} style={{ flex: 1, padding: '0.4rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', color: '#fff', cursor: 'pointer', opacity: index === 0 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowUp size={14} style={{ transform: 'rotate(-90deg)' }} /></button>
                            <button onClick={() => reorderLogo(index, 'right')} disabled={index === logos.length - 1} style={{ flex: 1, padding: '0.4rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', color: '#fff', cursor: 'pointer', opacity: index === logos.length - 1 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowDown size={14} style={{ transform: 'rotate(-90deg)' }} /></button>

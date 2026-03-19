@@ -120,22 +120,22 @@ export function ProjectDetail() {
             {project.title}
           </h1>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', borderTop: '1px solid #333', paddingTop: '2.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '2rem' : '3rem', borderTop: '1px solid #333', paddingTop: '2.5rem' }}>
             <div>
               <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Client</h4>
-              <p style={{ fontSize: '1rem' }}>{project.client}</p>
+              <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.client}</p>
+            </div>
+            <div>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Industries</h4>
+              <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.industries || '—'}</p>
             </div>
             <div>
               <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Role</h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {project.roles?.map((role, i) => (
-                  <span key={i} style={{ fontSize: '1rem' }}>{role}{i < project.roles!.length - 1 ? ',' : ''}</span>
-                ))}
-              </div>
+              <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.roles?.join(', ') || '—'}</p>
             </div>
             <div>
-              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Year</h4>
-              <p style={{ fontSize: '1rem' }}>{new Date(project.date).getFullYear()}</p>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Date</h4>
+              <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.date || '—'}</p>
             </div>
           </div>
         </div>

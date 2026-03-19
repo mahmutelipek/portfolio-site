@@ -1,21 +1,12 @@
 import { useEffect, useState } from 'react';
 import { AuraHero } from '../components/AuraHero';
 import { SelectedWorks } from '../components/SelectedWorks';
-import DomeGallery from '../components/DomeGallery';
-import type { Project, Logo } from '../lib/types';
+import type { Project } from '../lib/types';
 import { supabase } from '../lib/supabase';
 
 export function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [logos, setLogos] = useState<Logo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -66,30 +57,6 @@ export function Home() {
         ]);
       }
 
-      // Fetch Logos
-      const { data: logosData, error: logosError } = await supabase
-        .from('logos')
-        .select('*')
-        .order('sort_order', { ascending: true });
-
-      if (logosError) {
-        console.error('Error fetching logos:', logosError);
-      }
-
-      if (!logosError && logosData && logosData.length > 0) {
-        setLogos(logosData);
-      } else {
-        // Fallback dummy logos
-        setLogos([
-          { id: 'l1', url: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", name: 'Amazon', website_url: 'https://amazon.com' },
-          { id: 'l2', url: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", name: 'Google', website_url: 'https://google.com' },
-          { id: 'l3', url: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", name: 'Microsoft', website_url: 'https://microsoft.com' },
-          { id: 'l4', url: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg", name: 'Meta', website_url: 'https://meta.com' },
-          { id: 'l5', url: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", name: 'Apple', website_url: 'https://apple.com' },
-          { id: 'l6', url: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", name: 'Netflix', website_url: 'https://netflix.com' }
-        ]);
-      }
-
       setLoading(false);
     }
     fetchData();
@@ -101,21 +68,6 @@ export function Home() {
       {!loading && projects.length > 0 && (
         <>
           <SelectedWorks projects={projects} />
-          <section id="teams" style={{ paddingTop: isMobile ? '64px' : '8rem', paddingBottom: '8rem', background: '#000000', overflowX: 'hidden' }}>
-            <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 2rem' }}>
-              <h2 style={{
-                marginBottom: '40px',
-                fontSize: '22px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: 'var(--text-primary)',
-                textAlign: 'center'
-              }}>
-                and more...
-              </h2>
-            </div>
-            <DomeGallery images={logos.map(l => ({ src: l.url, alt: l.name, link: l.website_url }))} />
-          </section>
         </>
       )}
       {!loading && projects.length === 0 && (

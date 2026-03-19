@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
-import { ReactLenis } from 'lenis/react';
+import { ReactLenis, useLenis } from 'lenis/react';
 import { Home } from './pages/Home';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { Admin } from './pages/Admin';
@@ -11,10 +11,15 @@ function AppContent() {
   const location = useLocation();
   const isAdmin = location.pathname === '/admin';
 
-  // Force scroll to top on route change or hard refresh
+  const lenis = useLenis();
+
+  // Force scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+  }, [location.pathname, lenis]);
 
   // Disable browser's native scroll restoration behavior
   useEffect(() => {

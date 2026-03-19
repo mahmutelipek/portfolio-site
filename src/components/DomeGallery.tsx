@@ -22,6 +22,7 @@ type DomeGalleryProps = {
   imageBorderRadius?: string;
   openedImageBorderRadius?: string;
   grayscale?: boolean;
+  disableInteraction?: boolean;
 };
 
 type ItemDef = {
@@ -131,7 +132,8 @@ export default function DomeGallery({
   openedImageHeight = '400px',
   imageBorderRadius = '30px',
   openedImageBorderRadius = '30px',
-  grayscale = false // Set to false to show full color logos
+  grayscale = false, // Set to false to show full color logos
+  disableInteraction = false
 }: DomeGalleryProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
@@ -340,6 +342,7 @@ export default function DomeGallery({
   useGesture(
     {
       onDragStart: ({ event }) => {
+        if (disableInteraction) return;
         if (focusedElRef.current) return;
         stopInertia();
         const evt = event as PointerEvent;
@@ -349,6 +352,7 @@ export default function DomeGallery({
         startPosRef.current = { x: evt.clientX, y: evt.clientY };
       },
       onDrag: ({ event, last, velocity = [0, 0], direction = [0, 0], movement }) => {
+        if (disableInteraction) return;
         if (focusedElRef.current || !draggingRef.current || !startPosRef.current) return;
 
         const evt = event as PointerEvent;
@@ -397,7 +401,7 @@ export default function DomeGallery({
       }
     },
     // @ts-ignore
-    { target: mainRef, eventOptions: { passive: true } }
+    { target: disableInteraction ? undefined : mainRef, eventOptions: { passive: true } }
   );
 
   const openItemFromElement = (el: HTMLElement) => {
@@ -751,11 +755,14 @@ export default function DomeGallery({
               >
                 <div
                   className="item__image"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={it.alt || 'Open image'}
-                  onClick={onTileClick}
-                  onPointerUp={onTilePointerUp}
+                  {...(!disableInteraction ? {
+                    role: 'button',
+                    tabIndex: 0,
+                    'aria-label': it.alt || 'Open image',
+                    onClick: onTileClick,
+                    onPointerUp: onTilePointerUp
+                  } : {})}
+                  style={disableInteraction ? { cursor: 'default', pointerEvents: 'none' } : undefined}
                 >
                   <img src={it.src} draggable={false} alt={it.alt} />
                 </div>

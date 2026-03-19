@@ -138,7 +138,7 @@ export const AuraHero = () => {
       }}
     >
       <style>{`
-        #hero .row-bottom { bottom: 2rem; left: 2rem; right: 2rem; padding: 0; width: calc(100% - 4rem); }
+        #hero .row-bottom { bottom: calc(2rem + 16px); left: 2rem; right: 2rem; padding: 0; width: calc(100% - 4rem); }
         #hero .expertise-mobile-wrap { flex: 1; white-space: normal; }
         #hero .title-mobile-wrap { flex-shrink: 0; text-align: center; }
         #hero .location-mobile-wrap { flex: 1; text-align: right; }
