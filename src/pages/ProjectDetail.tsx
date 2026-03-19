@@ -102,7 +102,7 @@ export function ProjectDetail() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem' }}
+      style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem', color: '#ffffff' }}
     >
       {/* Title & Meta Info */}
       <section style={{ padding: isMobile ? '0 1rem 4rem' : '0 5rem 4rem' }}>
@@ -113,7 +113,8 @@ export function ProjectDetail() {
             letterSpacing: '-0.04em', 
             lineHeight: 1, 
             marginBottom: '4rem',
-            marginTop: '4rem',
+            marginTop: isMobile ? 0 : '4rem',
+            color: '#ffffff',
             overflowWrap: 'anywhere',
             wordBreak: 'break-word'
           }}>
