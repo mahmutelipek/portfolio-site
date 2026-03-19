@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { ReactLenis } from 'lenis/react';
 import { Home } from './pages/Home';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { Admin } from './pages/Admin';
@@ -39,9 +40,11 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <ReactLenis root>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </ReactLenis>
   );
 }
 
