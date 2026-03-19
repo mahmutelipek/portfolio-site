@@ -8,19 +8,33 @@ interface SelectedWorksProps {
 }
 
 export function SelectedWorks({ projects }: SelectedWorksProps) {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const isMobile = windowWidth < 768;
+  const isTablet = windowWidth >= 768 && windowWidth < 1024;
+  
+  const getPaddingBottom = () => {
+    if (isMobile) return '16px';
+    if (isTablet) return '32px';
+    return '80px';
+  };
+
   return (
-    <section id="works" className="section" style={{ padding: isMobile ? '4rem 1rem' : '9rem 5rem 96px 5rem' }}>
+    <section id="works" className="section" style={{ 
+      paddingTop: isMobile ? '4rem' : '9rem',
+      paddingLeft: isMobile ? '1rem' : '5rem',
+      paddingRight: isMobile ? '1rem' : '5rem',
+      paddingBottom: getPaddingBottom()
+    }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <h2 style={{
-          marginBottom: '48px',
+          marginBottom: '56px',
           fontSize: isMobile ? '18px' : '22px',
           textTransform: 'uppercase',
           letterSpacing: '0.1em',
