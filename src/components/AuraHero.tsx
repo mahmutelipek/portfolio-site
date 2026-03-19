@@ -108,6 +108,8 @@ export const AuraHero = () => {
   useEffect(() => {
     // Lock initial exact height to avoid iOS Safari dynamic UI jumps
     setHeroHeight(`${window.innerHeight}px`);
+    // Also set CSS custom prop for dvh fallback
+    document.documentElement.style.setProperty('--hero-h', `${window.innerHeight}px`);
     let lastWidth = window.innerWidth;
 
     const handleResize = () => {
@@ -115,6 +117,7 @@ export const AuraHero = () => {
       // Only recalculate height on real orientation/width change, not vertical URL bar collapse
       if (window.innerWidth !== lastWidth) {
         setHeroHeight(`${window.innerHeight}px`);
+        document.documentElement.style.setProperty('--hero-h', `${window.innerHeight}px`);
         lastWidth = window.innerWidth;
       }
     };
@@ -153,7 +156,7 @@ export const AuraHero = () => {
         }
 
         @media (max-width: 480px) {
-          #hero .row-bottom { bottom: 5rem; left: 1rem; right: 1rem; gap: 0.5rem; }
+          #hero .row-bottom { bottom: 2rem; left: 1rem; right: 1rem; gap: 0.5rem; }
           #hero h1 { font-size: calc((100vw - 2rem) / 6.8); text-align: center; white-space: nowrap; }
           #hero .expertise-mobile-wrap { font-size: 11px; }
           #hero .disciplines { display: none; }

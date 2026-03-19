@@ -35,7 +35,7 @@ export function Footer() {
       <footer className="monumental-footer">
         
         {/* Sphere Animation Background */}
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 0, opacity: 0.25, pointerEvents: 'none' }}>
+        <div className="footer-sphere-wrapper" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 0, opacity: 0.25, pointerEvents: 'none' }}>
           {logos.length > 0 && (
             <DomeGallery 
               images={logos.map(l => ({ src: l.url, alt: l.name }))} 

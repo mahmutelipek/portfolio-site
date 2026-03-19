@@ -179,4 +179,8 @@
     justify-content: center;
     gap: 1.5rem;
   }
+
+  .footer-sphere-wrapper {
+    transform: scale(1.15);
+  }
 }
