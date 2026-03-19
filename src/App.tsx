@@ -40,7 +40,7 @@ function AppContent() {
 
 function App() {
   return (
-    <ReactLenis root>
+    <ReactLenis root options={{ lerp: 0.05, duration: 1.5, smoothWheel: true }}>
       <BrowserRouter>
         <AppContent />
       </BrowserRouter>
