@@ -73,27 +73,30 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                   />
                 </div>
                 <h3 style={{
-                  fontSize: '16px',
+                  fontSize: isMobile ? '16px' : '18px',
                   fontWeight: 500,
                   letterSpacing: '-0.01em',
-                  marginBottom: '0.25rem',
+                  marginBottom: '0.5rem',
                   color: 'var(--text-primary)'
                 }}>
                   {project.title}
                 </h3>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {(project.roles || ['Product Design', 'Motion', '3D']).map((role, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        fontSize: '16px',
-                        fontWeight: 400,
-                        color: 'var(--text-secondary)'
-                      }}
-                    >
-                      {role}{i < (project.roles || ['Product Design', 'Motion', '3D']).length - 1 ? ',' : ''}
-                    </span>
-                  ))}
+                  <span
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 400,
+                      color: 'var(--text-secondary)',
+                      opacity: 0.8,
+                      lineHeight: 1.4,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    {project.content_blocks?.find(b => b.type === 'text')?.value?.split('.')[0] + '.' || project.roles?.join(', ')}
+                  </span>
                 </div>
               </Link>
             </motion.div>
