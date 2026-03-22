@@ -12,7 +12,7 @@ const SIDE = 18;
 const COUNT = SIDE * SIDE * SIDE; // 5832
 const SEP = 2.5;
 const HALF_EXTENT = ((SIDE - 1) * SEP) / 2;
-const LERP_FACTOR = 0.1;
+const LERP_FACTOR = 0.08;
 const PARTICLE_COLOR = 0x00aaff;
 
 const ParticleSwarm = () => {
@@ -156,7 +156,7 @@ export const AuraHero = () => {
         }
 
         @media (max-width: 480px) {
-          #hero .row-bottom { bottom: 2rem; left: 1rem; right: 1rem; gap: 0.5rem; }
+          #hero .row-bottom { bottom: 2rem; left: 1rem; right: 1rem; gap: 0.75rem; }
           #hero h1 { font-size: calc((100vw - 2rem) / 6.8); text-align: center; white-space: nowrap; }
           #hero .expertise-mobile-wrap { font-size: 11px; }
           #hero .disciplines { display: none; }

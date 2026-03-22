@@ -25,6 +25,19 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
     return '80px';
   };
 
+  const getCustomSummary = (title: string, originalFirstSentence: string) => {
+    const t = title.toLowerCase();
+    if (t.includes('norma')) return 'A complete banking and bookkeeping platform for freelancers.';
+    if (t.includes('hot pepper')) return 'A scalable, comprehensive design system built to streamline dev handoff.';
+    if (t.includes('frink')) return 'A streamlined mobile app redesign focused on frequent, daily user habits.';
+    if (t.includes('elva') || t.includes('face yoga')) return 'A calming, AI-driven mobile app generating personalized exercise plans.';
+    if (t.includes('loodos')) return 'A corporate website redesign establishing credibility with interactive 3D elements.';
+    if (t.includes('view hospital')) return 'A flexible, component-based Webflow site prioritizing trust and readability.';
+    if (t.includes('humble')) return 'An end-to-end corporate Webflow website centered around a 3D spline animation.';
+    if (t.includes('firecrawl')) return 'An interactive WebGL-based visual experience driving engagement for launch week.';
+    return originalFirstSentence; // fallback
+  };
+
   return (
     <section id="works" className="section" style={{ 
       paddingTop: isMobile ? '4rem' : '9rem',
@@ -95,7 +108,7 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                       overflow: 'hidden'
                     }}
                   >
-                    {project.content_blocks?.find(b => b.type === 'text')?.value?.split('.')[0] + '.' || project.roles?.join(', ')}
+                    {getCustomSummary(project.title, project.content_blocks?.find(b => b.type === 'text')?.value?.split('.')[0] + '.' || project.roles?.join(', ') || '')}
                   </span>
                 </div>
               </Link>

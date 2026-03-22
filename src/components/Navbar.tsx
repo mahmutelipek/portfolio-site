@@ -188,7 +188,7 @@ export function Navbar() {
                 lineHeight: 1.3
               }}
             >
-              <ShinyText text="Say Hello" speed={3} color="white" shineColor="rgba(255,255,255,0.5)" />
+              <ShinyText text="Get in Touch" speed={3} color="white" shineColor="rgba(255,255,255,0.5)" />
             </a>
           </motion.div>
         </div>
