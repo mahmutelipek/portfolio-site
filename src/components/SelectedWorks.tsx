@@ -27,14 +27,14 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
 
   const getCustomSummary = (title: string, originalFirstSentence: string) => {
     const t = title.toLowerCase();
-    if (t.includes('norma')) return 'Banking platform for freelancers and small businesses.';
-    if (t.includes('hot pepper')) return 'Creator subscription platform with gated content and payments.';
+    if (t.includes('norm')) return 'Banking platform for freelancers and small businesses.';
+    if (t.includes('hotpepper') || t.includes('hot pepper') || t.includes('hot')) return 'Creator subscription platform with gated content and payments.';
     if (t.includes('frink')) return 'Coffee subscription app for daily use across multiple locations.';
-    if (t.includes('elva') || t.includes('face yoga')) return 'AI-powered facial exercise app with personalized routines.';
+    if (t.includes('elva') || t.includes('face') || t.includes('yoga')) return 'AI-powered facial exercise app with personalized routines.';
     if (t.includes('loodos')) return 'Corporate website for a multi-vertical technology company.';
-    if (t.includes('view hospital')) return 'Healthcare website with a scalable CMS component system.';
+    if (t.includes('view') || t.includes('hospital')) return 'Healthcare website with a scalable CMS component system.';
     if (t.includes('humble')) return 'Corporate website for a digital services company.';
-    if (t.includes('firecrawl')) return 'Interactive WebGL launch campaign for a developer-focused platform.';
+    if (t.includes('fire') || t.includes('crawl')) return 'Interactive WebGL launch campaign for a developer-focused platform.';
     return originalFirstSentence; // fallback
   };
 

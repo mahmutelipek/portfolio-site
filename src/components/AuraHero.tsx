@@ -12,7 +12,7 @@ const SIDE = 18;
 const COUNT = SIDE * SIDE * SIDE; // 5832
 const SEP = 2.5;
 const HALF_EXTENT = ((SIDE - 1) * SEP) / 2;
-const LERP_FACTOR = 0.08;
+const LERP_FACTOR = 0.05;
 const PARTICLE_COLOR = 0x00aaff;
 
 const ParticleSwarm = () => {
@@ -27,7 +27,7 @@ const ParticleSwarm = () => {
       const z = Math.floor(i / (SIDE * SIDE));
       const y = Math.floor((i % (SIDE * SIDE)) / SIDE);
       const x = i % SIDE;
-      arr[i * 3]     = x * SEP - HALF_EXTENT;
+      arr[i * 3] = x * SEP - HALF_EXTENT;
       arr[i * 3 + 1] = y * SEP - HALF_EXTENT;
       arr[i * 3 + 2] = z * SEP - HALF_EXTENT;
     }
@@ -72,12 +72,12 @@ const ParticleSwarm = () => {
     for (let i = 0; i < COUNT; i++) {
       const i3 = i * 3;
       // Lerp each axis
-      positions[i3]     += (targets[i3]     - positions[i3])     * LERP_FACTOR;
+      positions[i3] += (targets[i3] - positions[i3]) * LERP_FACTOR;
       positions[i3 + 1] += (targets[i3 + 1] - positions[i3 + 1]) * LERP_FACTOR;
       positions[i3 + 2] += (targets[i3 + 2] - positions[i3 + 2]) * LERP_FACTOR;
 
       // Track convergence
-      const dx = targets[i3]     - positions[i3];
+      const dx = targets[i3] - positions[i3];
       const dy = targets[i3 + 1] - positions[i3 + 1];
       const dz = targets[i3 + 2] - positions[i3 + 2];
       const dist = dx * dx + dy * dy + dz * dz;
@@ -121,7 +121,7 @@ export const AuraHero = () => {
         lastWidth = window.innerWidth;
       }
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -149,7 +149,7 @@ export const AuraHero = () => {
 
         @media (max-width: 1024px) {
           #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: center; gap: 1.5rem; width: calc(100% - 3rem) !important; }
-          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; text-align: center; }
+          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; text-align: center; display: flex; justify-content: center; }
           #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; text-align: center; }
           #hero .location-mobile-wrap { display: none; }
           #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); text-align: center; }
