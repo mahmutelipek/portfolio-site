@@ -8,9 +8,9 @@ import { motion } from 'framer-motion';
 extend({ UnrealBloomPass });
 
 // Pre-computed constants
-const SIDE = 18;
-const COUNT = SIDE * SIDE * SIDE; // 5832
-const SEP = 2.5;
+const SIDE = 14;
+const COUNT = SIDE * SIDE * SIDE; // 2744 (optimized for mobile)
+const SEP = 3.2; // adjusted to maintain the same visual volume
 const HALF_EXTENT = ((SIDE - 1) * SEP) / 2;
 const LERP_FACTOR = 0.05;
 const PARTICLE_COLOR = 0x00aaff;
@@ -194,7 +194,7 @@ export const AuraHero = () => {
           pointerEvents: 'none'
         }}>
           {/* Expertise/Keywords */}
-          <div className="expertise-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
+          <div className="expertise-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white', width: '100%', display: 'flex', justifyContent: 'center' }}>
             <motion.div
               style={{ width: '100%', textAlign: 'center' }}
               initial={{ opacity: 0, y: 30 }}
