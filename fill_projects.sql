@@ -51,7 +51,7 @@ SET
     {"id": "p3", "type": "text", "value": "The onboarding flow collects user input and generates a personalized exercise plan through AI. Users can also ask questions through an AI chat, making the experience adaptive rather than static."},
     {"id": "p4", "type": "text", "value": "Progress indicators and structured flows were designed to support long-term consistency, not just initial engagement."}
   ]'::jsonb
-WHERE title ILIKE '%Elva Face Yoga%';
+WHERE title ILIKE '%Elva%' OR title ILIKE '%Face Yoga%';
 
 -- 5. Loodos
 UPDATE projects 
@@ -77,7 +77,7 @@ SET
     {"id": "p2", "type": "text", "value": "After identifying that image-heavy layouts were a primary content pattern, I designed components around that need. Each component was built to work independently, giving the team flexibility to build and update pages without design involvement."},
     {"id": "p3", "type": "text", "value": "Healthcare users often arrive under stress, so navigation was kept predictable and direct. Readability and trust were prioritized over visual complexity."}
   ]'::jsonb
-WHERE title ILIKE '%The View Hospital%';
+WHERE title ILIKE '%View Hospital%';
 
 -- 7. Humble
 UPDATE projects 
