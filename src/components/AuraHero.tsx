@@ -196,6 +196,7 @@ export const AuraHero = () => {
           {/* Expertise/Keywords */}
           <div className="expertise-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
+              style={{ width: '100%', textAlign: 'center' }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
