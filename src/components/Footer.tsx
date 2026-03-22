@@ -61,7 +61,7 @@ export function Footer() {
             <div className="meta-right" style={{ pointerEvents: 'auto' }}>
                 <a href="https://x.com/mahmutelipk" className="meta-link" target="_blank" rel="noopener noreferrer">X</a>
                 <a href="https://www.linkedin.com/in/mahmutelipek" className="meta-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a href="https://shots.so/mahmutelipek" className="meta-link" target="_blank" rel="noopener noreferrer">Shots</a>
+                <a href="https://layers.to/mahmutelipek" className="meta-link" target="_blank" rel="noopener noreferrer">Shots</a>
             </div>
         </div>
       </footer>

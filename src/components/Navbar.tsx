@@ -164,7 +164,7 @@ export function Navbar() {
                 <span style={{ color: 'white', margin: '0 0.5rem' }}> </span>
                 <a href="https://linkedin.com/in/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">LinkedIn</a>
                 <span style={{ color: 'white', margin: '0 0.5rem' }}> </span>
-                <a href="https://shots.so/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">Shots</a>
+                <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">Shots</a>
               </div>
             </motion.div>
           )}

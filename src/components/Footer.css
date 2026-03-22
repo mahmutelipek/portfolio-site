@@ -81,9 +81,23 @@
   transition: opacity 0.3s ease;
 }
 
+.huge-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0.05em; /* slightly lifted depending on the line-height */
+  width: 0;
+  height: 0.04em; 
+  background-color: var(--text-main);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @media (hover: hover) {
   .huge-title:hover {
-    opacity: 0.6;
+    opacity: 1;
+  }
+  .huge-title:hover::after {
+    width: 100%;
   }
 }
 
