@@ -172,7 +172,7 @@ export const AuraHero = () => {
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
           <Effects disableGamma>
             {/* @ts-ignore */}
-            <unrealBloomPass threshold={0} strength={3.11} radius={0.4} />
+            <unrealBloomPass threshold={0} strength={3.73} radius={0.4} />
           </Effects>
         </Canvas>
       </div>
