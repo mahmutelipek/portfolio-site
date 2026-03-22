@@ -29,7 +29,6 @@ export function Home() {
             id: 'dummy-1',
             title: 'Modern Coffee App',
             slug: 'modern-coffee-app',
-            client: 'Brew Culture Co.',
             date: '2025-01-10',
             cover_image_url: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=2787&auto=format&fit=crop',
             gallery: [
@@ -44,7 +43,6 @@ export function Home() {
             id: 'dummy-2',
             title: 'Banking Dashboard',
             slug: 'banking-dashboard',
-            client: 'FinTech Startup',
             date: '2024-10-22',
             cover_image_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop',
             gallery: [

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Logo } from '../lib/types';
 import DomeGallery from './DomeGallery';
+import SplitText from './SplitText';
 import './Footer.css';
 
 export function Footer() {
@@ -48,7 +49,18 @@ export function Footer() {
         {/* Hero Area */}
         <div className="footer-hero" style={{ pointerEvents: 'none' }}>
             <div className="title-container" style={{ pointerEvents: 'auto' }}>
-                <a href="mailto:hello@mahmutelipek.com" className="huge-title">Say hello.</a>
+                <a href="mailto:mahmutelipk@gmail.com" className="huge-title">
+                  <SplitText 
+                    text="Say hello." 
+                    splitType="words, chars"
+                    delay={40}
+                    duration={1.2}
+                    ease="back.out(1.5)"
+                    from={{ opacity: 0, y: 70, scale: 0.9, rotationX: -15 }}
+                    to={{ opacity: 1, y: 0, scale: 1, rotationX: 0 }}
+                    tag="span"
+                  />
+                </a>
             </div>
         </div>
 

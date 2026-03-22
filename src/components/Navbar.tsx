@@ -178,7 +178,7 @@ export function Navbar() {
             transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <a 
-              href="#contact" 
+              href="mailto:mahmutelipk@gmail.com" 
               style={{ 
                 textDecoration: 'none', 
                 color: 'white',
