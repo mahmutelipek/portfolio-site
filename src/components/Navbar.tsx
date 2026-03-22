@@ -164,7 +164,7 @@ export function Navbar() {
                 <span style={{ color: 'white', margin: '0 0.5rem' }}> </span>
                 <a href="https://linkedin.com/in/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">LinkedIn</a>
                 <span style={{ color: 'white', margin: '0 0.5rem' }}> </span>
-                <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">Layers</a>
+                <a href="https://shots.so/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">Shots</a>
               </div>
             </motion.div>
           )}
@@ -188,7 +188,7 @@ export function Navbar() {
                 lineHeight: 1.3
               }}
             >
-              <ShinyText text="Get in Touch" speed={3} color="white" shineColor="rgba(255,255,255,0.5)" />
+              <ShinyText text="Say Hello" speed={3} color="white" shineColor="rgba(255,255,255,0.5)" />
             </a>
           </motion.div>
         </div>
