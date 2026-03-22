@@ -142,23 +142,23 @@ export const AuraHero = () => {
     >
       <style>{`
         #hero .row-bottom { bottom: calc(2rem + 16px); left: 2rem; right: 2rem; padding: 0; width: calc(100% - 4rem); }
-        #hero .expertise-mobile-wrap { flex: 1; white-space: normal; }
+        #hero .expertise-mobile-wrap { flex: 1; white-space: normal; text-align: left; }
         #hero .title-mobile-wrap { flex-shrink: 0; text-align: center; }
         #hero .location-mobile-wrap { flex: 1; text-align: right; }
         #hero h1 { font-size: clamp(3.5rem, 5vw, 6.2rem); line-height: 0.8; margin: 0; padding: 0; white-space: nowrap; }
 
         @media (max-width: 1024px) {
-          #hero .row-bottom { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; align-items: center; gap: 1.5rem; width: calc(100% - 3rem) !important; }
-          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; text-align: center; display: flex; justify-content: center; }
-          #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; text-align: center; }
+          #hero .row-bottom { bottom: 1.5rem; left: 0; right: 0; width: 100% !important; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 0; }
+          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: nowrap; font-size: min(13px, 3.5vw) !important; display: flex; justify-content: center; }
+          #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; display: flex; justify-content: center; }
           #hero .location-mobile-wrap { display: none; }
           #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); text-align: center; }
         }
 
         @media (max-width: 480px) {
-          #hero .row-bottom { bottom: 2rem; left: 1rem; right: 1rem; gap: 0.75rem; }
-          #hero h1 { font-size: calc((100vw - 2rem) / 6.8); text-align: center; white-space: nowrap; }
-          #hero .expertise-mobile-wrap { font-size: 11px; }
+          #hero .row-bottom { bottom: 2rem; left: 0; right: 0; gap: 0.75rem; width: 100% !important; padding: 0; }
+          #hero h1 { font-size: calc(100vw / 7.2); text-align: center; white-space: nowrap; }
+          #hero .expertise-mobile-wrap { font-size: 11px; width: 100% !important; display: flex; justify-content: center; }
           #hero .disciplines { display: none; }
           #hero .title-container { bottom: 4.5rem; }
         }
@@ -172,7 +172,7 @@ export const AuraHero = () => {
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
           <Effects disableGamma>
             {/* @ts-ignore */}
-            <unrealBloomPass threshold={0} strength={2.59} radius={0.4} />
+            <unrealBloomPass threshold={0} strength={3.11} radius={0.4} />
           </Effects>
         </Canvas>
       </div>
@@ -194,9 +194,8 @@ export const AuraHero = () => {
           pointerEvents: 'none'
         }}>
           {/* Expertise/Keywords */}
-          <div className="expertise-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white', width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <div className="expertise-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
-              style={{ width: '100%', textAlign: 'center' }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
