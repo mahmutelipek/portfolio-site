@@ -27,14 +27,14 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
 
   const getCustomSummary = (title: string, originalFirstSentence: string) => {
     const t = title.toLowerCase();
-    if (t.includes('norma')) return 'A complete banking and bookkeeping platform for freelancers.';
-    if (t.includes('hot pepper')) return 'A scalable, comprehensive design system built to streamline dev handoff.';
-    if (t.includes('frink')) return 'A streamlined mobile app redesign focused on frequent, daily user habits.';
-    if (t.includes('elva') || t.includes('face yoga')) return 'A calming, AI-driven mobile app generating personalized exercise plans.';
-    if (t.includes('loodos')) return 'A corporate website redesign establishing credibility with interactive 3D elements.';
-    if (t.includes('view hospital')) return 'A flexible, component-based Webflow site prioritizing trust and readability.';
-    if (t.includes('humble')) return 'An end-to-end corporate Webflow website centered around a 3D spline animation.';
-    if (t.includes('firecrawl')) return 'An interactive WebGL-based visual experience driving engagement for launch week.';
+    if (t.includes('norma')) return 'Banking platform for freelancers and small businesses.';
+    if (t.includes('hot pepper')) return 'Creator subscription platform with gated content and payments.';
+    if (t.includes('frink')) return 'Coffee subscription app for daily use across multiple locations.';
+    if (t.includes('elva') || t.includes('face yoga')) return 'AI-powered facial exercise app with personalized routines.';
+    if (t.includes('loodos')) return 'Corporate website for a multi-vertical technology company.';
+    if (t.includes('view hospital')) return 'Healthcare website with a scalable CMS component system.';
+    if (t.includes('humble')) return 'Corporate website for a digital services company.';
+    if (t.includes('firecrawl')) return 'Interactive WebGL launch campaign for a developer-focused platform.';
     return originalFirstSentence; // fallback
   };
 

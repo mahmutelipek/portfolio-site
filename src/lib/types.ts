@@ -9,7 +9,6 @@ export interface Project {
   id: string;
   title: string;
   slug: string;
-  client: string;
   date: string;
   cover_image_url: string;
   gallery?: string[];

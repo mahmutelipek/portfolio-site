@@ -262,7 +262,6 @@ export function Admin() {
                       slug: '', 
                       roles: [], 
                       content_blocks: [], 
-                      client: '', 
                       cover_image_url: '',
                       date: new Date().toISOString().split('T')[0] 
                     })}
@@ -279,7 +278,6 @@ export function Admin() {
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Cover</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Title</th>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Client</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date/Year</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Case Study</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Actions</th>
@@ -334,7 +332,6 @@ export function Admin() {
                             </div>
                           </td>
                           <td style={{ padding: '1rem', fontWeight: 500 }}>{p.title}</td>
-                          <td style={{ padding: '1rem', color: '#666' }}>{p.client}</td>
                           <td style={{ padding: '1rem', color: '#666' }}>{new Date(p.date).getFullYear()}</td>
                           <td style={{ padding: '1rem' }}>
                              <button 
@@ -429,10 +426,6 @@ export function Admin() {
                     <div style={{ gridColumn: 'span 2' }}>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Project Title</label>
                       <input type="text" value={editingProject.title} onChange={e => setEditingProject({...editingProject, title: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Modern Coffee App" />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Client</label>
-                      <input type="text" value={editingProject.client} onChange={e => setEditingProject({...editingProject, client: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Acme Corp" />
                     </div>
                     <div>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Industries</label>
