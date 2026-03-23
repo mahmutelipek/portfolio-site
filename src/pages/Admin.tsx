@@ -84,10 +84,11 @@ export function Admin() {
 
     try {
       const options = {
-        maxSizeMB: 1, // Compress to max 1MB
-        maxWidthOrHeight: 1920, // Max width/height for web display
+        maxSizeMB: 3, // Increased from 1MB to 3MB to preserve detail
+        maxWidthOrHeight: 2560, // Increased to support ultra-high res displays
+        initialQuality: 0.95, // Prioritize quality over extreme compression
         useWebWorker: true,
-        fileType: 'image/webp' // Always convert to WebP for standard performance
+        fileType: 'image/webp'
       };
       const compressedFile = await imageCompression(file, options);
       // Construct a new file object for typing compatibility
