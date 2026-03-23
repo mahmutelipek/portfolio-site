@@ -8,7 +8,7 @@ import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Sav
 export function Admin() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'projects' | 'logos'>(() => {
+  const [activeTab, setActiveTab] = useState<'projects' | 'logos' | 'assets'>(() => {
     return (localStorage.getItem('admin_active_tab') as any) || 'projects';
   });
 
@@ -334,6 +334,7 @@ export function Admin() {
         <aside style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <button onClick={() => setActiveTab('projects')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'projects' ? '#fff' : 'transparent', color: activeTab === 'projects' ? '#000' : '#888', cursor: 'pointer', fontWeight: 500 }}>Projects</button>
           <button onClick={() => setActiveTab('logos')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'logos' ? '#fff' : 'transparent', color: activeTab === 'logos' ? '#000' : '#888', cursor: 'pointer', fontWeight: 500 }}>Teams (Logos)</button>
+          <button onClick={() => setActiveTab('assets')} style={{ textAlign: 'left', padding: '1rem', borderRadius: '8px', border: 'none', background: activeTab === 'assets' ? '#fff' : 'transparent', color: activeTab === 'assets' ? '#000' : '#888', cursor: 'pointer', fontWeight: 500 }}>Site Assets</button>
         </aside>
 
         {/* --- PROJECTS TAB (TABLE MODE) --- */}
@@ -361,6 +362,7 @@ export function Admin() {
                         roles: [], 
                         content_blocks: [], 
                         cover_image_url: '',
+                        link: '',
                         date: new Date().toISOString().split('T')[0] 
                       })}
                       style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
@@ -535,6 +537,10 @@ export function Admin() {
                       <input type="text" value={editingProject.slug} onChange={e => setEditingProject({...editingProject, slug: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="modern-coffee-app" />
                     </div>
                     <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Live Link (Optional)</label>
+                      <input type="text" value={editingProject.link || ''} onChange={e => setEditingProject({...editingProject, link: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. layers.to" />
+                    </div>
+                    <div>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Date</label>
                       <input type="text" value={editingProject.date} onChange={e => setEditingProject({...editingProject, date: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. 2023-2024" />
                     </div>
@@ -601,13 +607,36 @@ export function Admin() {
                       </div>
                     ))}
 
-                    <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                        <button onClick={() => addBlock('text')} style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #333', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#888' }}>
                          <Plus size={20} /> Add Text Section (Title + Desc)
                        </button>
                        <button onClick={() => addBlock('image')} style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #333', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#888' }}>
-                         <Plus size={20} /> Add Image Section
+                         <Plus size={20} /> Add Image Block
                        </button>
+                       <label style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #00aaff', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#00aaff' }}>
+                         <ImageIcon size={20} /> Upload Multiple Images
+                         <input 
+                           type="file" 
+                           accept="image/*" 
+                           multiple 
+                           style={{ display: 'none' }}
+                           onChange={async e => {
+                             const files = e.target.files;
+                             if(!files || files.length === 0) return;
+                             setSaveStatus('Uploading multiple images...');
+                             const newBlocks = [];
+                             for(let i=0; i<files.length; i++) {
+                               const url = await uploadImage(files[i]);
+                               if(url) newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'image' as const, value: url });
+                             }
+                             if(editingProject) {
+                               setEditingProject({...editingProject, content_blocks: [...(editingProject.content_blocks || []), ...newBlocks]});
+                             }
+                             setSaveStatus(null);
+                           }} 
+                         />
+                       </label>
                     </div>
                   </div>
                 </div>
@@ -790,6 +819,45 @@ export function Admin() {
           </main>
         )}
 
+        {/* --- SITE ASSETS TAB --- */}
+        {activeTab === 'assets' && (
+          <main style={{ background: '#141414', borderRadius: '12px', padding: '2rem', border: '1px solid #222' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '2rem' }}>Site Assets</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              
+              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #333' }}>
+                 <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Favicon (.ico, .png)</h3>
+                 <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1rem' }}>Upload your site's favicon. It will be stored and served as favicon.png.</p>
+                 <input type="file" accept=".png,.ico,image/*" onChange={async e => {
+                   const file = e.target.files?.[0];
+                   if(file) {
+                     setSaveStatus('Uploading Favicon...');
+                     const { error } = await supabase.storage.from('portfolio').upload('favicon.png', file, { upsert: true });
+                     if (error) alert("Error uploading favicon: " + error.message);
+                     else alert("Favicon updated successfully! Refresh your site or clear cache to see it.");
+                     setSaveStatus(null);
+                   }
+                 }} />
+              </div>
+
+              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #333' }}>
+                 <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>OG Image (.jpg, .png)</h3>
+                 <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1rem' }}>Upload the OG Image for social sharing links (Twitter, LinkedIn, etc.). It will be stored as og-image.jpg.</p>
+                 <input type="file" accept="image/*" onChange={async e => {
+                   const file = e.target.files?.[0];
+                   if(file) {
+                     setSaveStatus('Uploading OG Image...');
+                     const { error } = await supabase.storage.from('portfolio').upload('og-image.jpg', file, { upsert: true });
+                     if (error) alert("Error uploading OG image: " + error.message);
+                     else alert("OG Image updated successfully!");
+                     setSaveStatus(null);
+                   }
+                 }} />
+              </div>
+
+            </div>
+          </main>
+        )}
       </div>
     </div>
   );

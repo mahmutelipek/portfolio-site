@@ -64,10 +64,10 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
               initial="initial"
               whileInView="animate"
               whileHover="hover"
-              viewport={{ once: true, margin: '-100px' }}
+              viewport={{ once: true, margin: '-20px' }}
               variants={{
                 initial: { opacity: 0, y: 50 },
-                animate: { opacity: 1, y: 0, transition: { duration: 0.8, delay: index * 0.1 } }
+                animate: { opacity: 1, y: 0, transition: { duration: 0.5, delay: index * 0.05 } }
               }}
             >
               <Link to={`/works/${project.slug}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>

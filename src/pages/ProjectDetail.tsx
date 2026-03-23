@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
 import { motion } from 'framer-motion';
@@ -124,6 +125,14 @@ export function ProjectDetail() {
               <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Scope</h4>
               <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.industries || '—'}</p>
             </div>
+            {project.link && (
+            <div>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Live Context</h4>
+              <a href={project.link.startsWith('http') ? project.link : `https://${project.link}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '1rem', color: '#00aaff', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                Visit Site <ArrowRight size={14} style={{ transform: 'rotate(-45deg)' }} />
+              </a>
+            </div>
+            )}
             <div>
               <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Role</h4>
               <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.roles?.join(', ') || '—'}</p>

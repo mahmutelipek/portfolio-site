@@ -15,6 +15,7 @@ export interface Project {
   content_body?: string;
   roles: string[];
   industries?: string;
+  link?: string;
   sort_order?: number;
   content_blocks?: ContentBlock[]; // New flexible content
 }
