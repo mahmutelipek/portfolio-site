@@ -61,10 +61,14 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial="initial"
+              whileInView="animate"
+              whileHover="hover"
               viewport={{ once: true, margin: '-100px' }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
+              variants={{
+                initial: { opacity: 0, y: 50 },
+                animate: { opacity: 1, y: 0, transition: { duration: 0.8, delay: index * 0.1 } }
+              }}
             >
               <Link to={`/works/${project.slug}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>
                 <div
@@ -81,7 +85,11 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                     src={project.cover_image_url || project.content_blocks?.find(b => b.type === 'image')?.value || ''}
                     alt={project.title}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
-                    whileHover={{ scale: 1.03 }}
+                    variants={{
+                      initial: { scale: 1 },
+                      animate: { scale: 1 },
+                      hover: { scale: 1.03 }
+                    }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   />
                 </div>
