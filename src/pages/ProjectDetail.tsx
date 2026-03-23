@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
 import { motion } from 'framer-motion';
@@ -120,19 +119,11 @@ export function ProjectDetail() {
             {project.title}
           </h1>
           
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: isMobile ? '2rem' : '3rem', borderTop: '1px solid #333', paddingTop: '2.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '2rem' : '3rem', borderTop: '1px solid #333', paddingTop: '2.5rem' }}>
             <div>
               <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Scope</h4>
               <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.industries || '—'}</p>
             </div>
-            {project.link && (
-            <div>
-              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Live Context</h4>
-              <a href={project.link.startsWith('http') ? project.link : `https://${project.link}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '1rem', color: '#00aaff', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                Visit Site <ArrowRight size={14} style={{ transform: 'rotate(-45deg)' }} />
-              </a>
-            </div>
-            )}
             <div>
               <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Role</h4>
               <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.roles?.join(', ') || '—'}</p>
@@ -141,6 +132,20 @@ export function ProjectDetail() {
               <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Date</h4>
               <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.date || '—'}</p>
             </div>
+            {project.link && (
+            <div>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Website</h4>
+              <motion.a 
+                href={project.link.startsWith('http') ? project.link : `https://${project.link}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                whileHover={{ opacity: 0.5 }}
+                style={{ fontSize: '1rem', color: '#ffffff', textDecoration: 'none', display: 'inline-block' }}
+              >
+                {project.link.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+              </motion.a>
+            </div>
+            )}
           </div>
         </div>
       </section>
