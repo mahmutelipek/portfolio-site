@@ -142,7 +142,7 @@ export function ProjectDetail() {
                 whileHover={{ opacity: 0.5 }}
                 style={{ fontSize: '1rem', color: '#ffffff', textDecoration: 'none', display: 'inline-block' }}
               >
-                {project.link.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                {project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}
               </motion.a>
             </div>
             )}
