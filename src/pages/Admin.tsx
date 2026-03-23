@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import imageCompression from 'browser-image-compression';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Logo, ContentBlock } from '../lib/types';
@@ -75,13 +76,30 @@ export function Admin() {
 
   // --- STORAGE HELPERS ---
   const uploadImage = async (file: File) => {
-    const fileExt = file.name.split('.').pop();
+    let fileToUpload = file;
+    let fileExt = file.name.split('.').pop();
+
+    try {
+      const options = {
+        maxSizeMB: 1, // Compress to max 1MB
+        maxWidthOrHeight: 1920, // Max width/height for web display
+        useWebWorker: true,
+        fileType: 'image/webp' // Always convert to WebP for standard performance
+      };
+      const compressedFile = await imageCompression(file, options);
+      // Construct a new file object for typing compatibility
+      fileToUpload = new File([compressedFile], file.name.replace(/\.[^/.]+$/, ".webp"), { type: 'image/webp' });
+      fileExt = 'webp';
+    } catch (error) {
+      console.error('Image compression failed, falling back to original:', error);
+    }
+
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `uploads/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
       .from('portfolio')
-      .upload(filePath, file);
+      .upload(filePath, fileToUpload);
 
     if (uploadError) {
       alert('Upload failed: ' + uploadError.message + '\nMake sure you have a public bucket named "portfolio".');
