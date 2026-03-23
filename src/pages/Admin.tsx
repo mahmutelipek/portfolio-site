@@ -428,7 +428,7 @@ export function Admin() {
                       <input type="text" value={editingProject.title} onChange={e => setEditingProject({...editingProject, title: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Modern Coffee App" />
                     </div>
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Industries</label>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>Scope</label>
                       <input type="text" value={editingProject.industries || ''} onChange={e => setEditingProject({...editingProject, industries: e.target.value})} style={{ width: '100%', padding: '0.75rem', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} placeholder="e.g. Expense Management" />
                     </div>
                     <div>
