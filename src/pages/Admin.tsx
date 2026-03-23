@@ -23,6 +23,9 @@ export function Admin() {
   // Data State
   const [projects, setProjects] = useState<Project[]>([]);
   const [logos, setLogos] = useState<Logo[]>([]);
+  
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizingStatus, setOptimizingStatus] = useState('');
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [hoveredLogoId, setHoveredLogoId] = useState<string | null>(null);
@@ -164,6 +167,72 @@ export function Admin() {
     if (!e1 && !e2) fetchData();
   };
 
+  const optimizeExistingImages = async () => {
+    if (!window.confirm("This will download, compress (to WebP), and re-upload all unoptimized legacy images. It might take a minute or two. Proceed?")) return;
+    
+    setIsOptimizing(true);
+    setOptimizingStatus('Starting optimization...');
+    
+    // Process projects
+    for (let i = 0; i < projects.length; i++) {
+      const p = projects[i];
+      let updated = false;
+      let newCover = p.cover_image_url;
+      setOptimizingStatus(`Checking project: ${p.title}...`);
+
+      if (newCover && !newCover.endsWith('.webp') && newCover.includes('portfolio')) {
+         try {
+           const res = await fetch(newCover);
+           const blob = await res.blob();
+           const file = new File([blob], `cover_${p.id}.png`, { type: blob.type });
+           const optimizedUrl = await uploadImage(file);
+           if (optimizedUrl) { newCover = optimizedUrl; updated = true; }
+         } catch(e) { console.error("Optimization failed on cover", e); }
+      }
+
+      let newBlocks = p.content_blocks ? [...p.content_blocks] : [];
+      for (let j = 0; j < newBlocks.length; j++) {
+        const b = newBlocks[j];
+        if (b.type === 'image' && b.value && !b.value.endsWith('.webp') && b.value.includes('portfolio')) {
+          setOptimizingStatus(`Checking block image in ${p.title}...`);
+          try {
+             const res = await fetch(b.value);
+             const blob = await res.blob();
+             const file = new File([blob], `block_${p.id}_${j}.png`, { type: blob.type });
+             const optimizedUrl = await uploadImage(file);
+             if (optimizedUrl) { newBlocks[j].value = optimizedUrl; updated = true; }
+          } catch(e) { console.error("Optimization failed on block", e); }
+        }
+      }
+
+      if (updated) {
+         setOptimizingStatus(`Saving ${p.title}...`);
+         await supabase.from('projects').update({ cover_image_url: newCover, content_blocks: newBlocks }).eq('id', p.id);
+      }
+    }
+
+    // Process logos
+    for (let i = 0; i < logos.length; i++) {
+      const l = logos[i];
+      if (l.url && !l.url.endsWith('.webp') && l.url.includes('portfolio')) {
+         setOptimizingStatus(`Optimizing logo: ${l.name}...`);
+         try {
+           const res = await fetch(l.url);
+           const blob = await res.blob();
+           const file = new File([blob], `logo_${l.id}.png`, { type: blob.type });
+           const optimizedUrl = await uploadImage(file);
+           if (optimizedUrl) {
+             await supabase.from('logos').update({ url: optimizedUrl }).eq('id', l.id);
+           }
+         } catch(e) { console.error("Optimization failed on logo", e); }
+      }
+    }
+
+    setOptimizingStatus('Optimization complete! Refreshing data.');
+    await fetchData();
+    setTimeout(() => { setIsOptimizing(false); setOptimizingStatus(''); }, 3000);
+  };
+
   const reorderLogo = async (index: number, direction: 'left' | 'right') => {
     const newIndex = direction === 'left' ? index - 1 : index + 1;
     if (newIndex < 0 || newIndex >= logos.length) return;
@@ -274,19 +343,31 @@ export function Admin() {
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Project List</h2>
-                  <button 
-                    onClick={() => setEditingProject({ 
-                      title: '', 
-                      slug: '', 
-                      roles: [], 
-                      content_blocks: [], 
-                      cover_image_url: '',
-                      date: new Date().toISOString().split('T')[0] 
-                    })}
-                    style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                  >
-                    <Plus size={18} /> New Project
-                  </button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    {isOptimizing ? (
+                      <span style={{ fontSize: '0.85rem', color: '#00aaff', background: '#001a33', padding: '0.5rem 1rem', borderRadius: '6px' }}>{optimizingStatus}</span>
+                    ) : (
+                      <button 
+                        onClick={optimizeExistingImages}
+                        style={{ padding: '0.75rem 1.5rem', background: '#333', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+                      >
+                        Optimize Legacy Images
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => setEditingProject({ 
+                        title: '', 
+                        slug: '', 
+                        roles: [], 
+                        content_blocks: [], 
+                        cover_image_url: '',
+                        date: new Date().toISOString().split('T')[0] 
+                      })}
+                      style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    >
+                      <Plus size={18} /> New Project
+                    </button>
+                  </div>
                 </div>
                 
                 <div style={{ overflowX: 'auto' }}>
