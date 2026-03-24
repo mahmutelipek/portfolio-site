@@ -12,11 +12,15 @@ export function ProjectDetail() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
+  const [prevProject, setPrevProject] = useState<{title: string, slug: string} | null>(null);
+  const [nextProject, setNextProject] = useState<{title: string, slug: string} | null>(null);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
+    setShowSplash(true);
   }, [slug]);
 
   useEffect(() => {
@@ -34,6 +38,19 @@ export function ProjectDetail() {
         .select('*')
         .eq('slug', slug)
         .single();
+        
+      const { data: allProjects } = await supabase
+        .from('projects')
+        .select('title, slug, sort_order')
+        .order('sort_order', { ascending: true });
+
+      if (allProjects && allProjects.length > 0) {
+        const currentIndex = allProjects.findIndex(p => p.slug === slug);
+        if (currentIndex !== -1) {
+          setPrevProject(currentIndex > 0 ? allProjects[currentIndex - 1] : null);
+          setNextProject(currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null);
+        }
+      }
         
       if (error) {
         console.error('Error fetching project:', error);
@@ -318,6 +335,42 @@ export function ProjectDetail() {
         </div>
         </div>
       </section>
+      {/* Next / Previous Navigation */}
+      <section style={{ padding: isMobile ? '2rem 1rem 0' : '4rem 5rem 0' }}>
+        <div style={{ 
+          maxWidth: '1280px', 
+          margin: '0 auto', 
+          borderTop: '1px solid #222',
+          paddingTop: '64px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start'
+        }}>
+          {prevProject ? (
+            <Link to={`/works/${prevProject.slug}`} style={{ textDecoration: 'none', color: '#fff', flex: 1 }}>
+              <div style={{ fontSize: '0.75rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem' }}>Previous</div>
+              <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 500, letterSpacing: '-0.02em', transition: 'color 0.2s ease', WebkitFontSmoothing: 'antialiased' }} className="nav-title">{prevProject.title}</div>
+            </Link>
+          ) : (
+            <div style={{ flex: 1 }} />
+          )}
+          
+          {nextProject ? (
+            <Link to={`/works/${nextProject.slug}`} style={{ textDecoration: 'none', color: '#fff', textAlign: 'right', flex: 1 }}>
+              <div style={{ fontSize: '0.75rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem' }}>Next</div>
+              <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 500, letterSpacing: '-0.02em', transition: 'color 0.2s ease', WebkitFontSmoothing: 'antialiased' }} className="nav-title">{nextProject.title}</div>
+            </Link>
+          ) : (
+            <div style={{ flex: 1 }} />
+          )}
+        </div>
+      </section>
+      
+      <style>{`
+        .nav-title:hover {
+          color: #999 !important;
+        }
+      `}</style>
 
     </motion.article>
     )}
