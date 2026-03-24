@@ -50,14 +50,14 @@ export function Footer() {
           alignItems: 'center', 
           justifyContent: 'center', 
           zIndex: 0, 
-          opacity: isMobile ? 0.3 : 0.25, 
+          opacity: isMobile ? 0.3 : 0.3, 
           pointerEvents: 'none' 
         }}>
           {logos.length > 0 && (
             <DomeGallery 
               images={logos.map(l => ({ src: l.url, alt: l.name }))} 
-              fit={isMobile ? 1.0 : 0.6}
-              segments={isMobile ? 22 : 35}
+              fit={isMobile ? 1.0 : 0.8}
+              segments={isMobile ? 22 : 30}
               overlayBlurColor="#000000"
               disableInteraction={true}
             />

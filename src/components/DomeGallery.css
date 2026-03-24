@@ -86,15 +86,8 @@ main.sphere-main {
 
 .item__image {
   position: absolute;
-  display: block;
-  inset: 10px;
+  inset: 8px;
   border-radius: var(--tile-radius, 12px);
-}
-
-@media (max-width: 768px) {
-  .item__image {
-    inset: 8px;
-  }
 }
 
 .item__image {
