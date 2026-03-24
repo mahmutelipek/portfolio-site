@@ -82,8 +82,9 @@ export function Admin() {
     let fileToUpload = file;
     let fileExt = file.name.split('.').pop();
     const isVideo = file.type.startsWith('video/');
+    const isSVG = file.type === 'image/svg+xml' || file.name.endsWith('.svg');
 
-    if (!isVideo) {
+    if (!isVideo && !isSVG) {
       try {
         const options = {
           maxSizeMB: 3, 
