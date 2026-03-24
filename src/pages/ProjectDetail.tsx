@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
 import { globalStore } from '../lib/store';
+import { useLenis } from 'lenis/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CountUp from '../components/CountUp';
 import Lottie from 'lottie-react';
@@ -16,8 +17,23 @@ export function ProjectDetail() {
   const [showSplash, setShowSplash] = useState(!isCached);
   const [prevProject, setPrevProject] = useState<{title: string, slug: string} | null>(null);
   const [nextProject, setNextProject] = useState<{title: string, slug: string} | null>(null);
+  const lenis = useLenis();
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    if (showSplash) {
+      lenis?.stop();
+      document.body.style.overflow = 'hidden';
+    } else {
+      lenis?.start();
+      document.body.style.overflow = '';
+    }
+    return () => {
+      lenis?.start();
+      document.body.style.overflow = '';
+    };
+  }, [showSplash, lenis]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

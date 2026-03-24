@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 import { AuraHero } from '../components/AuraHero';
 import { SelectedWorks } from '../components/SelectedWorks';
 import CountUp from '../components/CountUp';
@@ -13,6 +14,21 @@ export function Home() {
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(!globalStore.homeVisited);
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (showSplash) {
+      lenis?.stop();
+      document.body.style.overflow = 'hidden';
+    } else {
+      lenis?.start();
+      document.body.style.overflow = '';
+    }
+    return () => {
+      lenis?.start();
+      document.body.style.overflow = '';
+    };
+  }, [showSplash, lenis]);
 
   useEffect(() => {
     async function fetchData() {

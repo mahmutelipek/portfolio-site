@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useCallback } from 'react';
 import { useGesture } from '@use-gesture/react';
+import { useInView } from 'framer-motion';
 import './DomeGallery.css';
 
 type ImageItem = string | { src: string; alt?: string; link?: string };
@@ -136,6 +137,7 @@ export default function DomeGallery({
   disableInteraction = false
 }: DomeGalleryProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(rootRef, { margin: "200px" });
   const mainRef = useRef<HTMLDivElement>(null);
   const sphereRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -274,6 +276,8 @@ export default function DomeGallery({
   ]);
 
   useEffect(() => {
+    if (!isInView) return;
+
     let lastTime = performance.now();
     let frameId: number;
 
@@ -291,7 +295,7 @@ export default function DomeGallery({
 
     frameId = requestAnimationFrame(rotate);
     return () => cancelAnimationFrame(frameId);
-  }, []);
+  }, [isInView]);
 
   useEffect(() => {
     applyTransform(rotationRef.current.x, rotationRef.current.y);
