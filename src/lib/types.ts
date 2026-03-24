@@ -17,6 +17,7 @@ export interface Project {
   industries?: string;
   link?: string;
   sort_order?: number;
+  is_visible?: boolean;
   content_blocks?: ContentBlock[]; // New flexible content
 }
 

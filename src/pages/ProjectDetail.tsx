@@ -61,6 +61,7 @@ export function ProjectDetail() {
         const { data } = await supabase
           .from('projects')
           .select('title, slug, sort_order')
+          .neq('is_visible', false)
           .order('sort_order', { ascending: true });
 
         if (data) {
@@ -91,6 +92,7 @@ export function ProjectDetail() {
         .from('projects')
         .select('*')
         .eq('slug', slug)
+        .neq('is_visible', false)
         .single();
         
       if (error) {

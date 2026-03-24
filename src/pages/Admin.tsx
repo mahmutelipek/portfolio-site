@@ -3,7 +3,7 @@ import imageCompression from 'browser-image-compression';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Logo, ContentBlock } from '../lib/types';
-import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Save } from 'lucide-react';
+import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Save, Eye, EyeOff } from 'lucide-react';
 
 export function Admin() {
   const [session, setSession] = useState<any>(null);
@@ -383,7 +383,7 @@ export function Admin() {
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Title</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date/Year</th>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Case Study</th>
+                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
                         <th style={{ padding: '1rem', color: '#888', fontWeight: 500, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Actions</th>
                       </tr>
                     </thead>
@@ -440,8 +440,9 @@ export function Admin() {
                           <td style={{ padding: '1rem' }}>
                              <button 
                               onClick={() => setEditingProject(p)}
-                              style={{ padding: '0.4rem 0.8rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', color: '#fff' }}>
-                              Edit Blocks ({p.content_blocks?.length || 0})
+                              style={{ padding: '0.4rem 0.8rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              {p.is_visible !== false ? <Eye size={14} color="#00ff88" /> : <EyeOff size={14} color="#ff4444" />}
+                              {p.is_visible !== false ? 'Live' : 'Hidden'}
                              </button>
                           </td>
                           <td style={{ padding: '1rem', textAlign: 'right' }}>
@@ -490,6 +491,24 @@ export function Admin() {
                   <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Editing: {editingProject.title || 'New Project'}</h2>
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <button onClick={() => setEditingProject(null)} style={{ padding: '0.75rem 1.5rem', background: 'transparent', border: '1px solid #333', borderRadius: '8px', cursor: 'pointer', color: '#fff' }}>Cancel</button>
+                    <button 
+                      onClick={() => setEditingProject({...editingProject, is_visible: editingProject.is_visible !== false ? false : true})}
+                      style={{ 
+                        padding: '0.75rem 1.5rem', 
+                        background: editingProject.is_visible !== false ? '#003311' : '#330000', 
+                        border: `1px solid ${editingProject.is_visible !== false ? '#00ff88' : '#ff4444'}`, 
+                        borderRadius: '8px', 
+                        cursor: 'pointer', 
+                        color: editingProject.is_visible !== false ? '#00ff88' : '#ff4444',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontWeight: 600
+                      }}
+                    >
+                      {editingProject.is_visible !== false ? <Eye size={18} /> : <EyeOff size={18} />}
+                      {editingProject.is_visible !== false ? 'Visible' : 'Hidden'}
+                    </button>
                     <button onClick={saveProject} style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
                       <Save size={18} /> Save & Close
                     </button>

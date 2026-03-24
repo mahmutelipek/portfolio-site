@@ -39,6 +39,7 @@ export function Home() {
       const { data, error } = await supabase
         .from('projects')
         .select('*')
+        .neq('is_visible', false)
         .order('sort_order', { ascending: true });
 
       if (error) {
