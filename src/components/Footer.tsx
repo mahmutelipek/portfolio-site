@@ -6,7 +6,14 @@ import SplitText from './SplitText';
 import './Footer.css';
 
 export function Footer() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [logos, setLogos] = useState<Logo[]>([]);
+  
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchLogos() {
@@ -40,6 +47,7 @@ export function Footer() {
           {logos.length > 0 && (
             <DomeGallery 
               images={logos.map(l => ({ src: l.url, alt: l.name }))} 
+              fit={isMobile ? 1.1 : 0.6}
               overlayBlurColor="#000000"
               disableInteraction={true}
             />
