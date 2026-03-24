@@ -694,15 +694,45 @@ export function Admin() {
           <main style={{ background: '#141414', borderRadius: '12px', padding: '2rem', border: '1px solid #222' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
               <h2 style={{ fontSize: '1.25rem', color: '#fff' }}>Logos</h2>
-              <button 
-                onClick={async () => {
-                  const { error } = await supabase.from('logos').insert({ name: 'Logo', url: '', sort_order: logos.length });
-                  if (!error) fetchData();
-                }}
-                style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-              >
-                <Plus size={18} /> Add Logo
-              </button>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button 
+                  onClick={async () => {
+                    const { error } = await supabase.from('logos').insert({ name: 'Logo', url: '', sort_order: logos.length });
+                    if (!error) fetchData();
+                  }}
+                  style={{ padding: '0.75rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <Plus size={18} /> Add Logo
+                </button>
+                <label style={{ padding: '0.75rem 1.5rem', background: '#1a1a1a', color: '#fff', border: '1px solid #333', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <ImageIcon size={18} /> Bulk Upload
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    multiple 
+                    style={{ display: 'none' }}
+                    onChange={async e => {
+                      const files = e.target.files;
+                      if(!files || files.length === 0) return;
+                      setSaveStatus(`Uploading ${files.length} logos...`);
+                      for(let i=0; i<files.length; i++) {
+                        const file = files[i];
+                        const url = await uploadMedia(file);
+                        if(url) {
+                          const name = file.name.split('.')[0].replace(/[_-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                          await supabase.from('logos').insert({ 
+                            name, 
+                            url, 
+                            sort_order: logos.length + i 
+                          });
+                        }
+                      }
+                      fetchData();
+                      setSaveStatus(null);
+                    }} 
+                  />
+                </label>
+              </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '1.5rem' }}>
               {logos.map((logo, index) => (
