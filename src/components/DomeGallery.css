@@ -89,6 +89,15 @@ main.sphere-main {
   display: block;
   inset: 10px;
   border-radius: var(--tile-radius, 12px);
+}
+
+@media (max-width: 768px) {
+  .item__image {
+    inset: 4px;
+  }
+}
+
+.item__image {
   background: transparent;
   overflow: hidden;
   backface-visibility: hidden;
