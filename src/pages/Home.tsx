@@ -7,41 +7,42 @@ import Lottie from 'lottie-react';
 import loadingAnimation from '../../loading.json';
 import type { Project } from '../lib/types';
 import { supabase } from '../lib/supabase';
+import { globalStore } from '../lib/store';
 
 export function Home() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showSplash, setShowSplash] = useState(true);
+  const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
+  const [loading, setLoading] = useState(!globalStore.homeVisited);
+  const [showSplash, setShowSplash] = useState(!globalStore.homeVisited);
 
   useEffect(() => {
     async function fetchData() {
-      // Fetch Projects
-      const { data: projectsData, error: projectsError } = await supabase
+      if (globalStore.homeVisited && globalStore.homeProjects.length > 0) {
+        return;
+      }
+
+      const { data, error } = await supabase
         .from('projects')
         .select('*')
         .order('sort_order', { ascending: true });
 
-      if (projectsError) {
-        console.error('Error fetching projects:', projectsError);
-      }
-
-      if (!projectsError && projectsData && projectsData.length > 0) {
-        setProjects(projectsData);
+      if (error) {
+        console.error('Error fetching projects:', error);
+      } else if (data) {
+        setProjects(data as Project[]);
+        globalStore.homeProjects = data as Project[];
       } else {
-        // Fallback dummy data
-        setProjects([
+        const dummyProjects: Project[] = [
           {
             id: 'dummy-1',
             title: 'Modern Coffee App',
             slug: 'modern-coffee-app',
-            date: '2025-01-10',
+            date: '2023 - 2024',
             cover_image_url: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=2787&auto=format&fit=crop',
             gallery: [
-              'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2671&auto=format&fit=crop',
-              'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=2670&auto=format&fit=crop'
+              'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2671&auto=format&fit=crop'
             ],
-            content_body: '### Overview\nA complete redesign of the mobile ordering experience for specialty coffee lovers.\n\n### Challenge\nThe previous app suffered from low conversion rates due to a confusing, multi-step checkout process and low-quality imagery.\n\n### Solution\nFocused on extreme minimalism, prioritizing high-resolution product imagery and seamless one-touch ordering mechanics. We utilized a strict monochromatic palette to let the coffee photography stand out.\n\n### Results\nIncreased mobile organic orders by 32% and reduced average checkout time from 45 seconds to just 12 seconds.',
-            roles: ['Product Design', 'UX Research', 'Prototyping'],
+            content_body: 'A complete redesign... (dummy)',
+            roles: ['UX Research', 'UI Design'],
             sort_order: 0
           },
           {
@@ -57,7 +58,9 @@ export function Home() {
             roles: ['UI/UX Design', 'Design Systems'],
             sort_order: 1
           }
-        ]);
+        ];
+        setProjects(dummyProjects);
+        globalStore.homeProjects = dummyProjects;
       }
 
       setLoading(false);
@@ -116,6 +119,7 @@ export function Home() {
                 fontVariantNumeric: 'tabular-nums' 
               }}>
                 <CountUp to={100} duration={2.5} onEnd={() => { 
+                  globalStore.homeVisited = true;
                   setTimeout(() => setShowSplash(false), 500); 
                 }} />
               </div>

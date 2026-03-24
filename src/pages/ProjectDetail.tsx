@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
+import { globalStore } from '../lib/store';
 import { motion, AnimatePresence } from 'framer-motion';
 import CountUp from '../components/CountUp';
 import Lottie from 'lottie-react';
@@ -9,9 +10,10 @@ import loadingAnimation from '../../loading.json';
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [showSplash, setShowSplash] = useState(true);
+  const isCached = slug ? !!globalStore.projectDetails[slug] : false;
+  const [project, setProject] = useState<Project | null>(slug ? globalStore.projectDetails[slug] || null : null);
+  const [loading, setLoading] = useState(!isCached);
+  const [showSplash, setShowSplash] = useState(!isCached);
   const [prevProject, setPrevProject] = useState<{title: string, slug: string} | null>(null);
   const [nextProject, setNextProject] = useState<{title: string, slug: string} | null>(null);
 
@@ -19,8 +21,13 @@ export function ProjectDetail() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setLoading(true);
-    setShowSplash(true);
+    if (!slug) return;
+    const cached = !!globalStore.projectDetails[slug];
+    setLoading(!cached);
+    setShowSplash(!cached);
+    if (cached) {
+      setProject(globalStore.projectDetails[slug]);
+    }
   }, [slug]);
 
   useEffect(() => {
@@ -30,8 +37,39 @@ export function ProjectDetail() {
   }, []);
 
   useEffect(() => {
-    async function fetchProject() {
+    async function initNavigation() {
       if (!slug) return;
+      let list = globalStore.projectsList;
+
+      if (!list || list.length === 0) {
+        const { data } = await supabase
+          .from('projects')
+          .select('title, slug, sort_order')
+          .order('sort_order', { ascending: true });
+
+        if (data) {
+          list = data as any;
+          globalStore.projectsList = data as any;
+        }
+      }
+
+      if (list && list.length > 0) {
+        const currentIndex = list.findIndex(p => p.slug === slug);
+        if (currentIndex !== -1) {
+          setPrevProject(currentIndex > 0 ? list[currentIndex - 1] : null);
+          setNextProject(currentIndex < list.length - 1 ? list[currentIndex + 1] : null);
+        } else {
+          setPrevProject(null);
+          setNextProject(null);
+        }
+      }
+    }
+    initNavigation();
+  }, [slug]);
+
+  useEffect(() => {
+    async function fetchProject() {
+      if (!slug || globalStore.projectDetails[slug]) return;
       
       const { data, error } = await supabase
         .from('projects')
@@ -39,25 +77,13 @@ export function ProjectDetail() {
         .eq('slug', slug)
         .single();
         
-      const { data: allProjects } = await supabase
-        .from('projects')
-        .select('title, slug, sort_order')
-        .order('sort_order', { ascending: true });
-
-      if (allProjects && allProjects.length > 0) {
-        const currentIndex = allProjects.findIndex(p => p.slug === slug);
-        if (currentIndex !== -1) {
-          setPrevProject(currentIndex > 0 ? allProjects[currentIndex - 1] : null);
-          setNextProject(currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null);
-        }
-      }
-        
       if (error) {
         console.error('Error fetching project:', error);
       }
       
       if (data) {
-        setProject(data);
+        setProject(data as Project);
+        globalStore.projectDetails[slug] = data as Project;
       } else {
         // Fallback dummy data if nothing found
         const dummyProjects: Project[] = [
@@ -90,6 +116,7 @@ export function ProjectDetail() {
         const foundDummy = dummyProjects.find(p => p.slug === slug);
         if (foundDummy) {
           setProject(foundDummy);
+          globalStore.projectDetails[slug] = foundDummy;
         }
       }
       setLoading(false);
