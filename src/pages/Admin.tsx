@@ -78,24 +78,26 @@ export function Admin() {
   const handleLogout = () => supabase.auth.signOut();
 
   // --- STORAGE HELPERS ---
-  const uploadImage = async (file: File) => {
+  const uploadMedia = async (file: File) => {
     let fileToUpload = file;
     let fileExt = file.name.split('.').pop();
+    const isVideo = file.type.startsWith('video/');
 
-    try {
-      const options = {
-        maxSizeMB: 3, // Increased from 1MB to 3MB to preserve detail
-        maxWidthOrHeight: 2560, // Increased to support ultra-high res displays
-        initialQuality: 0.95, // Prioritize quality over extreme compression
-        useWebWorker: true,
-        fileType: 'image/webp'
-      };
-      const compressedFile = await imageCompression(file, options);
-      // Construct a new file object for typing compatibility
-      fileToUpload = new File([compressedFile], file.name.replace(/\.[^/.]+$/, ".webp"), { type: 'image/webp' });
-      fileExt = 'webp';
-    } catch (error) {
-      console.error('Image compression failed, falling back to original:', error);
+    if (!isVideo) {
+      try {
+        const options = {
+          maxSizeMB: 3, 
+          maxWidthOrHeight: 2560, 
+          initialQuality: 0.95, 
+          useWebWorker: true,
+          fileType: 'image/webp'
+        };
+        const compressedFile = await imageCompression(file, options);
+        fileToUpload = new File([compressedFile], file.name.replace(/\.[^/.]+$/, ".webp"), { type: 'image/webp' });
+        fileExt = 'webp';
+      } catch (error) {
+        console.error('Image compression failed, falling back to original:', error);
+      }
     }
 
     const fileName = `${Math.random()}.${fileExt}`;
@@ -115,7 +117,7 @@ export function Admin() {
   };
 
   // --- PROJECT ACTIONS ---
-  const addBlock = (type: 'text' | 'image') => {
+  const addBlock = (type: 'text' | 'image' | 'video') => {
     if (!editingProject) return;
     const newBlock: ContentBlock = {
       id: Math.random().toString(36).substr(2, 9),
@@ -186,7 +188,7 @@ export function Admin() {
            const res = await fetch(newCover);
            const blob = await res.blob();
            const file = new File([blob], `cover_${p.id}.png`, { type: blob.type });
-           const optimizedUrl = await uploadImage(file);
+           const optimizedUrl = await uploadMedia(file);
            if (optimizedUrl) { newCover = optimizedUrl; updated = true; }
          } catch(e) { console.error("Optimization failed on cover", e); }
       }
@@ -200,7 +202,7 @@ export function Admin() {
              const res = await fetch(b.value);
              const blob = await res.blob();
              const file = new File([blob], `block_${p.id}_${j}.png`, { type: blob.type });
-             const optimizedUrl = await uploadImage(file);
+             const optimizedUrl = await uploadMedia(file);
              if (optimizedUrl) { newBlocks[j].value = optimizedUrl; updated = true; }
           } catch(e) { console.error("Optimization failed on block", e); }
         }
@@ -221,7 +223,7 @@ export function Admin() {
            const res = await fetch(l.url);
            const blob = await res.blob();
            const file = new File([blob], `logo_${l.id}.png`, { type: blob.type });
-           const optimizedUrl = await uploadImage(file);
+           const optimizedUrl = await uploadMedia(file);
            if (optimizedUrl) {
              await supabase.from('logos').update({ url: optimizedUrl }).eq('id', l.id);
            }
@@ -513,7 +515,7 @@ export function Admin() {
                         onChange={async e => {
                           const file = e.target.files?.[0];
                           if(file) {
-                            const url = await uploadImage(file);
+                            const url = await uploadMedia(file);
                             if(url) setEditingProject({...editingProject, cover_image_url: url});
                           }
                         }}
@@ -588,7 +590,7 @@ export function Admin() {
                               />
                             </div>
                           </div>
-                        ) : (
+                        ) : block.type === 'image' ? (
                           <div style={{ display: 'grid', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontWeight: 600 }}><ImageIcon size={16} /> Image Section</div>
                             <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
@@ -598,7 +600,23 @@ export function Admin() {
                                <input type="file" accept="image/*" onChange={async e => {
                                  const file = e.target.files?.[0];
                                  if(file){
-                                   const url = await uploadImage(file);
+                                   const url = await uploadMedia(file);
+                                   if(url) updateBlock(block.id, url);
+                                 }
+                               }} />
+                            </div>
+                          </div>
+                        ) : ( // Video block
+                          <div style={{ display: 'grid', gap: '1rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontWeight: 600 }}><Plus size={16} /> Video Section</div>
+                            <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                               <div style={{ width: '150px', aspectRatio: '3/2', background: '#0a0a0a', borderRadius: '8px', overflow: 'hidden', border: '1px solid #333' }}>
+                                 {block.value && <video src={block.value} style={{ width: '100%', height: '100%', objectFit: 'cover' }} autoPlay loop muted playsInline />}
+                               </div>
+                               <input type="file" accept="video/*" onChange={async e => {
+                                 const file = e.target.files?.[0];
+                                 if(file){
+                                   const url = await uploadMedia(file);
                                    if(url) updateBlock(block.id, url);
                                  }
                                }} />
@@ -615,21 +633,26 @@ export function Admin() {
                        <button onClick={() => addBlock('image')} style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #333', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#888' }}>
                          <Plus size={20} /> Add Image Block
                        </button>
+                       <button onClick={() => addBlock('video')} style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #333', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#888' }}>
+                         <Plus size={20} /> Add Video Block
+                       </button>
                        <label style={{ flex: 1, padding: '1.5rem', background: '#141414', border: '2px dashed #00aaff', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#00aaff' }}>
-                         <ImageIcon size={20} /> Upload Multiple Images
+                         <ImageIcon size={20} /> Upload Multiple Files
                          <input 
                            type="file" 
-                           accept="image/*" 
+                           accept="image/*,video/*" 
                            multiple 
                            style={{ display: 'none' }}
                            onChange={async e => {
                              const files = e.target.files;
                              if(!files || files.length === 0) return;
-                             setSaveStatus('Uploading multiple images...');
+                             setSaveStatus('Uploading multiple files...');
                              const newBlocks = [];
                              for(let i=0; i<files.length; i++) {
-                               const url = await uploadImage(files[i]);
-                               if(url) newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'image' as const, value: url });
+                               const file = files[i];
+                               const isVideo = file.type.startsWith('video/');
+                               const url = await uploadMedia(file);
+                               if(url) newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: isVideo ? 'video' as const : 'image' as const, value: url });
                              }
                              if(editingProject) {
                                setEditingProject({...editingProject, content_blocks: [...(editingProject.content_blocks || []), ...newBlocks]});
@@ -752,21 +775,21 @@ export function Admin() {
                               textAlign: 'center'
                             }}>
                               Update
-                              <input 
-                                type="file" 
-                                accept="image/*" 
-                                onChange={async e => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    const url = await uploadImage(file);
-                                    if (url) {
-                                      await supabase.from('logos').update({ url }).eq('id', logo.id);
-                                      fetchData();
-                                    }
-                                  }
-                                }} 
-                                style={{ display: 'none' }}
-                              />
+                               <input 
+                                 type="file" 
+                                 accept="image/*" 
+                                 onChange={async e => {
+                                   const file = e.target.files?.[0];
+                                   if (file) {
+                                     const url = await uploadMedia(file);
+                                     if (url) {
+                                       await supabase.from('logos').update({ url }).eq('id', logo.id);
+                                       fetchData();
+                                     }
+                                   }
+                                 }} 
+                                 style={{ display: 'none' }}
+                               />
                             </label>
                             <button 
                                onClick={() => setDeletingLogoId(logo.id)} 

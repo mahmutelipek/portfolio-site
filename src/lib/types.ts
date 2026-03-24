@@ -1,6 +1,6 @@
 export interface ContentBlock {
   id: string;
-  type: 'text' | 'image';
+  type: 'text' | 'image' | 'video';
   title?: string; // Section title (e.g. Overview)
   value: string;
 }

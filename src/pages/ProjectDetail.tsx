@@ -320,7 +320,7 @@ export function ProjectDetail() {
                       </p>
                     ))}
                   </div>
-                ) : (
+                ) : block.type === 'image' ? (
                   <motion.div 
                     initial={{ y: 30, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
@@ -331,6 +331,23 @@ export function ProjectDetail() {
                     <img 
                       src={block.value} 
                       alt="Project visual"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    initial={{ y: 30, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#0a0a0a', overflow: 'hidden', borderRadius: '4px' }}
+                  >
+                    <video 
+                      src={block.value} 
+                      autoPlay 
+                      loop 
+                      muted 
+                      playsInline
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </motion.div>
