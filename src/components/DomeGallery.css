@@ -93,7 +93,7 @@ main.sphere-main {
 
 @media (max-width: 768px) {
   .item__image {
-    inset: 4px;
+    inset: 8px;
   }
 }
 
