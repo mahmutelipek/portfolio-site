@@ -138,7 +138,7 @@ export function Navbar() {
               Product & Experience Designer<br />
               <span style={{ opacity: 0.5 }}>
                 Design Systems · UX<br />
-                3D · Motion · WebGL
+                Motion · WebGL
               </span>
             </motion.div>
           )}

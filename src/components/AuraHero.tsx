@@ -203,7 +203,7 @@ export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
               animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              Curious about systems, visuals, and everyday details.
+              End-to-end product design, built on clarity, systems, and real interaction.
             </motion.div>
           </div>
 
