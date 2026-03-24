@@ -152,7 +152,7 @@ export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
 
         @media (max-width: 1024px) {
           #hero .row-bottom { bottom: 1.5rem; left: 0; right: 0; width: 100% !important; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 0; }
-          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: normal; font-size: min(13px, 3.5vw) !important; display: flex; justify-content: center; text-align: center; padding: 0 1.5rem; line-height: 1.4; box-sizing: border-box; }
+          #hero .expertise-mobile-wrap { order: 1; flex: none; width: 100% !important; margin-bottom: 0px; white-space: normal; font-size: min(13px, 3.5vw) !important; display: flex; justify-content: center; text-align: center; padding: 0 8px; line-height: 1.4; box-sizing: border-box; }
           #hero .title-mobile-wrap { order: 2; flex: none; width: 100% !important; display: flex; justify-content: center; }
           #hero .location-mobile-wrap { display: none; }
           #hero h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); text-align: center; }
