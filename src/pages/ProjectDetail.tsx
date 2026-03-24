@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import CountUp from '../components/CountUp';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../../loading.json';
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
@@ -77,15 +81,38 @@ export function ProjectDetail() {
     fetchProject();
   }, [slug]);
 
-  if (loading) {
+  useEffect(() => {
+    if (project) {
+      if (project.cover_image_url) {
+        const img = new Image();
+        img.src = project.cover_image_url;
+      }
+      if (project.gallery) {
+        project.gallery.forEach(url => {
+          const img = new Image();
+          img.src = url;
+        });
+      }
+      if (project.content_blocks) {
+        project.content_blocks.forEach(block => {
+          if (block.type === 'image' && block.value) {
+            const img = new Image();
+            img.src = block.value;
+          }
+        });
+      }
+    }
+  }, [project]);
+
+  if (loading && !showSplash) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', color: '#fff' }}>
         <p style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>Loading...</p>
       </div>
     );
   }
 
-  if (!project) {
+  if (!project && !loading && !showSplash) {
     return (
       <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Project not found</h1>
@@ -94,14 +121,60 @@ export function ProjectDetail() {
     );
   }
 
-
   return (
-    <motion.article 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem', color: '#ffffff' }}
-    >
+    <>
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            key="splash"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <div style={{ 
+              position: 'relative', 
+              width: isMobile ? '360px' : '512px', 
+              height: isMobile ? '360px' : '512px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              maxWidth: '95vw',
+              maxHeight: '95vw'
+            }}>
+              <Lottie 
+                animationData={loadingAnimation} 
+                loop={true} 
+                style={{ position: 'absolute', inset: 0, zIndex: 1, width: '100%', height: '100%' }} 
+              />
+              <div style={{ 
+                position: 'relative', 
+                zIndex: 2, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                fontSize: isMobile ? '56px' : '80px', 
+                fontWeight: 500, 
+                color: '#fff', 
+                letterSpacing: '-0.02em', 
+                fontVariantNumeric: 'tabular-nums' 
+              }}>
+                <CountUp to={100} duration={0.8} onEnd={() => { 
+                  setTimeout(() => setShowSplash(false), 200); 
+                }} />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {(project && !loading) && (
+        <motion.article 
+          initial={{ opacity: 0 }}
+          animate={!showSplash ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem', color: '#ffffff' }}
+        >
       {/* Title & Meta Info */}
       <section style={{ padding: isMobile ? '0 1rem 4rem' : '0 5rem 4rem' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
@@ -247,5 +320,7 @@ export function ProjectDetail() {
       </section>
 
     </motion.article>
+    )}
+    </>
   );
 }

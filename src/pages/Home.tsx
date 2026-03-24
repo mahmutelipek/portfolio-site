@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { AuraHero } from '../components/AuraHero';
 import { SelectedWorks } from '../components/SelectedWorks';
+import CountUp from '../components/CountUp';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../../loading.json';
 import type { Project } from '../lib/types';
 import { supabase } from '../lib/supabase';
 
 export function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -60,19 +65,78 @@ export function Home() {
     fetchData();
   }, []);
 
+  // Preload project images in the background while splash screen is active
+  useEffect(() => {
+    if (projects.length > 0) {
+      projects.forEach(p => {
+        if (p.cover_image_url) {
+          const img = new Image();
+          img.src = p.cover_image_url;
+        }
+      });
+    }
+  }, [projects]);
+
   return (
-    <main>
-      <AuraHero />
-      {!loading && projects.length > 0 && (
-        <>
-          <SelectedWorks projects={projects} />
-        </>
-      )}
-      {!loading && projects.length === 0 && (
-        <section style={{ padding: '8rem 2rem', textAlign: 'center', color: '#666' }}>
-          <p>No projects found. Please add data to Supabase.</p>
-        </section>
-      )}
-    </main>
+    <>
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            key="splash"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <div style={{ 
+              position: 'relative', 
+              width: window.innerWidth < 768 ? '360px' : '512px', 
+              height: window.innerWidth < 768 ? '360px' : '512px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              maxWidth: '95vw',
+              maxHeight: '95vw'
+            }}>
+              <Lottie 
+                animationData={loadingAnimation} 
+                loop={true} 
+                style={{ position: 'absolute', inset: 0, zIndex: 1, width: '100%', height: '100%' }} 
+              />
+              <div style={{ 
+                position: 'relative', 
+                zIndex: 2, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                fontSize: window.innerWidth < 768 ? '56px' : '80px', 
+                fontWeight: 500, 
+                color: '#fff', 
+                letterSpacing: '-0.02em', 
+                fontVariantNumeric: 'tabular-nums' 
+              }}>
+                <CountUp to={100} duration={2.5} onEnd={() => { 
+                  setTimeout(() => setShowSplash(false), 500); 
+                }} />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <main>
+        <AuraHero isReady={!showSplash} />
+        {!loading && projects.length > 0 && (
+          <>
+            <SelectedWorks projects={projects} />
+          </>
+        )}
+        {!loading && projects.length === 0 && (
+          <section style={{ padding: '8rem 2rem', textAlign: 'center', color: '#666' }}>
+            <p>No projects found. Please add data to Supabase.</p>
+          </section>
+        )}
+      </main>
+    </>
   );
 }

@@ -15,7 +15,7 @@ const HALF_EXTENT = ((SIDE - 1) * SEP) / 2;
 const LERP_FACTOR = 0.03;
 const PARTICLE_COLOR = 0x00aaff;
 
-const ParticleSwarm = () => {
+const ParticleSwarm = ({ isReady }: { isReady: boolean }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const colorObj = useMemo(() => new THREE.Color(PARTICLE_COLOR), []);
@@ -64,6 +64,9 @@ const ParticleSwarm = () => {
       mesh.userData.colorsSet = true;
     }
 
+    // Wait for the loader to finish before animating
+    if (!isReady) return;
+
     // Skip matrix updates once animation has converged
     if (settled.current) return;
 
@@ -101,7 +104,7 @@ const ParticleSwarm = () => {
   );
 };
 
-export const AuraHero = () => {
+export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [heroHeight, setHeroHeight] = useState('100vh');
 
@@ -168,7 +171,7 @@ export const AuraHero = () => {
       <div style={{ pointerEvents: isMobile ? 'none' : 'auto', position: 'absolute', left: 0, right: 0, top: isMobile ? '5%' : 0, bottom: isMobile ? '5%' : 0, zIndex: 0 }}>
         <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 106], fov: 60 }} style={{ pointerEvents: isMobile ? 'none' : 'auto', touchAction: 'auto' }}>
           <fog attach="fog" args={['#000000', 0.01]} />
-          <ParticleSwarm />
+          <ParticleSwarm isReady={isReady} />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
           <Effects disableGamma>
             {/* @ts-ignore */}
@@ -197,7 +200,7 @@ export const AuraHero = () => {
           <div className="expertise-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               Curious about systems, visuals, and everyday details.
@@ -208,7 +211,7 @@ export const AuraHero = () => {
           <div className="title-mobile-wrap" style={{ pointerEvents: 'auto' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <h1>Mahmut Elipek</h1>
@@ -219,7 +222,7 @@ export const AuraHero = () => {
           <div className="location-mobile-wrap" style={{ pointerEvents: 'auto', fontSize: '13px', fontWeight: 500, color: 'white' }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               Based in Istanbul, TR
