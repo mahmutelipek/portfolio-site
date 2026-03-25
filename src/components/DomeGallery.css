@@ -61,23 +61,17 @@ main.sphere-main {
   pointer-events: none;
 }
 
-.overlay {
-  /* mask-image removed for performance */
-}
-
-.overlay--blur {
-  /* mask-image removed for performance */
-  /* backdrop-filter removed for performance */
-}
+/* Overlay and Blur effects were removed for performance. 
+   If needed, refer to git history for radial-gradient and backdrop-filter implementations. */
 
 .item {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--item-width);
-  height: var(--item-height);
-  margin-left: calc(var(--item-width) / -2);
-  margin-top: calc(var(--item-height) / -2);
+  width: calc(var(--item-width) * 1.7);
+  height: calc(var(--item-height) * 1.7);
+  margin-left: calc(var(--item-width) * 1.7 / -2);
+  margin-top: calc(var(--item-height) * 1.7 / -2);
   transform-style: preserve-3d;
   backface-visibility: hidden;
   /* transition removed for performance */
