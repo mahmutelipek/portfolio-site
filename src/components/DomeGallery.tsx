@@ -285,8 +285,8 @@ export default function DomeGallery({
       if (!draggingRef.current && !focusedElRef.current && !openingRef.current) {
         const delta = time - lastTime;
         // Adjust this value to change rotation speed
-        const speed = 0.002;
-        rotationRef.current.y = wrapAngleSigned(rotationRef.current.y - speed * delta);
+        const speed = 0.0022; // Increased by 10%
+        rotationRef.current.y = wrapAngleSigned(rotationRef.current.y + speed * delta); // Reversed direction (+)
         applyTransform(rotationRef.current.x, rotationRef.current.y);
       }
       lastTime = time;
