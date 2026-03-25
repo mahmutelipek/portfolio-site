@@ -68,10 +68,10 @@ main.sphere-main {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: calc(var(--item-width) * 1.7);
-  height: calc(var(--item-height) * 1.7);
-  margin-left: calc(var(--item-width) * 1.7 / -2);
-  margin-top: calc(var(--item-height) * 1.7 / -2);
+  width: calc(var(--item-width) * 1.8);
+  height: calc(var(--item-height) * 1.8);
+  margin-left: calc(var(--item-width) * 1.8 / -2);
+  margin-top: calc(var(--item-height) * 1.8 / -2);
   transform-style: preserve-3d;
   backface-visibility: hidden;
   /* transition removed for performance */
