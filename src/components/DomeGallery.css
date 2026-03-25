@@ -9,7 +9,6 @@
   --rot-x: calc((360deg / var(--segments-y)) / 2);
   --item-width: calc(var(--circ) / var(--segments-x));
   --item-height: calc(var(--circ) / var(--segments-y));
-  contain: content;
 }
 
 
@@ -49,7 +48,6 @@ main.sphere-main {
 .sphere {
   transform: translateZ(calc(var(--radius) * -1));
   will-change: transform;
-  contain: layout style;
 }
 
 .overlay,
@@ -61,23 +59,29 @@ main.sphere-main {
   pointer-events: none;
 }
 
-/* Overlay and Blur effects were removed for performance. 
-   If needed, refer to git history for radial-gradient and backdrop-filter implementations. */
+.overlay {
+  background-image: radial-gradient(rgba(3, 3, 3, 0) 65%, var(--overlay-blur-color, #030303) 100%);
+}
+
+.overlay--blur {
+  -webkit-mask-image: radial-gradient(rgba(3, 3, 3, 0) 70%, var(--overlay-blur-color, #030303) 90%);
+  mask-image: radial-gradient(rgba(3, 3, 3, 0) 70%, var(--overlay-blur-color, #030303) 90%);
+  backdrop-filter: blur(3px);
+}
 
 .item {
+  width: calc(var(--item-width) * var(--item-size-x));
+  height: calc(var(--item-height) * var(--item-size-y));
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: calc(var(--item-width) * 1.8);
-  height: calc(var(--item-height) * 1.8);
-  margin-left: calc(var(--item-width) * 1.8 / -2);
-  margin-top: calc(var(--item-height) * 1.8 / -2);
-  transform-style: preserve-3d;
+  top: -999px;
+  bottom: -999px;
+  left: -999px;
+  right: -999px;
+  margin: auto;
+  transform-origin: 50% 50%;
   backface-visibility: hidden;
-  /* transition removed for performance */
+  transition: transform 300ms;
   transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta, 0deg))) rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta, 0deg))) translateZ(var(--radius));
-  will-change: transform;
-  contain: layout paint;
 }
 
 .item__image {

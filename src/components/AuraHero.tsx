@@ -9,8 +9,8 @@ extend({ UnrealBloomPass });
 
 // Pre-computed constants
 const SIDE = 14;
-const COUNT = SIDE * SIDE * SIDE; // 2744
-const SEP = 3.2;
+const COUNT = SIDE * SIDE * SIDE; // 2744 (optimized for mobile)
+const SEP = 3.2; // adjusted to maintain the same visual volume
 const HALF_EXTENT = ((SIDE - 1) * SEP) / 2;
 const LERP_FACTOR = 0.03;
 const PARTICLE_COLOR = 0x00aaff;
