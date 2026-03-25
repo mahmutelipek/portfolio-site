@@ -280,14 +280,18 @@ export default function DomeGallery({
 
     let lastTime = performance.now();
     let frameId: number;
+    let frameCount = 0;
 
     const rotate = (time: number) => {
-      if (!draggingRef.current && !focusedElRef.current && !openingRef.current) {
-        const delta = time - lastTime;
-        // Adjust this value to change rotation speed
-        const speed = 0.002;
-        rotationRef.current.y = wrapAngleSigned(rotationRef.current.y - speed * delta);
-        applyTransform(rotationRef.current.x, rotationRef.current.y);
+      frameCount++;
+      // Throttle to ~30fps — rotation is so slow (0.002°/ms) that this is invisible
+      if (frameCount % 2 === 0) {
+        if (!draggingRef.current && !focusedElRef.current && !openingRef.current) {
+          const delta = time - lastTime;
+          const speed = 0.002;
+          rotationRef.current.y = wrapAngleSigned(rotationRef.current.y - speed * delta);
+          applyTransform(rotationRef.current.x, rotationRef.current.y);
+        }
       }
       lastTime = time;
       frameId = requestAnimationFrame(rotate);

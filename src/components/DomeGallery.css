@@ -9,6 +9,7 @@
   --rot-x: calc((360deg / var(--segments-y)) / 2);
   --item-width: calc(var(--circ) / var(--segments-x));
   --item-height: calc(var(--circ) / var(--segments-y));
+  contain: content;
 }
 
 
@@ -48,6 +49,7 @@ main.sphere-main {
 .sphere {
   transform: translateZ(calc(var(--radius) * -1));
   will-change: transform;
+  contain: layout style;
 }
 
 .overlay,
@@ -82,6 +84,8 @@ main.sphere-main {
   backface-visibility: hidden;
   transition: transform 300ms;
   transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta, 0deg))) rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta, 0deg))) translateZ(var(--radius));
+  will-change: transform;
+  contain: layout paint;
 }
 
 .item__image {
