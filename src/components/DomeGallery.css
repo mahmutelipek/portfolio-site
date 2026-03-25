@@ -62,27 +62,25 @@ main.sphere-main {
 }
 
 .overlay {
-  background-image: radial-gradient(rgba(3, 3, 3, 0) 65%, var(--overlay-blur-color, #030303) 100%);
+  /* mask-image removed for performance */
 }
 
 .overlay--blur {
-  -webkit-mask-image: radial-gradient(rgba(3, 3, 3, 0) 70%, var(--overlay-blur-color, #030303) 90%);
-  mask-image: radial-gradient(rgba(3, 3, 3, 0) 70%, var(--overlay-blur-color, #030303) 90%);
+  /* mask-image removed for performance */
   /* backdrop-filter removed for performance */
 }
 
 .item {
-  width: calc(var(--item-width) * var(--item-size-x));
-  height: calc(var(--item-height) * var(--item-size-y));
   position: absolute;
-  top: -999px;
-  bottom: -999px;
-  left: -999px;
-  right: -999px;
-  margin: auto;
-  transform-origin: 50% 50%;
+  left: 50%;
+  top: 50%;
+  width: var(--item-width);
+  height: var(--item-height);
+  margin-left: calc(var(--item-width) / -2);
+  margin-top: calc(var(--item-height) / -2);
+  transform-style: preserve-3d;
   backface-visibility: hidden;
-  transition: transform 300ms;
+  /* transition removed for performance */
   transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta, 0deg))) rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta, 0deg))) translateZ(var(--radius));
   will-change: transform;
   contain: layout paint;
