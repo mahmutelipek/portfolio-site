@@ -10,7 +10,6 @@ export function Footer() {
   const [logos, setLogos] = useState<Logo[]>([]);
   const [isInView, setIsInView] = useState(false);
   const sphereRef = useRef<HTMLDivElement>(null);
-  const isHighPerf = /Mac|iPhone|iPad/.test(navigator.userAgent);
   
   // Lazy-load: Only render DomeGallery when footer enters viewport
   useEffect(() => {
@@ -72,7 +71,7 @@ export function Footer() {
             <DomeGallery 
               images={logos.map(l => ({ src: l.url, alt: l.name }))} 
               fit={isMobile ? 1.0 : 0.8}
-              segments={isMobile ? (isHighPerf ? 22 : 16) : (isHighPerf ? 30 : 20)}
+              segments={isMobile ? 22 : 30}
               overlayBlurColor="#000000"
               disableInteraction={true}
             />

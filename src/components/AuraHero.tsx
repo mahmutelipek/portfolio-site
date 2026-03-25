@@ -7,41 +7,13 @@ import { motion } from 'framer-motion';
 
 extend({ UnrealBloomPass });
 
-// GPU tier detection — whitelist approach: only known-powerful GPUs get full effects
-function detectGPUTier(): 'low' | 'high' {
-  try {
-    // Apple devices (M-series) always handle this well
-    if (/Mac|iPhone|iPad/.test(navigator.userAgent)) return 'high';
-    
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return 'low';
-    const debugInfo = (gl as WebGLRenderingContext).getExtension('WEBGL_debug_renderer_info');
-    if (debugInfo) {
-      const renderer = (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_RENDERER_WEBGL).toLowerCase();
-      // Only NVIDIA discrete GPUs get full effects on non-Apple
-      if (renderer.includes('nvidia') || renderer.includes('geforce') || renderer.includes('rtx') || renderer.includes('gtx')) {
-        return 'high';
-      }
-    }
-    // Everything else (AMD integrated, Intel, SwiftShader, unknown) = low
-    return 'low';
-  } catch {
-    return 'low';
-  }
-}
-
-const GPU_TIER = detectGPUTier();
-
-// Pre-computed constants — adapted per GPU tier
-const SIDE = GPU_TIER === 'low' ? 8 : 14;
-const COUNT = SIDE * SIDE * SIDE; // low=512, high=2744
-const SEP = GPU_TIER === 'low' ? 5.0 : 3.2;
+// Pre-computed constants
+const SIDE = 14;
+const COUNT = SIDE * SIDE * SIDE; // 2744
+const SEP = 3.2;
 const HALF_EXTENT = ((SIDE - 1) * SEP) / 2;
 const LERP_FACTOR = 0.03;
 const PARTICLE_COLOR = 0x00aaff;
-const BLOOM_STRENGTH = GPU_TIER === 'low' ? 1.0 : 3.73;
-const CANVAS_DPR: [number, number] = GPU_TIER === 'low' ? [1, 1] : [1, 1.5];
 
 const ParticleSwarm = ({ isReady }: { isReady: boolean }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -212,13 +184,13 @@ export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
 
       {/* Background Particle Swarm — pauses rendering when scrolled out of view */}
       <div style={{ pointerEvents: isMobile ? 'none' : 'auto', position: 'absolute', left: 0, right: 0, top: isMobile ? '5%' : 0, bottom: isMobile ? '5%' : 0, zIndex: 0 }}>
-        <Canvas dpr={CANVAS_DPR} frameloop={isInView ? 'always' : 'never'} camera={{ position: [0, 0, 106], fov: 60 }} style={{ pointerEvents: isMobile ? 'none' : 'auto', touchAction: 'auto' }}>
+        <Canvas dpr={[1, 1.5]} frameloop={isInView ? 'always' : 'never'} camera={{ position: [0, 0, 106], fov: 60 }} style={{ pointerEvents: isMobile ? 'none' : 'auto', touchAction: 'auto' }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm isReady={isReady} />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
           <Effects disableGamma>
             {/* @ts-ignore */}
-            <unrealBloomPass threshold={0} strength={BLOOM_STRENGTH} radius={0.4} />
+            <unrealBloomPass threshold={0} strength={3.73} radius={0.4} />
           </Effects>
         </Canvas>
       </div>
