@@ -23,6 +23,7 @@ export function Admin() {
   // Data State
   const [projects, setProjects] = useState<Project[]>([]);
   const [logos, setLogos] = useState<Logo[]>([]);
+  const [gaId, setGaId] = useState('');
   
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizingStatus, setOptimizingStatus] = useState('');
@@ -65,6 +66,13 @@ export function Admin() {
 
     const { data: lData } = await supabase.from('logos').select('*').order('sort_order');
     if (lData) setLogos(lData);
+
+    // Fetch Site Settings
+    const { data: sData } = await supabase.from('site_settings').select('*');
+    if (sData) {
+      const gTag = sData.find(s => s.key === 'google_analytics_id');
+      if (gTag) setGaId(gTag.value || '');
+    }
 
     // Fetch Avatar
   }
@@ -958,6 +966,35 @@ export function Admin() {
                      }
                    }
                  }} />
+              </div>
+
+              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333' }}>
+                 <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem' }}>Google Analytics (GA4)</h3>
+                 <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1.5rem' }}>Enter your Measurement ID (starts with G-). This will enable visitor tracking across the site.</p>
+                 
+                 <div style={{ display: 'flex', gap: '0.5rem' }}>
+                   <input 
+                     type="text" 
+                     placeholder="G-XXXXXX" 
+                     value={gaId}
+                     onChange={(e) => setGaId(e.target.value)}
+                     style={{ flex: 1, padding: '0.6rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '6px', color: '#fff' }}
+                   />
+                   <button 
+                     onClick={async () => {
+                        setSaveStatus('Saving GA ID...');
+                        const { error } = await supabase.from('site_settings').upsert({ key: 'google_analytics_id', value: gaId }, { onConflict: 'key' });
+                        if (error) alert("Error saving GA ID: " + error.message);
+                        else {
+                          setSaveStatus('GA ID Saved');
+                          setTimeout(() => setSaveStatus(null), 2000);
+                        }
+                     }}
+                     style={{ padding: '0.6rem 1.2rem', background: '#fff', color: '#000', fontWeight: 600, border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                   >
+                     Save
+                   </button>
+                 </div>
               </div>
 
             </div>
