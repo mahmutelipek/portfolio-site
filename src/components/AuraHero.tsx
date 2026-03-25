@@ -51,11 +51,11 @@ const ParticleSwarm = ({ isReady }: { isReady: boolean }) => {
   const geometry = useMemo(() => new THREE.TetrahedronGeometry(0.25), []);
 
   // Set instance colors once on mount (they never change)
-  useFrame(() => {
+  useFrame((_state, delta) => {
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    // One-time color init: set all instance colors on first frame
+    // One-time color init
     if (!mesh.userData.colorsSet) {
       for (let i = 0; i < COUNT; i++) {
         mesh.setColorAt(i, colorObj);
@@ -64,22 +64,21 @@ const ParticleSwarm = ({ isReady }: { isReady: boolean }) => {
       mesh.userData.colorsSet = true;
     }
 
-    // Wait for the loader to finish before animating
     if (!isReady) return;
-
-    // Skip matrix updates once animation has converged
     if (settled.current) return;
 
     let maxDelta = 0;
+    
+    // Normalize lerp for high-refresh monitors (assuming 60fps base)
+    // 0.03 at 60fps (~16.6ms) = 0.0018 per ms
+    const lerp = Math.min(1, LERP_FACTOR * (delta / (1/60)));
 
     for (let i = 0; i < COUNT; i++) {
       const i3 = i * 3;
-      // Lerp each axis
-      positions[i3] += (targets[i3] - positions[i3]) * LERP_FACTOR;
-      positions[i3 + 1] += (targets[i3 + 1] - positions[i3 + 1]) * LERP_FACTOR;
-      positions[i3 + 2] += (targets[i3 + 2] - positions[i3 + 2]) * LERP_FACTOR;
+      positions[i3] += (targets[i3] - positions[i3]) * lerp;
+      positions[i3 + 1] += (targets[i3 + 1] - positions[i3 + 1]) * lerp;
+      positions[i3 + 2] += (targets[i3 + 2] - positions[i3 + 2]) * lerp;
 
-      // Track convergence
       const dx = targets[i3] - positions[i3];
       const dy = targets[i3 + 1] - positions[i3 + 1];
       const dz = targets[i3 + 2] - positions[i3 + 2];
@@ -92,8 +91,6 @@ const ParticleSwarm = ({ isReady }: { isReady: boolean }) => {
     }
 
     mesh.instanceMatrix.needsUpdate = true;
-
-    // Once all particles are within 0.01 units of their target, stop updating
     if (maxDelta < 0.0001) {
       settled.current = true;
     }
@@ -187,7 +184,7 @@ export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
         <Canvas dpr={[1, 1.5]} frameloop={isInView ? 'always' : 'never'} camera={{ position: [0, 0, 106], fov: 60 }} style={{ pointerEvents: isMobile ? 'none' : 'auto', touchAction: 'auto' }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm isReady={isReady} />
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />
+          <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} autoRotateSpeed={1.0} enableRotate={!isMobile} />
           <Effects disableGamma>
             {/* @ts-ignore */}
             <unrealBloomPass threshold={0} strength={3.73} radius={0.4} />
