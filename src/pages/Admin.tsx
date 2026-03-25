@@ -899,32 +899,63 @@ export function Admin() {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '2rem' }}>Site Assets</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               
-              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #333' }}>
-                 <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Favicon (.ico, .png)</h3>
-                 <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1rem' }}>Upload your site's favicon. It will be stored and served as favicon.png.</p>
-                 <input type="file" accept=".png,.ico,image/*" onChange={async e => {
+              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div>
+                      <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem' }}>Favicon (.png)</h3>
+                      <p style={{ color: '#888', fontSize: '0.85rem' }}>Upload your site's favicon. Best size: 512x512px.</p>
+                    </div>
+                    <div style={{ width: '64px', height: '64px', background: '#1a1a1a', borderRadius: '8px', border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                      <img 
+                        src={`https://gwyhhcxxrybuvskzeyqt.supabase.co/storage/v1/object/public/portfolio/favicon.png?t=${Date.now()}`} 
+                        key={saveStatus === 'Favicon Updated' ? 'refresh' : 'standard'}
+                        alt="Favicon Preview" 
+                        style={{ width: '32px', height: '32px', objectFit: 'contain' }} 
+                        onError={(e) => { (e.target as any).style.display = 'none'; }}
+                        onLoad={(e) => { (e.target as any).style.display = 'block'; }}
+                      />
+                    </div>
+                 </div>
+                 <input type="file" accept="image/png" onChange={async e => {
                    const file = e.target.files?.[0];
                    if(file) {
                      setSaveStatus('Uploading Favicon...');
                      const { error } = await supabase.storage.from('portfolio').upload('favicon.png', file, { upsert: true });
                      if (error) alert("Error uploading favicon: " + error.message);
-                     else alert("Favicon updated successfully! Refresh your site or clear cache to see it.");
-                     setSaveStatus(null);
+                     else {
+                       setSaveStatus('Favicon Updated');
+                       setTimeout(() => setSaveStatus(null), 2000);
+                     }
                    }
                  }} />
               </div>
 
-              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #333' }}>
-                 <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>OG Image (.jpg, .png)</h3>
-                 <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1rem' }}>Upload the OG Image for social sharing links (Twitter, LinkedIn, etc.). It will be stored as og-image.jpg.</p>
+              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333' }}>
+                 <div style={{ marginBottom: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem' }}>OG Image (Social Sharing)</h3>
+                    <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1rem' }}>Social preview image (1200x630px). Best for Twitter, LinkedIn, etc.</p>
+                    
+                    <div style={{ width: '100%', aspectRatio: '1.91/1', background: '#1a1a1a', borderRadius: '8px', border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                      <img 
+                        src={`https://gwyhhcxxrybuvskzeyqt.supabase.co/storage/v1/object/public/portfolio/og-image.jpg?t=${Date.now()}`} 
+                        key={saveStatus === 'OG Image Updated' ? 'refresh' : 'standard'}
+                        alt="OG Preview" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        onError={(e) => { (e.target as any).style.display = 'none'; }}
+                        onLoad={(e) => { (e.target as any).style.display = 'block'; }}
+                      />
+                    </div>
+                 </div>
                  <input type="file" accept="image/*" onChange={async e => {
                    const file = e.target.files?.[0];
                    if(file) {
                      setSaveStatus('Uploading OG Image...');
                      const { error } = await supabase.storage.from('portfolio').upload('og-image.jpg', file, { upsert: true });
                      if (error) alert("Error uploading OG image: " + error.message);
-                     else alert("OG Image updated successfully!");
-                     setSaveStatus(null);
+                     else {
+                       setSaveStatus('OG Image Updated');
+                       setTimeout(() => setSaveStatus(null), 2000);
+                     }
                    }
                  }} />
               </div>
