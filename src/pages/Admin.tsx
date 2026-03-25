@@ -957,12 +957,30 @@ export function Admin() {
                  <input type="file" accept="image/*" onChange={async e => {
                    const file = e.target.files?.[0];
                    if(file) {
-                     setSaveStatus('Uploading OG Image...');
-                     const { error } = await supabase.storage.from('portfolio').upload('og-image.jpg', file, { upsert: true });
-                     if (error) alert("Error uploading OG image: " + error.message);
-                     else {
-                       setSaveStatus('OG Image Updated');
-                       setTimeout(() => setSaveStatus(null), 2000);
+                     try {
+                       setSaveStatus('Compressing...');
+                       // Optimize for WhatsApp (under 300KB, max 1200px)
+                       const options = {
+                         maxSizeMB: 0.3,
+                         maxWidthOrHeight: 1200,
+                         useWebWorker: true,
+                         fileType: 'image/jpeg'
+                       };
+                       
+                       const importCompression = await import('browser-image-compression');
+                       const imageCompression = importCompression.default;
+                       const compressedFile = await imageCompression(file, options);
+                       
+                       setSaveStatus('Uploading...');
+                       const { error } = await supabase.storage.from('portfolio').upload('og-image.jpg', compressedFile, { upsert: true });
+                       if (error) alert("Error uploading OG image: " + error.message);
+                       else {
+                         setSaveStatus('OG Image Updated');
+                         setTimeout(() => setSaveStatus(null), 2000);
+                       }
+                     } catch (err) {
+                        alert("Compression error: " + err);
+                        setSaveStatus(null);
                      }
                    }
                  }} />
