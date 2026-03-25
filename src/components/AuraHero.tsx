@@ -107,6 +107,20 @@ const ParticleSwarm = ({ isReady }: { isReady: boolean }) => {
 export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [heroHeight, setHeroHeight] = useState('100vh');
+  const [isInView, setIsInView] = useState(true);
+  const heroRef = useRef<HTMLElement>(null);
+
+  // Pause Canvas rendering when hero is scrolled out of viewport
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     // Lock initial exact height to avoid iOS Safari dynamic UI jumps
@@ -131,6 +145,7 @@ export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
 
   return (
     <section
+      ref={heroRef}
       id="hero"
       style={{
         width: '100%',
@@ -167,9 +182,9 @@ export const AuraHero = ({ isReady = true }: { isReady?: boolean }) => {
         }
       `}</style>
 
-      {/* Background Particle Swarm */}
+      {/* Background Particle Swarm — pauses rendering when scrolled out of view */}
       <div style={{ pointerEvents: isMobile ? 'none' : 'auto', position: 'absolute', left: 0, right: 0, top: isMobile ? '5%' : 0, bottom: isMobile ? '5%' : 0, zIndex: 0 }}>
-        <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 106], fov: 60 }} style={{ pointerEvents: isMobile ? 'none' : 'auto', touchAction: 'auto' }}>
+        <Canvas dpr={[1, 1.5]} frameloop={isInView ? 'always' : 'never'} camera={{ position: [0, 0, 106], fov: 60 }} style={{ pointerEvents: isMobile ? 'none' : 'auto', touchAction: 'auto' }}>
           <fog attach="fog" args={['#000000', 0.01]} />
           <ParticleSwarm isReady={isReady} />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} enableRotate={!isMobile} />

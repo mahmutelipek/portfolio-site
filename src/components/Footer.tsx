@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Logo } from '../lib/types';
 import DomeGallery from './DomeGallery';
@@ -8,7 +8,21 @@ import './Footer.css';
 export function Footer() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [logos, setLogos] = useState<Logo[]>([]);
+  const [isInView, setIsInView] = useState(false);
+  const sphereRef = useRef<HTMLDivElement>(null);
   
+  // Lazy-load: Only render DomeGallery when footer enters viewport
+  useEffect(() => {
+    const el = sphereRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { rootMargin: '200px' } // Start loading slightly before visible
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
@@ -42,8 +56,8 @@ export function Footer() {
     <div className="monumental-footer-wrapper">
       <footer className="monumental-footer">
         
-        {/* Sphere Animation Background */}
-        <div className="footer-sphere-wrapper" style={{ 
+        {/* Sphere Animation Background — lazy-loaded via IntersectionObserver */}
+        <div ref={sphereRef} className="footer-sphere-wrapper" style={{ 
           position: 'absolute', 
           inset: 0, 
           display: 'flex', 
@@ -53,7 +67,7 @@ export function Footer() {
           opacity: isMobile ? 0.3 : 0.3, 
           pointerEvents: 'none' 
         }}>
-          {logos.length > 0 && (
+          {isInView && logos.length > 0 && (
             <DomeGallery 
               images={logos.map(l => ({ src: l.url, alt: l.name }))} 
               fit={isMobile ? 1.0 : 0.8}
