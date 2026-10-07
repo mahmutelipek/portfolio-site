@@ -70,7 +70,6 @@ Anasayfadaki isim ve ünvan, tanıtım metni, bağlantı rozetleri ve ürün adr
 - **Yükleme (Admin):** Görseller tarayıcıda WebP'ye çevrilir, en çok 1920px ve yaklaşık 1,5 MB'a küçültülür, uzun süreli önbellek başlığıyla yüklenir.
 - **Gösterim:** `src/lib/image.ts`, Supabase'in görsel dönüştürme adresini (`/storage/v1/render/image/public/...`) kullanıp ekranda gereken boyutu (700 ve 1400px) ister. Dönüştürme çalışmazsa orijinal görsele döner.
 - **Yükleme sırası:** İlk proje görseli hemen, diğerleri kaydırıldıkça yüklenir (`loading="lazy"`).
-- `optimize-images.js`: Eski, büyük görselleri toplu olarak WebP'ye çeviren tek seferlik betik (`.env` gerekir).
 
 ## Yayın
 
@@ -78,4 +77,4 @@ Vercel `main` branch'ini yayınlar. `vercel.json` tüm adresleri `index.html`'e 
 
 ## Veritabanı
 
-Şema dosyaları kök dizinde: `supabase_schema.sql`, `site_settings.sql`, `about_blocks_schema.sql`, `visibility_schema.sql`, `add_link_column.sql`, `update_schema.sql`. Yeni bir Supabase projesinde Supabase SQL Editor'de çalıştır.
+Şema dosyaları kök dizinde: `supabase_schema.sql`, `site_settings.sql`, `visibility_schema.sql`, `add_link_column.sql`, `update_schema.sql`. Yeni bir Supabase projesinde Supabase SQL Editor'de çalıştır.

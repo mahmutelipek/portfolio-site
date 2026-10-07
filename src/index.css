@@ -10,17 +10,8 @@
   --bg-color: #000000;
   --text-primary: #F5F5F7;
   --text-secondary: #86868B;
-  --border-color: #1D1D1F;
-  --accent-color: #FFFFFF;
 
   --font-mono: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
-  --spacing-xxl: 8rem;
 }
 
 /* Reset */
@@ -79,25 +70,6 @@ button {
   cursor: pointer;
 }
 
-/* Navigation Hover States */
-.nav-item {
-  transition: background-color 0.3s ease, opacity 0.3s ease;
-  padding: 0.35rem 0.75rem;
-  border-radius: 8px;
-}
-
-.nav-item:hover {
-  background-color: #1D1D1F;
-}
-
-.contact-btn {
-  background-color: #FFFFFF;
-}
-
-.contact-btn:hover {
-  background-color: #E6E6E6;
-}
-
 img,
 video {
   max-width: 100%;
@@ -128,59 +100,4 @@ h2 {
 
 p {
   font-size: 1rem;
-}
-
-.text-secondary {
-  color: var(--text-secondary);
-}
-
-.uppercase {
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Utilities */
-.container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg);
-}
-
-.flex {
-  display: flex;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.section {
-  padding: var(--spacing-xxl) 0;
-}
-
-/* Hero Scaling Fix */
-.hero-title {
-  font-size: clamp(2.5rem, 12vw, 172.8px);
-}
-
-.hero-subtitle {
-  font-size: clamp(0.85rem, 1.5vw, 21.6px);
-}
-
-@media (min-width: 1280px) {
-  .hero-title {
-    font-size: 172.8px !important;
-  }
-  .hero-subtitle {
-    font-size: 21.6px !important;
-  }
 }

@@ -64,10 +64,9 @@
   .rails::after { left: auto; right: 0; }
 }
 
-/* Horizontal hairline anchored to the top or bottom of a block, spanning only
-   the column so it ends at the side rails instead of crossing them. */
-.rule-top::before,
-.rule-bottom::after {
+/* Horizontal hairline anchored to the top of a block, spanning only the column
+   so it ends at the side rails instead of crossing them. */
+.rule-top::before {
   content: '';
   position: absolute;
   left: 0;
@@ -77,7 +76,6 @@
   pointer-events: none;
 }
 .rule-top::before { top: 0; }
-.rule-bottom::after { bottom: 0; }
 
 /* Hatched divider between sections, same width as the column */
 .hatch {

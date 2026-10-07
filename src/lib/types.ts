@@ -28,10 +28,3 @@ export interface Logo {
   website_url?: string;
   sort_order?: number;
 }
-
-export interface AboutImage {
-  id: string;
-  url: string;
-  alt?: string;
-  sort_order: number;
-}

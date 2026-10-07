@@ -91,37 +91,6 @@ export function Home() {
         globalStore.homeProjects = data as Project[];
         // These are full rows, so project pages can open without another request.
         for (const p of data as Project[]) globalStore.projectDetails[p.slug] ??= p;
-      } else {
-        const dummyProjects: Project[] = [
-          {
-            id: 'dummy-1',
-            title: 'Modern Coffee App',
-            slug: 'modern-coffee-app',
-            date: '2023 - 2024',
-            cover_image_url: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=2787&auto=format&fit=crop',
-            gallery: [
-              'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2671&auto=format&fit=crop'
-            ],
-            content_body: 'A complete redesign... (dummy)',
-            roles: ['UX Research', 'UI Design'],
-            sort_order: 0
-          },
-          {
-            id: 'dummy-2',
-            title: 'Banking Dashboard',
-            slug: 'banking-dashboard',
-            date: '2024-10-22',
-            cover_image_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop',
-            gallery: [
-              'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'
-            ],
-            content_body: '### Overview\nDesigning a clear, high-contrast dashboard for complex and high-frequency financial data.\n\n### Challenge\nInstitutional traders were overwhelmed by cluttered interfaces that lacked visual hierarchy, leading to slower decision-making and increased cognitive load during peak hours.\n\n### Solution\nUtilized strict 8pt grid systems, modular card layouts, and monospaced typography to drastically enhance data legibility. We implemented dynamic color coding for instantaneous trend recognition.\n\n### Results\nImproved user workflow efficiency scores by 40% in beta testing, with traders reporting a significantly lower fatigue rate over standard 8-hour sessions.',
-            roles: ['UI/UX Design', 'Design Systems'],
-            sort_order: 1
-          }
-        ];
-        setProjects(dummyProjects);
-        globalStore.homeProjects = dummyProjects;
       }
 
       globalStore.homeVisited = true;
