@@ -81,7 +81,9 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                     </div>
                     <div style={{ paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em' }}>{project.title}</h3>
+                        <h3 style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em' }}>
+                          <span className="ulink">{project.title}</span>
+                        </h3>
                         <ArrowUpRight size={16} style={{ opacity: 0.6, flexShrink: 0 }} />
                       </div>
                       <p

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
-import { Linkedin, Mail, X as XIcon, Layers } from 'lucide-react';
+import { Mail, Layers } from 'lucide-react';
+import { XLogo, LinkedInLogo } from '../components/BrandIcons';
 import { SelectedWorks } from '../components/SelectedWorks';
 import CountUp from '../components/CountUp';
 import Lottie from 'lottie-react';
@@ -13,8 +14,8 @@ import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 
 const LINKS = [
-  { label: 'X', href: 'https://x.com/mahmutelipk', Icon: XIcon },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek', Icon: Linkedin },
+  { label: 'X', href: 'https://x.com/mahmutelipk', Icon: XLogo },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek', Icon: LinkedInLogo },
   { label: 'Shots', href: 'https://layers.to/mahmutelipek', Icon: Layers },
 ];
 

@@ -1,10 +1,5 @@
+import { Clock } from './Clock';
 import './Frame.css';
-
-const links = [
-  { label: 'X', href: 'https://x.com/mahmutelipk' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek' },
-  { label: 'Shots', href: 'https://layers.to/mahmutelipek' },
-];
 
 export function Footer() {
   return (
@@ -29,17 +24,8 @@ export function Footer() {
             color: 'var(--text-secondary)',
           }}
         >
+          <Clock />
           <span>© {new Date().getFullYear()} Mahmut Elipek</span>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            {links.map(l => (
-              <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" style={{ transition: 'color 0.2s ease' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-                onMouseLeave={e => (e.currentTarget.style.color = '')}
-              >
-                {l.label}
-              </a>
-            ))}
-          </div>
         </div>
       </div>
     </footer>
