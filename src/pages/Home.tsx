@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import { ArrowUpRight } from 'lucide-react';
 import { SelectedWorks } from '../components/SelectedWorks';
+import { GithubGraph } from '../components/GithubGraph';
 import CountUp from '../components/CountUp';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../../loading.json';
@@ -262,6 +263,10 @@ export function Home() {
             ))}
           </div>
         </div>
+
+        <div className="hatch" />
+
+        <GithubGraph />
 
         <div className="hatch" />
 
