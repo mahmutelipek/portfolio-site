@@ -171,7 +171,7 @@ export function Home() {
           <style>{`
             .intro {
               max-width: 598px;
-              font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+              font-family: var(--font-mono);
               font-size: 14px;
               line-height: 20px;
               letter-spacing: -0.09px;
