@@ -189,13 +189,13 @@ export function Home() {
           `}</style>
           <div className="intro" style={{ padding: '2.5rem 1.5rem' }}>
             <h1>Mahmut Elipek</h1>
-            <p className="role">Product Designer</p>
+            <p className="role">Product Designer &amp; Design Engineer</p>
 
             <p>
-              I'm a <strong>product designer</strong> with 5 years of experience taking web and mobile products
-              from idea to production. I work hands-on across product thinking, <strong>UX/UI</strong>,{' '}
-              <strong>design systems</strong>, prototyping, and implementation, and I'm most comfortable when the
-              problem isn't fully defined yet.
+              I'm a <strong>product designer</strong> and <strong>design engineer</strong> with 5 years of experience
+              taking web and mobile products from idea to production. I work hands-on across product thinking,{' '}
+              <strong>UX/UI</strong>, <strong>design systems</strong>, prototyping, and implementation, and I design
+              with <strong>AI-based</strong> workflows. I'm most comfortable when the problem isn't fully defined yet.
             </p>
             <p>
               I've built products from zero to one, worked as a sole designer, and led design teams and client
