@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
-import { ArrowUpRight } from 'lucide-react';
+import { Linkedin, Mail, X as XIcon, Layers } from 'lucide-react';
 import { SelectedWorks } from '../components/SelectedWorks';
-import { GithubGraph } from '../components/GithubGraph';
 import CountUp from '../components/CountUp';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../../loading.json';
@@ -13,41 +12,18 @@ import { supabase } from '../lib/supabase';
 import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 
-const ABOUT = [
-  'Product & Experience Designer focused on clarity and systems.',
-  'End-to-end product design: research, UX, UI and design systems.',
-  'I also work with motion and WebGL to make interfaces feel alive.',
-];
-
-const CONNECT = [
-  { label: 'X (Twitter)', short: 'X', href: 'https://x.com/mahmutelipk' },
-  { label: 'LinkedIn', short: 'in', href: 'https://www.linkedin.com/in/mahmutelipek' },
-  { label: 'Shots', short: 'S', href: 'https://layers.to/mahmutelipek' },
-  { label: 'Email', short: '@', href: 'mailto:mahmutelipk@gmail.com' },
+const LINKS = [
+  { label: 'X', href: 'https://x.com/mahmutelipk', Icon: XIcon },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek', Icon: Linkedin },
+  { label: 'Shots', href: 'https://layers.to/mahmutelipek', Icon: Layers },
 ];
 
 export function Home() {
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(!globalStore.homeVisited);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(globalStore.avatarUrl);
   const lenis = useLenis();
   const { hash } = useLocation();
-
-  useEffect(() => {
-    if (globalStore.avatarUrl) return;
-    supabase
-      .from('site_settings')
-      .select('value')
-      .eq('key', 'avatar_url')
-      .single()
-      .then(({ data }) => {
-        if (data?.value) {
-          globalStore.avatarUrl = data.value;
-          setAvatarUrl(data.value);
-        }
-      });
-  }, []);
 
   // Scroll to #projects when arriving from another route (e.g. "/#projects")
   useEffect(() => {
@@ -190,83 +166,64 @@ export function Home() {
       </AnimatePresence>
 
       <main className="rails" style={{ paddingTop: '66px' }}>
-        {/* Profile */}
+        {/* Intro */}
         <div className="frame">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '2rem 1.5rem' }}>
-            <div
-              style={{
-                width: 96,
-                height: 96,
-                flexShrink: 0,
-                padding: 4,
-                border: '1px solid var(--line)',
-                borderRadius: 14,
-                overflow: 'hidden',
-              }}
-            >
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Mahmut Elipek" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 10 }} />
-              ) : (
-                <div style={{ width: '100%', height: '100%', borderRadius: 10, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 600 }}>
-                  M
-                </div>
-              )}
-            </div>
-            <div>
-              <h1 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', fontWeight: 500, letterSpacing: '-0.02em' }}>Mahmut Elipek</h1>
-              <p style={{ marginTop: '0.35rem', color: 'var(--text-secondary)' }}>Product & Experience Designer.</p>
-            </div>
-          </div>
-        </div>
+          <style>{`
+            .intro p { margin: 0; line-height: 1.6; }
+            .intro p + p { margin-top: 1rem; }
+            .intro strong { font-weight: 600; }
+            .pill {
+              display: inline-flex; align-items: center; gap: 0.35rem;
+              padding: 0.05rem 0.6rem; border-radius: 999px;
+              background: rgba(255, 255, 255, 0.08);
+              font-size: 0.9em; line-height: 1.5; vertical-align: baseline;
+              transition: background-color 0.2s ease;
+            }
+            .pill:hover { background: rgba(255, 255, 255, 0.16); }
+          `}</style>
+          <div className="intro" style={{ padding: '2.5rem 1.5rem 2.5rem' }}>
+            <h1 style={{ fontSize: '1rem', fontWeight: 500, letterSpacing: 0 }}>Mahmut Elipek</h1>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Product Designer</p>
 
-        <div className="hatch" />
-
-        {/* About */}
-        <div className="frame">
-          <h2 className="section-title">About</h2>
-          <ul className="rule-top" style={{ padding: '1.75rem 1.5rem 2rem 2.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', lineHeight: 1.6 }}>
-            {ABOUT.map(line => <li key={line}>{line}</li>)}
-          </ul>
-        </div>
-
-        <div className="hatch" />
-
-        {/* Connect */}
-        <div className="frame">
-          <h2 className="section-title">Connect</h2>
-            <style>{`
-              .connect-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
-              .connect-item {
-                display: flex; align-items: center; gap: 0.9rem;
-                padding: 1rem 1.25rem; font-size: 14px;
-                border-right: 1px solid var(--line);
-                border-bottom: 1px solid var(--line);
-                transition: background-color 0.2s ease;
-              }
-              .connect-item:nth-child(2n) { border-right: none; }
-              .connect-item:nth-last-child(-n + 2) { border-bottom: none; }
-              .connect-item:hover { background: rgba(255, 255, 255, 0.04); }
-              .connect-icon {
-                width: 32px; height: 32px; flex-shrink: 0;
-                display: flex; align-items: center; justify-content: center;
-                border: 1px solid var(--line); border-radius: 8px;
-                background: #0d0d0d; font-size: 13px; font-weight: 600;
-              }
-            `}</style>
-          <div className="rule-top connect-grid">
-            {CONNECT.map(c => (
-              <a key={c.label} href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="connect-item">
-                <span className="connect-icon">{c.short}</span>
-                <span style={{ flex: 1 }}>{c.label}</span>
-                <ArrowUpRight size={14} style={{ opacity: 0.6 }} />
+            <p>
+              I'm a <strong>product designer</strong> with 5 years of experience taking web and mobile products
+              from idea to production.
+            </p>
+            <p>
+              I work hands-on across product thinking, <strong>UX/UI</strong>, <strong>design systems</strong>,
+              prototyping, and implementation. I'm most comfortable when the problem isn't fully defined yet and
+              design needs both product thinking and technical understanding.
+            </p>
+            <p>
+              I've built products from zero to one, worked as a sole designer, led design teams and client
+              projects, and collaborated closely with engineering through production.
+            </p>
+            <p>
+              Currently, I design product and UI for <strong>Flowla</strong> and independently build{' '}
+              <strong>Skaplo</strong>, a live subscription product I design and develop with AI-assisted workflows.
+            </p>
+            <p>My focus is simple: understand the problem, find the right solution, and get it shipped.</p>
+            <p>
+              You can find me on{' '}
+              {LINKS.map(({ label, href, Icon }, i) => (
+                <span key={label}>
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="pill">
+                    <Icon size={13} />
+                    {label}
+                  </a>
+                  {i < LINKS.length - 2 ? ', ' : i === LINKS.length - 2 ? ', and ' : '.'}
+                </span>
+              ))}
+            </p>
+            <p>
+              Or reach me via{' '}
+              <a href="mailto:mahmutelipk@gmail.com" className="pill">
+                <Mail size={13} />
+                Email
               </a>
-            ))}
+            </p>
           </div>
         </div>
-
-        <div className="hatch" />
-
-        <GithubGraph />
 
         <div className="hatch" />
 

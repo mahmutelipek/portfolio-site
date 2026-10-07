@@ -35,14 +35,3 @@ export interface AboutImage {
   alt?: string;
   sort_order: number;
 }
-
-export interface ContributionDay {
-  date: string;
-  count: number;
-  level: number;
-}
-
-export interface Contributions {
-  total: number;
-  days: ContributionDay[];
-}
