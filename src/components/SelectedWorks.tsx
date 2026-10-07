@@ -2,11 +2,18 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import type { Project } from '../lib/types';
-import { FitImage } from './FitMedia';
+import { FitImage, COLUMN_SIZES } from './FitMedia';
+import { warmImage } from '../lib/image';
 import './Frame.css';
 
 interface SelectedWorksProps {
   projects: Project[];
+}
+
+/** Start downloading a project's first detail images so its page opens with them already loaded. */
+function warmProject(project: Project) {
+  const images = (project.content_blocks ?? []).filter(b => b.type === 'image').slice(0, 3);
+  for (const b of images) warmImage(b.value, COLUMN_SIZES);
 }
 
 const getCustomSummary = (title: string, originalFirstSentence: string) => {
@@ -80,7 +87,13 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                   viewport={{ once: true, margin: '-20px' }}
                   transition={{ duration: 0.5, delay: index === 0 ? 0 : 0.05 }}
                 >
-                  <Link to={`/works/${project.slug}`} className="work-card">
+                  <Link
+                    to={`/works/${project.slug}`}
+                    className="work-card"
+                    onPointerEnter={() => warmProject(project)}
+                    onTouchStart={() => warmProject(project)}
+                    onFocus={() => warmProject(project)}
+                  >
                     {cover ? (
                       <FitImage
                         className="cover"

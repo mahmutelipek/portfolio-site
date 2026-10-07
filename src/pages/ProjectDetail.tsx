@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
 import { globalStore } from '../lib/store';
 import '../components/Frame.css';
-import { FitImage, FitVideo } from '../components/FitMedia';
+import { FitImage, FitVideo, COLUMN_SIZES } from '../components/FitMedia';
 
 import { motion } from 'framer-motion';
 import { usePageMeta, SITE_NAME } from '../lib/useDocumentTitle';
@@ -30,7 +30,9 @@ function joinList(items: string[]): string {
   return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 
-const MEDIA_SIZES = '(max-width: 720px) 100vw, 672px';
+const MEDIA_SIZES = COLUMN_SIZES;
+/** Media blocks this far down the page load right away; later ones load as you scroll. */
+const EAGER_MEDIA = 3;
 
 /** Full-page notice (loading / not found) in the same framed layout as the rest of the site. */
 function PageMessage({ title, children }: { title?: string; children: ReactNode }) {
@@ -166,6 +168,9 @@ export function ProjectDetail() {
   }, [slug]);
 
   const scope = splitList(project?.industries);
+  const eagerImages = new Set(
+    (project?.content_blocks ?? []).filter(b => b.type === 'image').slice(0, EAGER_MEDIA).map(b => b.id)
+  );
 
   const notFound = !project && !loading;
   usePageMeta(
@@ -295,12 +300,18 @@ export function ProjectDetail() {
                       </div>
                     ) : block.type === 'image' ? (
                       <motion.div
-                        initial={{ y: 24, opacity: 0 }}
+                        initial={eagerImages.has(block.id) ? false : { y: 24, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, ease: 'easeOut' }}
                       >
-                        <FitImage className="detail-media" src={block.value} alt="Project visual" sizes={MEDIA_SIZES} />
+                        <FitImage
+                          className="detail-media"
+                          src={block.value}
+                          alt="Project visual"
+                          sizes={MEDIA_SIZES}
+                          priority={eagerImages.has(block.id)}
+                        />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -331,7 +342,7 @@ export function ProjectDetail() {
                     </div>
                   )}
                   {project.cover_image_url && (
-                    <FitImage className="detail-media" src={project.cover_image_url} alt={project.title} sizes={MEDIA_SIZES} />
+                    <FitImage className="detail-media" src={project.cover_image_url} alt={project.title} sizes={MEDIA_SIZES} priority />
                   )}
                 </>
               )}

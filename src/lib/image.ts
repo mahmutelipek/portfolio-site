@@ -44,3 +44,20 @@ export function fallbackToOriginal(original: string) {
 export function shareImage(url: string): string {
   return url && canTransform(url) ? resized(url, 1200, 80) : url;
 }
+
+const warmed = new Set<string>();
+
+/**
+ * Starts downloading an image into the browser cache ahead of time. `sizes` must match
+ * the real <img> so the browser picks the same srcset candidate and the later request is a cache hit.
+ */
+export function warmImage(url: string, sizes: string): void {
+  if (!url || warmed.has(url)) return;
+  warmed.add(url);
+  const img = new Image();
+  const { src, srcSet } = responsiveImage(url);
+  if (srcSet) img.srcset = srcSet;
+  img.sizes = sizes;
+  img.decoding = 'async';
+  img.src = src;
+}

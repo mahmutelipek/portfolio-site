@@ -83,11 +83,14 @@ export function Home() {
         const { devProjects } = await import('../lib/devProjects');
         setProjects(devProjects);
         globalStore.homeProjects = devProjects;
+        for (const p of devProjects) globalStore.projectDetails[p.slug] ??= p;
       } else if (error) {
         console.error('Error fetching projects:', error);
       } else if (data) {
         setProjects(data as Project[]);
         globalStore.homeProjects = data as Project[];
+        // These are full rows, so project pages can open without another request.
+        for (const p of data as Project[]) globalStore.projectDetails[p.slug] ??= p;
       } else {
         const dummyProjects: Project[] = [
           {
