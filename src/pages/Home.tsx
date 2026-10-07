@@ -169,21 +169,32 @@ export function Home() {
         {/* Intro */}
         <div className="frame">
           <style>{`
-            .intro p { margin: 0; line-height: 1.6; }
-            .intro p + p { margin-top: 1rem; }
-            .intro strong { font-weight: 600; }
+            .intro {
+              max-width: 598px;
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+              font-size: 14px;
+              line-height: 20px;
+              letter-spacing: -0.09px;
+              color: #d4d4d4;
+            }
+            .intro h1 { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: -0.09px; color: #fff; }
+            .intro .role { color: #a1a1a1; margin-bottom: 24px; }
+            .intro p { margin: 0; font-size: inherit; }
+            .intro p + p { margin-top: 14px; }
+            .intro strong { font-weight: 550; color: #fff; }
             .pill {
-              display: inline-flex; align-items: center; gap: 0.35rem;
-              padding: 0.05rem 0.6rem; border-radius: 999px;
+              display: inline-flex; align-items: center; gap: 5px;
+              padding: 3px 8px; border-radius: 999px;
               background: rgba(255, 255, 255, 0.08);
-              font-size: 0.9em; line-height: 1.5; vertical-align: baseline;
+              color: #fff; font-size: 12.5px; font-weight: 500; line-height: 14px; letter-spacing: -0.09px;
+              vertical-align: baseline;
               transition: background-color 0.2s ease;
             }
             .pill:hover { background: rgba(255, 255, 255, 0.16); }
           `}</style>
-          <div className="intro" style={{ padding: '2.5rem 1.5rem 2.5rem' }}>
-            <h1 style={{ fontSize: '1rem', fontWeight: 500, letterSpacing: 0 }}>Mahmut Elipek</h1>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Product Designer</p>
+          <div className="intro" style={{ padding: '2.5rem 1.5rem' }}>
+            <h1>Mahmut Elipek</h1>
+            <p className="role">Product Designer</p>
 
             <p>
               I'm a <strong>product designer</strong> with 5 years of experience taking web and mobile products
@@ -208,7 +219,7 @@ export function Home() {
               {LINKS.map(({ label, href, Icon }, i) => (
                 <span key={label}>
                   <a href={href} target="_blank" rel="noopener noreferrer" className="pill">
-                    <Icon size={13} />
+                    <Icon size={12} />
                     {label}
                   </a>
                   {i < LINKS.length - 2 ? ', ' : i === LINKS.length - 2 ? ', and ' : '.'}
@@ -218,7 +229,7 @@ export function Home() {
             <p>
               Or reach me via{' '}
               <a href="mailto:mahmutelipk@gmail.com" className="pill">
-                <Mail size={13} />
+                <Mail size={12} />
                 Email
               </a>
             </p>
