@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
@@ -7,7 +7,6 @@ import '../components/Frame.css';
 import { FitImage, FitVideo } from '../components/FitMedia';
 
 import { useLenis } from 'lenis/react';
-import { ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CountUp from '../components/CountUp';
 import { glassOverlayStyle } from '../lib/glass';
@@ -18,12 +17,9 @@ function splitList(value?: string): string[] {
   return (value ?? '').split(',').map(v => v.trim()).filter(Boolean);
 }
 
-function Badge({ color, children }: { color: string; children: ReactNode }) {
-  return (
-    <span className="pill" style={{ '--pill': color } as CSSProperties}>
-      {children}
-    </span>
-  );
+function joinList(items: string[]): string {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 
 const MEDIA_SIZES = '(max-width: 720px) 100vw, 672px';
@@ -162,6 +158,8 @@ export function ProjectDetail() {
     fetchProject();
   }, [slug]);
 
+  const scope = splitList(project?.industries);
+
   if (loading && !showSplash) {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', color: '#fff' }}>
@@ -238,11 +236,8 @@ export function ProjectDetail() {
             .detail h3 { font-size: 15px; line-height: 22px; font-weight: 600; color: #fff; margin-bottom: 0.5rem; overflow-wrap: anywhere; }
             .detail p { font-size: inherit; margin: 0; overflow-wrap: anywhere; }
             .detail p + p { margin-top: 0.75rem; }
-            .detail .meta { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
-            .detail .meta-row { display: flex; align-items: baseline; gap: 1rem; }
-            .detail .meta-label { width: 64px; flex-shrink: 0; font-size: 12px; line-height: 16px; color: var(--text-secondary); }
-            .detail .pills { display: flex; flex-wrap: wrap; gap: 6px; }
-            .detail .meta-empty { color: var(--text-secondary); }
+            .detail .meta { margin-top: 1.25rem; }
+            .detail strong { font-weight: 550; color: #fff; }
             .detail-media { width: 100%; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
             .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }
             .detail-pager a { display: block; padding: 1.25rem 1.5rem; transition: background-color 0.2s ease; }
@@ -257,44 +252,43 @@ export function ProjectDetail() {
             <div style={{ padding: '2.5rem 1.5rem' }}>
               <h1>{project.title}</h1>
               <div className="meta">
-                <div className="meta-row">
-                  <div className="meta-label">Scope</div>
-                  <div className="pills">
-                    {splitList(project.industries).length > 0
-                      ? splitList(project.industries).map(v => <Badge key={v} color="#b794f6">{v}</Badge>)
-                      : <span className="meta-empty">—</span>}
-                  </div>
-                </div>
-                <div className="meta-row">
-                  <div className="meta-label">Role</div>
-                  <div className="pills">
-                    {project.roles?.length
-                      ? project.roles.map(v => <Badge key={v} color="#3b8fe0">{v}</Badge>)
-                      : <span className="meta-empty">—</span>}
-                  </div>
-                </div>
-                <div className="meta-row">
-                  <div className="meta-label">Date</div>
-                  <div className="pills">
-                    {project.date ? <Badge color="#e7e9ea">{project.date}</Badge> : <span className="meta-empty">—</span>}
-                  </div>
-                </div>
+                {scope.length > 0 && (
+                  <p>
+                    A <strong>{joinList(scope)}</strong> project.
+                  </p>
+                )}
+                {(project.roles?.length > 0 || project.date) && (
+                  <p>
+                    {project.roles?.length > 0 ? (
+                      <>
+                        I worked on it as <strong>{joinList(project.roles)}</strong>
+                        {project.date && (
+                          <>
+                            {' '}in <strong>{project.date}</strong>
+                          </>
+                        )}
+                        .
+                      </>
+                    ) : (
+                      <>
+                        Completed in <strong>{project.date}</strong>.
+                      </>
+                    )}
+                  </p>
+                )}
                 {project.link && (
-                  <div className="meta-row">
-                    <div className="meta-label">Website</div>
-                    <div className="pills">
-                      <a
-                        className="pill"
-                        style={{ '--pill': '#4ade80' } as CSSProperties}
-                        href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}
-                        <ArrowUpRight size={12} />
-                      </a>
-                    </div>
-                  </div>
+                  <p>
+                    See it live at{' '}
+                    <a
+                      className="ulink"
+                      href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <strong>{project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}</strong>
+                    </a>
+                    .
+                  </p>
                 )}
               </div>
             </div>
