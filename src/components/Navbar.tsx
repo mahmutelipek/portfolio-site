@@ -30,12 +30,22 @@ export function Navbar() {
       <style>{`
         .nav-inner {
           height: 56px;
-          padding: 0 1.5rem;
+          padding: 0 0 0 1.5rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
           font-size: 14px;
         }
+        .nav-right { display: flex; align-items: center; align-self: stretch; gap: 1.25rem; }
+        .nav-cta {
+          align-self: stretch;
+          display: flex;
+          align-items: center;
+          padding: 0 1.5rem;
+          border-left: 1px solid var(--line);
+          transition: background-color 0.2s ease;
+        }
+        .nav-cta:hover { background: rgba(255, 255, 255, 0.08); }
         .nav-link { opacity: 0.8; transition: opacity 0.2s ease; }
         .nav-link:hover { opacity: 1; }
       `}</style>
@@ -50,9 +60,14 @@ export function Navbar() {
             [me.]
           </Link>
 
-          <Link to="/#projects" className="nav-link" onClick={goToProjects}>
-            Projects
-          </Link>
+          <div className="nav-right">
+            <Link to="/#projects" className="nav-link" onClick={goToProjects}>
+              Projects
+            </Link>
+            <a href="mailto:mahmutelipk@gmail.com" className="nav-cta">
+              Get in Touch
+            </a>
+          </div>
         </div>
       </div>
       <div className="hatch" />
