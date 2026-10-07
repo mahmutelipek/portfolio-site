@@ -9,8 +9,10 @@ function canTransform(url: string): boolean {
   return url.includes(OBJECT_PATH) && !/\.(svg|gif)(\?|$)/i.test(url);
 }
 
+// `resize=contain` is required: with only `width`, Supabase keeps the original height
+// and crops ("cover"), which distorts the aspect ratio. `contain` scales proportionally.
 function resized(url: string, width: number, quality: number): string {
-  return `${url.replace(OBJECT_PATH, RENDER_PATH)}?width=${width}&quality=${quality}`;
+  return `${url.replace(OBJECT_PATH, RENDER_PATH)}?width=${width}&quality=${quality}&resize=contain`;
 }
 
 /**

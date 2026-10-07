@@ -93,7 +93,7 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                         priority={index === 0}
                       />
                     ) : (
-                      <div className="cover" style={{ aspectRatio: '16 / 10' }} />
+                      <div className="cover" style={{ aspectRatio: '1280 / 768' }} />
                     )}
                     <div style={{ paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
