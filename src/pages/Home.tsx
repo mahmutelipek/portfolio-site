@@ -12,6 +12,7 @@ import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 
 import { glassOverlayStyle } from '../lib/glass';
+import { useDocumentTitle, HOME_TITLE } from '../lib/useDocumentTitle';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
@@ -38,6 +39,7 @@ const LINKS = [
 const EMAIL_COLOR = '#ff6b5e';
 
 export function Home() {
+  useDocumentTitle(HOME_TITLE);
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(!globalStore.homeVisited);

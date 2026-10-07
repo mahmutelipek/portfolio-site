@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import imageCompression from 'browser-image-compression';
 import { Link } from 'react-router-dom';
+import { useDocumentTitle, SITE_NAME } from '../lib/useDocumentTitle';
 import { supabase } from '../lib/supabase';
 import type { Project, Logo, ContentBlock } from '../lib/types';
 import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Save, Eye, EyeOff } from 'lucide-react';
 
 export function Admin() {
+  useDocumentTitle(`Admin | ${SITE_NAME}`);
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'projects' | 'logos' | 'assets'>(() => {

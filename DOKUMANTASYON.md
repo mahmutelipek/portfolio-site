@@ -38,6 +38,7 @@ src/
 │   ├── devProjects.ts     # Sadece geliştirmede kullanılan örnek projeler
 │   ├── image.ts           # Supabase görsellerini küçültülmüş boyutlarda isteyen yardımcı
 │   ├── store.ts           # Sayfalar arası basit önbellek
+│   ├── useDocumentTitle.ts # Sayfaya göre sekme başlığı (ünvan metni burada)
 │   ├── supabase.ts        # Supabase istemcisi
 │   └── types.ts
 └── pages/

@@ -10,6 +10,7 @@ import { useLenis } from 'lenis/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CountUp from '../components/CountUp';
 import { glassOverlayStyle } from '../lib/glass';
+import { useDocumentTitle, SITE_NAME } from '../lib/useDocumentTitle';
 
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
@@ -159,6 +160,9 @@ export function ProjectDetail() {
   }, [slug]);
 
   const scope = splitList(project?.industries);
+
+  const notFound = !project && !loading && !showSplash;
+  useDocumentTitle(project ? `${project.title} | ${SITE_NAME}` : notFound ? `Project not found | ${SITE_NAME}` : undefined);
 
   if (loading && !showSplash) {
     return (
