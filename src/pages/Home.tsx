@@ -188,7 +188,7 @@ export function Home() {
             }
             .intro-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
             .status { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; white-space: nowrap; font-size: 12.5px; line-height: 20px; color: var(--text-secondary); }
-            @media (max-width: 740px) { .status { font-size: 13px; } }
+            @media (max-width: 740px) { .status { display: none; } }
             .status-dot { position: relative; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
             .status-dot::after {
               content: '';
