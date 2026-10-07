@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="rails" style={{ marginTop: 'auto' }}>
       <div className="hatch" />
-      <div className="frame" style={{ padding: '1.5rem 1.5rem 2rem' }}>
+      <div className="frame" style={{ padding: '1.25rem var(--pad) 1.5rem' }}>
         <div
           style={{
             display: 'flex',

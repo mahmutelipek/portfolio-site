@@ -20,6 +20,7 @@ export function Navbar() {
   return (
     // Fixed bar. Only the column is opaque so the page's side rails stay visible.
     <header
+      className="nav-header"
       style={{
         position: 'fixed',
         top: 0,
@@ -31,6 +32,9 @@ export function Navbar() {
       }}
     >
       <style>{`
+        @media (max-width: 740px) {
+          .nav-header { padding: 0 var(--rail); }
+        }
         .nav-shell {
           pointer-events: auto;
           background: rgba(0, 0, 0, 0.85);
@@ -39,7 +43,7 @@ export function Navbar() {
         }
         .nav-inner {
           height: 56px;
-          padding: 0 0 0 1.5rem;
+          padding: 0 0 0 var(--pad);
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -50,7 +54,7 @@ export function Navbar() {
           align-self: stretch;
           display: flex;
           align-items: center;
-          padding: 0 1.5rem;
+          padding: 0 var(--pad);
           border-left: 1px solid var(--line);
           transition: background-color 0.2s ease;
         }

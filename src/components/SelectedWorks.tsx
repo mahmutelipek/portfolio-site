@@ -34,7 +34,7 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
         .work-item:last-child { border-bottom: none; }
         .work-card {
           display: block;
-          padding: 1.25rem 1.5rem;
+          padding: 1rem var(--pad);
           transition: background-color 0.3s ease;
         }
         .work-card:hover { background: rgba(255, 255, 255, 0.03); }

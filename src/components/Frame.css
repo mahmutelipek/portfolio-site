@@ -5,6 +5,10 @@
 :root {
   --line: rgba(255, 255, 255, 0.1);
   --col-width: 720px;
+  --pad: 1.5rem;
+}
+@media (max-width: 740px) {
+  :root { --pad: 1rem; }
 }
 
 .frame {
@@ -49,9 +53,15 @@
   border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
 }
+/* On narrow screens the column is the full width, so inset the content and draw
+   the rails at the screen edges instead of hiding them. */
 @media (max-width: 740px) {
-  .rails::before,
-  .rails::after { display: none; }
+  .rails {
+    padding-left: var(--rail);
+    padding-right: var(--rail);
+  }
+  .rails::before { left: 0; right: auto; }
+  .rails::after { left: auto; right: 0; }
 }
 
 /* Horizontal hairline anchored to the top or bottom of a block, spanning only
@@ -84,7 +94,7 @@
 
 .section-title {
   position: relative;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem var(--pad);
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
