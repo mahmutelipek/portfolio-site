@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
@@ -6,13 +6,8 @@ import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 import { FitImage, FitVideo } from '../components/FitMedia';
 
-import { useLenis } from 'lenis/react';
-import { motion, AnimatePresence } from 'framer-motion';
-import CountUp from '../components/CountUp';
-import { glassOverlayStyle } from '../lib/glass';
+import { motion } from 'framer-motion';
 import { useDocumentTitle, SITE_NAME } from '../lib/useDocumentTitle';
-
-const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
 function splitList(value?: string): string[] {
   return (value ?? '').split(',').map(v => v.trim()).filter(Boolean);
@@ -54,43 +49,18 @@ export function ProjectDetail() {
   const isCached = slug ? !!globalStore.projectDetails[slug] : false;
   const [project, setProject] = useState<Project | null>(slug ? globalStore.projectDetails[slug] || null : null);
   const [loading, setLoading] = useState(!isCached);
-  const [showSplash, setShowSplash] = useState(!isCached);
   const [prevProject, setPrevProject] = useState<{title: string, slug: string} | null>(null);
   const [nextProject, setNextProject] = useState<{title: string, slug: string} | null>(null);
-  const lenis = useLenis();
-
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-
-  useEffect(() => {
-    if (showSplash) {
-      lenis?.stop();
-      document.body.style.overflow = 'hidden';
-    } else {
-      lenis?.start();
-      document.body.style.overflow = '';
-    }
-    return () => {
-      lenis?.start();
-      document.body.style.overflow = '';
-    };
-  }, [showSplash, lenis]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!slug) return;
     const cached = !!globalStore.projectDetails[slug];
     setLoading(!cached);
-    setShowSplash(!cached);
     if (cached) {
       setProject(globalStore.projectDetails[slug]);
     }
   }, [slug]);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     async function initNavigation() {
@@ -185,10 +155,10 @@ export function ProjectDetail() {
 
   const scope = splitList(project?.industries);
 
-  const notFound = !project && !loading && !showSplash;
+  const notFound = !project && !loading;
   useDocumentTitle(project ? `${project.title} | ${SITE_NAME}` : notFound ? `Project not found | ${SITE_NAME}` : undefined);
 
-  if (loading && !showSplash) {
+  if (loading) {
     return (
       <PageMessage>
         <p className="muted">Loading…</p>
@@ -196,7 +166,7 @@ export function ProjectDetail() {
     );
   }
 
-  if (!project && !loading && !showSplash) {
+  if (!project && !loading) {
     return (
       <PageMessage title="Project not found">
         <p>This project doesn't exist or has been removed.</p>
@@ -211,49 +181,6 @@ export function ProjectDetail() {
 
   return (
     <>
-      <AnimatePresence>
-        {showSplash && (
-          <motion.div
-            key="splash"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            style={glassOverlayStyle}
-          >
-            <div style={{ 
-              position: 'relative', 
-              width: isMobile ? '220px' : '300px', 
-              height: isMobile ? '220px' : '300px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              maxWidth: '95vw',
-              maxHeight: '95vw'
-            }}>
-              <Suspense fallback={null}>
-                <SplashLottie />
-              </Suspense>
-              <div style={{ 
-                position: 'relative', 
-                zIndex: 2, 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                fontSize: isMobile ? '34px' : '48px', 
-                fontWeight: 500, 
-                color: '#fff', 
-                letterSpacing: '-0.02em', 
-                fontVariantNumeric: 'tabular-nums' 
-              }}>
-                <CountUp to={100} duration={0.6} onEnd={() => { 
-                  setTimeout(() => setShowSplash(false), 100); 
-                }} />
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {(project && !loading) && (
         <motion.article
           className="rails"

@@ -13,6 +13,7 @@ import '../components/Frame.css';
 
 import { glassOverlayStyle } from '../lib/glass';
 import { useDocumentTitle, HOME_TITLE } from '../lib/useDocumentTitle';
+import { hasSeenSplash, markSplashSeen } from '../lib/splash';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
@@ -42,7 +43,7 @@ export function Home() {
   useDocumentTitle(HOME_TITLE);
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
-  const [showSplash, setShowSplash] = useState(!globalStore.homeVisited);
+  const [showSplash, setShowSplash] = useState(() => !globalStore.homeVisited && !hasSeenSplash());
   const lenis = useLenis();
   const { hash } = useLocation();
 
@@ -121,6 +122,7 @@ export function Home() {
         globalStore.homeProjects = dummyProjects;
       }
 
+      globalStore.homeVisited = true;
       setLoading(false);
     }
     fetchData();
@@ -164,6 +166,7 @@ export function Home() {
               }}>
                 <CountUp to={100} duration={1.3} onEnd={() => { 
                   globalStore.homeVisited = true;
+                  markSplashSeen();
                   setTimeout(() => setShowSplash(false), 150); 
                 }} />
               </div>
