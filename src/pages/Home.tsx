@@ -137,8 +137,8 @@ export function Home() {
           >
             <div style={{ 
               position: 'relative', 
-              width: window.innerWidth < 768 ? '360px' : '512px', 
-              height: window.innerWidth < 768 ? '360px' : '512px', 
+              width: window.innerWidth < 768 ? '220px' : '300px', 
+              height: window.innerWidth < 768 ? '220px' : '300px', 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
@@ -154,15 +154,15 @@ export function Home() {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                fontSize: window.innerWidth < 768 ? '56px' : '80px', 
+                fontSize: window.innerWidth < 768 ? '34px' : '48px', 
                 fontWeight: 500, 
                 color: '#fff', 
                 letterSpacing: '-0.02em', 
                 fontVariantNumeric: 'tabular-nums' 
               }}>
-                <CountUp to={100} duration={2.5} onEnd={() => { 
+                <CountUp to={100} duration={1.3} onEnd={() => { 
                   globalStore.homeVisited = true;
-                  setTimeout(() => setShowSplash(false), 500); 
+                  setTimeout(() => setShowSplash(false), 150); 
                 }} />
               </div>
             </div>
@@ -186,16 +186,6 @@ export function Home() {
             .intro p { margin: 0; font-size: inherit; }
             .intro p + p { margin-top: 14px; }
             .intro strong { font-weight: 550; color: #fff; }
-            .pill {
-              display: inline-flex; align-items: center; gap: 5px;
-              padding: 3px 8px; border-radius: 999px;
-              background: color-mix(in srgb, var(--pill) 16%, transparent);
-              color: #fff; font-size: 12.5px; font-weight: 500; line-height: 14px; letter-spacing: -0.09px;
-              vertical-align: baseline;
-              transition: background-color 0.2s ease;
-            }
-            .pill:hover { background: color-mix(in srgb, var(--pill) 28%, transparent); }
-            .pill svg { color: var(--pill); }
           `}</style>
           <div className="intro" style={{ padding: '2.5rem 1.5rem' }}>
             <h1>Mahmut Elipek</h1>

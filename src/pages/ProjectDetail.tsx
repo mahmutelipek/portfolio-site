@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, lazy, Suspense, type CSSProperties, type ReactNode } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
@@ -6,13 +6,27 @@ import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 import { FitImage, FitVideo } from '../components/FitMedia';
 
-const MEDIA_SIZES = '(max-width: 720px) 100vw, 672px';
 import { useLenis } from 'lenis/react';
+import { ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CountUp from '../components/CountUp';
-
 import { glassOverlayStyle } from '../lib/glass';
+
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
+
+function splitList(value?: string): string[] {
+  return (value ?? '').split(',').map(v => v.trim()).filter(Boolean);
+}
+
+function Badge({ color, children }: { color: string; children: ReactNode }) {
+  return (
+    <span className="pill" style={{ '--pill': color } as CSSProperties}>
+      {children}
+    </span>
+  );
+}
+
+const MEDIA_SIZES = '(max-width: 720px) 100vw, 672px';
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -178,8 +192,8 @@ export function ProjectDetail() {
           >
             <div style={{ 
               position: 'relative', 
-              width: isMobile ? '360px' : '512px', 
-              height: isMobile ? '360px' : '512px', 
+              width: isMobile ? '220px' : '300px', 
+              height: isMobile ? '220px' : '300px', 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
@@ -195,14 +209,14 @@ export function ProjectDetail() {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                fontSize: isMobile ? '56px' : '80px', 
+                fontSize: isMobile ? '34px' : '48px', 
                 fontWeight: 500, 
                 color: '#fff', 
                 letterSpacing: '-0.02em', 
                 fontVariantNumeric: 'tabular-nums' 
               }}>
-                <CountUp to={100} duration={0.8} onEnd={() => { 
-                  setTimeout(() => setShowSplash(false), 200); 
+                <CountUp to={100} duration={0.6} onEnd={() => { 
+                  setTimeout(() => setShowSplash(false), 100); 
                 }} />
               </div>
             </div>
@@ -224,9 +238,11 @@ export function ProjectDetail() {
             .detail h3 { font-size: 15px; line-height: 22px; font-weight: 600; color: #fff; margin-bottom: 0.5rem; overflow-wrap: anywhere; }
             .detail p { font-size: inherit; margin: 0; overflow-wrap: anywhere; }
             .detail p + p { margin-top: 0.75rem; }
-            .detail .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.25rem 1.5rem; margin-top: 1.5rem; }
-            .detail .meta-label { font-size: 12px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
-            .detail .meta-value { color: #fff; }
+            .detail .meta { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+            .detail .meta-row { display: flex; align-items: baseline; gap: 1rem; }
+            .detail .meta-label { width: 64px; flex-shrink: 0; font-size: 12px; line-height: 16px; color: var(--text-secondary); }
+            .detail .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+            .detail .meta-empty { color: var(--text-secondary); }
             .detail-media { width: 100%; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
             .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }
             .detail-pager a { display: block; padding: 1.25rem 1.5rem; transition: background-color 0.2s ease; }
@@ -241,29 +257,43 @@ export function ProjectDetail() {
             <div style={{ padding: '2.5rem 1.5rem' }}>
               <h1>{project.title}</h1>
               <div className="meta">
-                <div>
+                <div className="meta-row">
                   <div className="meta-label">Scope</div>
-                  <div className="meta-value">{project.industries || '—'}</div>
+                  <div className="pills">
+                    {splitList(project.industries).length > 0
+                      ? splitList(project.industries).map(v => <Badge key={v} color="#b794f6">{v}</Badge>)
+                      : <span className="meta-empty">—</span>}
+                  </div>
                 </div>
-                <div>
+                <div className="meta-row">
                   <div className="meta-label">Role</div>
-                  <div className="meta-value">{project.roles?.join(', ') || '—'}</div>
+                  <div className="pills">
+                    {project.roles?.length
+                      ? project.roles.map(v => <Badge key={v} color="#3b8fe0">{v}</Badge>)
+                      : <span className="meta-empty">—</span>}
+                  </div>
                 </div>
-                <div>
+                <div className="meta-row">
                   <div className="meta-label">Date</div>
-                  <div className="meta-value">{project.date || '—'}</div>
+                  <div className="pills">
+                    {project.date ? <Badge color="#e7e9ea">{project.date}</Badge> : <span className="meta-empty">—</span>}
+                  </div>
                 </div>
                 {project.link && (
-                  <div>
+                  <div className="meta-row">
                     <div className="meta-label">Website</div>
-                    <a
-                      className="meta-value ulink"
-                      href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}
-                    </a>
+                    <div className="pills">
+                      <a
+                        className="pill"
+                        style={{ '--pill': '#4ade80' } as CSSProperties}
+                        href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}
+                        <ArrowUpRight size={12} />
+                      </a>
+                    </div>
                   </div>
                 )}
               </div>

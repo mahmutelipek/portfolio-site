@@ -104,3 +104,22 @@ a:hover .ulink,
 .ulink:hover {
   text-decoration-color: rgba(255, 255, 255, 0.9);
 }
+
+/* Colored badge. Set the tint with the --pill custom property. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pill, #e7e9ea) 16%, transparent);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: -0.09px;
+  vertical-align: baseline;
+  transition: background-color 0.2s ease;
+}
+a.pill:hover { background: color-mix(in srgb, var(--pill, #e7e9ea) 28%, transparent); }
+.pill svg { color: var(--pill, #e7e9ea); }
