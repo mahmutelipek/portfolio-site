@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
 import { globalStore } from '../lib/store';
+import '../components/Frame.css';
 import { useLenis } from 'lenis/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CountUp from '../components/CountUp';
@@ -231,211 +232,155 @@ export function ProjectDetail() {
       </AnimatePresence>
 
       {(project && !loading) && (
-        <motion.article 
+        <motion.article
+          className="rails"
           initial={{ opacity: 0 }}
           animate={!showSplash ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8 }}
-          style={{ paddingTop: '120px', minHeight: '100vh', paddingBottom: '8rem', color: '#ffffff' }}
+          style={{ paddingTop: '66px', minHeight: '100vh', color: '#ffffff' }}
         >
-      {/* Title & Meta Info */}
-      <section style={{ padding: isMobile ? '0 1rem 4rem' : '0 5rem 4rem' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <h1 style={{ 
-            fontSize: 'clamp(3rem, 8vw, 6rem)', 
-            fontWeight: 500, 
-            letterSpacing: '-0.04em', 
-            lineHeight: 1, 
-            marginBottom: '4rem',
-            marginTop: isMobile ? 0 : '4rem',
-            color: '#ffffff',
-            overflowWrap: 'anywhere',
-            wordBreak: 'break-word'
-          }}>
-            {project.title}
-          </h1>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '2rem' : '3rem', borderTop: '1px solid #333', paddingTop: '2.5rem' }}>
-            <div>
-              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Scope</h4>
-              <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.industries || '—'}</p>
-            </div>
-            <div>
-              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Role</h4>
-              <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.roles?.join(', ') || '—'}</p>
-            </div>
-            <div>
-              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Date</h4>
-              <p style={{ fontSize: '1rem', color: '#ffffff' }}>{project.date || '—'}</p>
-            </div>
-            {project.link && (
-            <div>
-              <h4 style={{ fontSize: '0.75rem', fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Website</h4>
-              <motion.a 
-                href={project.link.startsWith('http') ? project.link : `https://${project.link}`} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                whileHover={{ opacity: 0.5 }}
-                style={{ fontSize: '1rem', color: '#ffffff', textDecoration: 'none', display: 'inline-block' }}
-              >
-                {project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}
-              </motion.a>
-            </div>
-            )}
-          </div>
-        </div>
-      </section>
+          <style>{`
+            .detail { font-size: 14px; line-height: 22px; letter-spacing: -0.09px; color: #d4d4d4; }
+            .detail h1 { font-size: clamp(1.5rem, 5vw, 1.75rem); line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; color: #fff; overflow-wrap: anywhere; }
+            .detail h3 { font-size: 15px; line-height: 22px; font-weight: 600; color: #fff; margin-bottom: 0.5rem; overflow-wrap: anywhere; }
+            .detail p { font-size: inherit; margin: 0; overflow-wrap: anywhere; }
+            .detail p + p { margin-top: 0.75rem; }
+            .detail .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.25rem 1.5rem; margin-top: 1.5rem; }
+            .detail .meta-label { font-size: 12px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
+            .detail .meta-value { color: #fff; }
+            .detail-media { width: 100%; aspect-ratio: 1280 / 768; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
+            .detail-media img, .detail-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+            .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }
+            .detail-pager a { display: block; padding: 1.25rem 1.5rem; transition: background-color 0.2s ease; }
+            .detail-pager a:hover { background: rgba(255, 255, 255, 0.04); }
+            .detail-pager .next { text-align: right; border-left: 1px solid var(--line); }
+            .detail-pager .pager-label { font-size: 12px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
+            .detail-pager .pager-title { font-size: 15px; font-weight: 500; color: #fff; overflow-wrap: anywhere; }
+          `}</style>
 
-      {/* Main Content Area: Fully Flexible Block-based Layout */}
-      <section style={{ padding: isMobile ? '0 1rem' : '0 5rem' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
-          {project.content_blocks && project.content_blocks.length > 0 ? (
-            project.content_blocks.map((block) => (
-              <div key={block.id}>
-                {block.type === 'text' ? (
-                  <div style={{ textAlign: 'left', maxWidth: '1280px' }}>
-                    {block.title && (
-                      <h3 style={{ 
-                        fontSize: '24px', 
-                        fontWeight: 500, 
-                        letterSpacing: '-0.02em', 
-                        color: 'white', 
-                        marginBottom: '1.25rem',
-                        overflowWrap: 'anywhere',
-                        wordBreak: 'break-word'
-                      }}>
-                        {block.title}
-                      </h3>
-                    )}
-                    {block.value.split('\n').filter(l => l.trim().length > 0).map((line, j) => (
-                      <p key={j} style={{ 
-                        fontSize: '16px', 
-                        lineHeight: 1.6, 
-                        color: 'white', 
-                        marginBottom: '1rem', 
-                        fontWeight: 400, 
-                        opacity: 1,
-                        overflowWrap: 'anywhere',
-                        wordBreak: 'break-word'
-                      }}>
-                        {line}
-                      </p>
-                    ))}
+          {/* Title & meta */}
+          <div className="frame detail">
+            <div style={{ padding: '2.5rem 1.5rem' }}>
+              <h1>{project.title}</h1>
+              <div className="meta">
+                <div>
+                  <div className="meta-label">Scope</div>
+                  <div className="meta-value">{project.industries || '—'}</div>
+                </div>
+                <div>
+                  <div className="meta-label">Role</div>
+                  <div className="meta-value">{project.roles?.join(', ') || '—'}</div>
+                </div>
+                <div>
+                  <div className="meta-label">Date</div>
+                  <div className="meta-value">{project.date || '—'}</div>
+                </div>
+                {project.link && (
+                  <div>
+                    <div className="meta-label">Website</div>
+                    <a
+                      className="meta-value ulink"
+                      href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}
+                    </a>
                   </div>
-                ) : block.type === 'image' ? (
-                  <motion.div 
-                    initial={{ y: 30, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#0a0a0a', overflow: 'hidden', borderRadius: '4px' }}
-                  >
-                    <img 
-                      src={block.value} 
-                      alt="Project visual"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div 
-                    initial={{ y: 30, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#0a0a0a', overflow: 'hidden', borderRadius: '4px' }}
-                  >
-                    <video 
-                      src={block.value} 
-                      autoPlay 
-                      loop 
-                      muted 
-                      playsInline
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  </motion.div>
                 )}
               </div>
-            ))
-          ) : (
-            /* Fallback for projects that don't have blocks yet (using old fields if available) */
-            <>
-              {project.content_body && (
-                <div style={{ textAlign: 'left', maxWidth: '1280px' }}>
-                  {project.content_body.split('\n').filter(l => l.trim().length > 0).map((line, j) => {
-                    const isTitle = line.startsWith('#');
-                    const cleanText = line.replace(/^#+\s*/, '');
-                    if (isTitle) {
-                      return (
-                        <h3 key={j} style={{ fontSize: '24px', fontWeight: 500, color: 'white', margin: '2.5rem 0 1.25rem 0', letterSpacing: '-0.02em' }}>
-                          {cleanText}
-                        </h3>
-                      );
-                    }
-                    return (
-                      <p key={j} style={{ 
-                        fontSize: '16px', 
-                        lineHeight: 1.6, 
-                        color: 'white', 
-                        opacity: 1, 
-                        marginBottom: '1rem',
-                        overflowWrap: 'anywhere',
-                        wordBreak: 'break-word'
-                      }}>
-                        {cleanText}
-                      </p>
-                    );
-                  })}
-                </div>
-              )}
-              {project.cover_image_url && (
-                <div style={{ width: '100%', aspectRatio: '1280 / 768', backgroundColor: '#0a0a0a', overflow: 'hidden', borderRadius: '4px' }}>
-                  <img src={project.cover_image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              )}
-            </>
-          )}
-        </div>
-        </div>
-      </section>
-      {/* Next / Previous Navigation */}
-      <section style={{ padding: isMobile ? '2rem 1rem 0' : '4rem 5rem 0' }}>
-        <div style={{ 
-          maxWidth: '1280px', 
-          margin: '0 auto', 
-          borderTop: '1px solid #222',
-          paddingTop: '64px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start'
-        }}>
-          {prevProject ? (
-            <Link to={`/works/${prevProject.slug}`} style={{ textDecoration: 'none', color: '#fff', flex: 1 }}>
-              <div style={{ fontSize: '0.75rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem' }}>Previous</div>
-              <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 500, letterSpacing: '-0.02em', transition: 'color 0.2s ease', WebkitFontSmoothing: 'antialiased' }} className="nav-title">{prevProject.title}</div>
-            </Link>
-          ) : (
-            <div style={{ flex: 1 }} />
-          )}
-          
-          {nextProject ? (
-            <Link to={`/works/${nextProject.slug}`} style={{ textDecoration: 'none', color: '#fff', textAlign: 'right', flex: 1 }}>
-              <div style={{ fontSize: '0.75rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem' }}>Next</div>
-              <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 500, letterSpacing: '-0.02em', transition: 'color 0.2s ease', WebkitFontSmoothing: 'antialiased' }} className="nav-title">{nextProject.title}</div>
-            </Link>
-          ) : (
-            <div style={{ flex: 1 }} />
-          )}
-        </div>
-      </section>
-      
-      <style>{`
-        .nav-title:hover {
-          color: #999 !important;
-        }
-      `}</style>
+            </div>
+          </div>
 
-    </motion.article>
-    )}
+          <div className="hatch" />
+
+          {/* Content blocks */}
+          <div className="frame detail">
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+              {project.content_blocks && project.content_blocks.length > 0 ? (
+                project.content_blocks.map((block) => (
+                  <div key={block.id}>
+                    {block.type === 'text' ? (
+                      <div>
+                        {block.title && <h3>{block.title}</h3>}
+                        {block.value.split('\n').filter(l => l.trim().length > 0).map((line, j) => (
+                          <p key={j}>{line}</p>
+                        ))}
+                      </div>
+                    ) : block.type === 'image' ? (
+                      <motion.div
+                        className="detail-media"
+                        initial={{ y: 24, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, ease: 'easeOut' }}
+                      >
+                        <img src={block.value} alt="Project visual" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        className="detail-media"
+                        initial={{ y: 24, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, ease: 'easeOut' }}
+                      >
+                        <video src={block.value} autoPlay loop muted playsInline />
+                      </motion.div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                /* Fallback for projects that don't have blocks yet (using old fields if available) */
+                <>
+                  {project.content_body && (
+                    <div>
+                      {project.content_body.split('\n').filter(l => l.trim().length > 0).map((line, j) => {
+                        const isTitle = line.startsWith('#');
+                        const cleanText = line.replace(/^#+\s*/, '');
+                        return isTitle ? (
+                          <h3 key={j} style={{ marginTop: j === 0 ? 0 : '1.5rem' }}>{cleanText}</h3>
+                        ) : (
+                          <p key={j}>{cleanText}</p>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {project.cover_image_url && (
+                    <div className="detail-media">
+                      <img src={project.cover_image_url} alt={project.title} />
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="hatch" />
+
+          {/* Previous / next */}
+          <div className="frame detail">
+            <div className="detail-pager">
+              {prevProject ? (
+                <Link to={`/works/${prevProject.slug}`}>
+                  <div className="pager-label">Previous</div>
+                  <div className="pager-title">{prevProject.title}</div>
+                </Link>
+              ) : (
+                <div />
+              )}
+              {nextProject ? (
+                <Link to={`/works/${nextProject.slug}`} className="next">
+                  <div className="pager-label">Next</div>
+                  <div className="pager-title">{nextProject.title}</div>
+                </Link>
+              ) : (
+                <div className="next" />
+              )}
+            </div>
+          </div>
+        </motion.article>
+      )}
     </>
   );
 }
