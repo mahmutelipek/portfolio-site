@@ -26,32 +26,21 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
     <section id="projects">
       <style>{`
         .works-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 1rem;
-          padding: 1rem;
-        }
-        @media (max-width: 640px) {
-          .works-grid { grid-template-columns: 1fr; }
-        }
-        .work-card {
           display: flex;
           flex-direction: column;
-          height: 100%;
-          padding: 0.5rem;
-          border: 1px solid var(--line);
-          border-radius: 16px;
-          background: rgba(255, 255, 255, 0.02);
-          transition: border-color 0.3s ease, background-color 0.3s ease;
         }
-        .work-card:hover {
-          border-color: rgba(255, 255, 255, 0.25);
-          background: rgba(255, 255, 255, 0.04);
+        .work-item { border-bottom: 1px solid var(--line); }
+        .work-item:last-child { border-bottom: none; }
+        .work-card {
+          display: block;
+          padding: 1.5rem;
+          transition: background-color 0.3s ease;
         }
+        .work-card:hover { background: rgba(255, 255, 255, 0.03); }
         .work-card .cover {
-          aspect-ratio: 16 / 10;
+          aspect-ratio: 16 / 9;
           overflow: hidden;
-          border-radius: 10px;
+          border-radius: 12px;
           background: #111;
         }
         .work-card .cover img {
@@ -80,16 +69,17 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
               return (
                 <motion.div
                   key={project.id}
+                  className="work-item"
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-20px' }}
-                  transition={{ duration: 0.5, delay: (index % 2) * 0.08 }}
+                  transition={{ duration: 0.5, delay: index === 0 ? 0 : 0.05 }}
                 >
                   <Link to={`/works/${project.slug}`} className="work-card">
                     <div className="cover">
                       {cover && <img src={cover} alt={project.title} loading="lazy" />}
                     </div>
-                    <div style={{ padding: '0.9rem 0.5rem 0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+                    <div style={{ paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
                         <h3 style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em' }}>{project.title}</h3>
                         <ArrowUpRight size={16} style={{ opacity: 0.6, flexShrink: 0 }} />
@@ -108,7 +98,7 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                         {getCustomSummary(project.title, firstSentence)}
                       </p>
                       {project.roles?.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: 'auto', paddingTop: '0.25rem' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', paddingTop: '0.25rem' }}>
                           {project.roles.map(role => (
                             <span key={role} className="work-tag">{role}</span>
                           ))}
