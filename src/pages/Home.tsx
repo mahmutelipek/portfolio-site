@@ -192,7 +192,7 @@ export function Home() {
               src="/cover.webp"
               alt=""
               onError={() => setCoverOk(false)}
-              style={{ display: 'block', width: '100%', height: 'clamp(140px, 28vw, 200px)', objectFit: 'cover', objectPosition: 'center 35%', borderRadius: 12 }}
+              style={{ display: 'block', width: '100%', height: 'clamp(100px, 20vw, 140px)', objectFit: 'cover', objectPosition: 'center 45%', borderRadius: 12 }}
             />
           </div>
         )}
@@ -201,7 +201,6 @@ export function Home() {
         <div className="frame">
           <style>{`
             .intro {
-              max-width: 598px;
               font-family: var(--font-mono);
               font-size: 14px;
               line-height: 20px;
@@ -230,20 +229,16 @@ export function Home() {
 
             <p>
               I'm a <strong>product designer</strong> with 5 years of experience taking web and mobile products
-              from idea to production.
+              from idea to production. I work hands-on across product thinking, <strong>UX/UI</strong>,{' '}
+              <strong>design systems</strong>, prototyping, and implementation, and I'm most comfortable when the
+              problem isn't fully defined yet.
             </p>
             <p>
-              I work hands-on across product thinking, <strong>UX/UI</strong>, <strong>design systems</strong>,
-              prototyping, and implementation. I'm most comfortable when the problem isn't fully defined yet and
-              design needs both product thinking and technical understanding.
-            </p>
-            <p>
-              I've built products from zero to one, worked as a sole designer, led design teams and client
-              projects, and collaborated closely with engineering through production.
-            </p>
-            <p>
-              Currently, I design product and UI for <ProductName name="Flowla" url={PRODUCT_URLS.flowla} /> and independently build{' '}
-              <ProductName name="Skaplo" url={PRODUCT_URLS.skaplo} />, a live subscription product I design and develop with AI-assisted workflows.
+              I've built products from zero to one, worked as a sole designer, and led design teams and client
+              projects. Currently, I design product and UI for{' '}
+              <ProductName name="Flowla" url={PRODUCT_URLS.flowla} /> and independently build{' '}
+              <ProductName name="Skaplo" url={PRODUCT_URLS.skaplo} />, a live subscription product I design and
+              develop with AI-assisted workflows.
             </p>
             <p>My focus is simple: understand the problem, find the right solution, and get it shipped.</p>
             <p>

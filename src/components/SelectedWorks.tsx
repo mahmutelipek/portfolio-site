@@ -33,12 +33,12 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
         .work-item:last-child { border-bottom: none; }
         .work-card {
           display: block;
-          padding: 1.5rem;
+          padding: 1.25rem 1.5rem;
           transition: background-color 0.3s ease;
         }
         .work-card:hover { background: rgba(255, 255, 255, 0.03); }
         .work-card .cover {
-          aspect-ratio: 16 / 9;
+          aspect-ratio: 21 / 9;
           overflow: hidden;
           border-radius: 12px;
           background: #111;
