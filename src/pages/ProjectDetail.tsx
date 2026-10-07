@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, lazy, Suspense, type ReactNode } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
@@ -24,6 +24,30 @@ function joinList(items: string[]): string {
 }
 
 const MEDIA_SIZES = '(max-width: 720px) 100vw, 672px';
+
+/** Full-page notice (loading / not found) in the same framed layout as the rest of the site. */
+function PageMessage({ title, children }: { title?: string; children: ReactNode }) {
+  return (
+    <section className="rails" style={{ paddingTop: '66px', flex: '1 0 auto' }}>
+      <style>{`
+        .page-message { font-size: 14px; line-height: 22px; letter-spacing: -0.09px; color: #d4d4d4; }
+        .page-message h1 { font-size: clamp(1.5rem, 5vw, 1.75rem); line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; color: #fff; margin-bottom: 0.5rem; }
+        .page-message p { margin: 0; font-size: inherit; }
+        .page-message p + p { margin-top: 0.75rem; }
+        .page-message strong { font-weight: 550; color: #fff; }
+        .page-message .muted { color: var(--text-secondary); }
+        @media (max-width: 740px) { .page-message { font-size: 15px; line-height: 23px; } }
+      `}</style>
+      <div className="frame page-message">
+        <div style={{ padding: 'var(--pad)' }}>
+          {title && <h1>{title}</h1>}
+          {children}
+        </div>
+      </div>
+      <div className="hatch" />
+    </section>
+  );
+}
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -166,18 +190,22 @@ export function ProjectDetail() {
 
   if (loading && !showSplash) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', color: '#fff' }}>
-        <p style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>Loading...</p>
-      </div>
+      <PageMessage>
+        <p className="muted">Loading…</p>
+      </PageMessage>
     );
   }
 
   if (!project && !loading && !showSplash) {
     return (
-      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Project not found</h1>
-        <Link to="/" style={{ textDecoration: 'underline' }}>Return Home</Link>
-      </div>
+      <PageMessage title="Project not found">
+        <p>This project doesn't exist or has been removed.</p>
+        <p>
+          <Link to="/#projects" className="ulink">
+            <strong>See all projects</strong>
+          </Link>
+        </p>
+      </PageMessage>
     );
   }
 
