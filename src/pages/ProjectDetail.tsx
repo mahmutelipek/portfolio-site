@@ -251,33 +251,30 @@ export function ProjectDetail() {
           <div className="frame detail">
             <div style={{ padding: '2.5rem 1.5rem' }}>
               <h1>{project.title}</h1>
-              <div className="meta">
+              <p className="meta">
                 {scope.length > 0 && (
-                  <p>
-                    A <strong>{joinList(scope)}</strong> project.
-                  </p>
+                  <>
+                    A <strong>{joinList(scope)}</strong> project.{' '}
+                  </>
                 )}
-                {(project.roles?.length > 0 || project.date) && (
-                  <p>
-                    {project.roles?.length > 0 ? (
-                      <>
-                        I worked on it as <strong>{joinList(project.roles)}</strong>
-                        {project.date && (
-                          <>
-                            {' '}in <strong>{project.date}</strong>
-                          </>
-                        )}
-                        .
-                      </>
-                    ) : (
-                      <>
-                        Completed in <strong>{project.date}</strong>.
-                      </>
-                    )}
-                  </p>
-                )}
+                {(project.roles?.length > 0 || project.date) &&
+                  (project.roles?.length > 0 ? (
+                    <>
+                      I worked on it as <strong>{joinList(project.roles)}</strong>
+                      {project.date && (
+                        <>
+                          {' '}in <strong>{project.date}</strong>
+                        </>
+                      )}
+                      .{' '}
+                    </>
+                  ) : (
+                    <>
+                      Completed in <strong>{project.date}</strong>.{' '}
+                    </>
+                  ))}
                 {project.link && (
-                  <p>
+                  <>
                     See it live at{' '}
                     <a
                       className="ulink"
@@ -288,9 +285,9 @@ export function ProjectDetail() {
                       <strong>{project.link.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '')}</strong>
                     </a>
                     .
-                  </p>
+                  </>
                 )}
-              </div>
+              </p>
             </div>
           </div>
 
