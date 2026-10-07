@@ -1,127 +1,125 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 import type { Project } from '../lib/types';
+import './Frame.css';
 
 interface SelectedWorksProps {
   projects: Project[];
 }
 
+const getCustomSummary = (title: string, originalFirstSentence: string) => {
+  const t = title.toLowerCase();
+  if (t.includes('norm')) return 'Banking platform for freelancers and small businesses.';
+  if (t.includes('hotpepper') || t.includes('hot pepper') || t.includes('hot')) return 'Creator subscription platform with gated content and payments.';
+  if (t.includes('frink')) return 'Coffee subscription app for daily use across multiple locations.';
+  if (t.includes('elva') || t.includes('face') || t.includes('yoga')) return 'AI-powered facial exercise app with personalized routines.';
+  if (t.includes('loodos')) return 'Corporate website for a multi-vertical technology company.';
+  if (t.includes('view') || t.includes('hospital')) return 'Healthcare website with a scalable CMS component system.';
+  if (t.includes('humble')) return 'Corporate website for a digital services company.';
+  if (t.includes('fire') || t.includes('crawl')) return 'Interactive WebGL launch campaign for a developer-focused platform.';
+  return originalFirstSentence;
+};
+
 export function SelectedWorks({ projects }: SelectedWorksProps) {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const isMobile = windowWidth < 768;
-  const isTablet = windowWidth >= 768 && windowWidth < 1024;
-  
-  const getPaddingBottom = () => {
-    if (isMobile) return '16px';
-    if (isTablet) return '32px';
-    return '80px';
-  };
-
-  const getCustomSummary = (title: string, originalFirstSentence: string) => {
-    const t = title.toLowerCase();
-    if (t.includes('norm')) return 'Banking platform for freelancers and small businesses.';
-    if (t.includes('hotpepper') || t.includes('hot pepper') || t.includes('hot')) return 'Creator subscription platform with gated content and payments.';
-    if (t.includes('frink')) return 'Coffee subscription app for daily use across multiple locations.';
-    if (t.includes('elva') || t.includes('face') || t.includes('yoga')) return 'AI-powered facial exercise app with personalized routines.';
-    if (t.includes('loodos')) return 'Corporate website for a multi-vertical technology company.';
-    if (t.includes('view') || t.includes('hospital')) return 'Healthcare website with a scalable CMS component system.';
-    if (t.includes('humble')) return 'Corporate website for a digital services company.';
-    if (t.includes('fire') || t.includes('crawl')) return 'Interactive WebGL launch campaign for a developer-focused platform.';
-    return originalFirstSentence; // fallback
-  };
-
   return (
-    <section id="works" className="section" style={{ 
-      paddingTop: isMobile ? '4rem' : '9rem',
-      paddingLeft: isMobile ? '1rem' : '5rem',
-      paddingRight: isMobile ? '1rem' : '5rem',
-      paddingBottom: getPaddingBottom()
-    }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        <h2 style={{
-          marginBottom: '56px',
-          fontSize: isMobile ? '18px' : '22px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          color: '#ffffff',
-          textAlign: 'center'
-        }}>
-          Selected Works
-        </h2>
+    <section id="projects">
+      <style>{`
+        .works-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+          padding: 1rem;
+        }
+        @media (max-width: 640px) {
+          .works-grid { grid-template-columns: 1fr; }
+        }
+        .work-card {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          padding: 0.5rem;
+          border: 1px solid var(--line);
+          border-radius: 16px;
+          background: rgba(255, 255, 255, 0.02);
+          transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .work-card:hover {
+          border-color: rgba(255, 255, 255, 0.25);
+          background: rgba(255, 255, 255, 0.04);
+        }
+        .work-card .cover {
+          aspect-ratio: 16 / 10;
+          overflow: hidden;
+          border-radius: 10px;
+          background: #111;
+        }
+        .work-card .cover img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .work-card:hover .cover img { transform: scale(1.03); }
+        .work-tag {
+          padding: 0.15rem 0.55rem;
+          border: 1px solid var(--line);
+          border-radius: 6px;
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+      `}</style>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '48px' : '6rem' }}>
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial="initial"
-              whileInView="animate"
-              whileHover="hover"
-              viewport={{ once: true, margin: '-20px' }}
-              variants={{
-                initial: { opacity: 0, y: 50 },
-                animate: { opacity: 1, y: 0, transition: { duration: 0.5, delay: index * 0.05 } }
-              }}
-            >
-              <Link to={`/works/${project.slug}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>
-                <div
-                  style={{
-                    width: '100%',
-                    aspectRatio: '1280 / 768',
-                    overflow: 'hidden',
-                    backgroundColor: '#111111',
-                    marginBottom: '1.5rem',
-                    borderRadius: '4px'
-                  }}
+      <div className="frame rule-top">
+        <h2 className="section-title">Projects</h2>
+        <div style={{ position: 'relative' }} className="rule-top">
+          <div className="works-grid">
+            {projects.map((project, index) => {
+              const cover = project.cover_image_url || project.content_blocks?.find(b => b.type === 'image')?.value || '';
+              const firstSentence = project.content_blocks?.find(b => b.type === 'text')?.value?.split('.')[0] + '.' || project.roles?.join(', ') || '';
+              return (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-20px' }}
+                  transition={{ duration: 0.5, delay: (index % 2) * 0.08 }}
                 >
-                  <motion.img
-                    src={project.cover_image_url || project.content_blocks?.find(b => b.type === 'image')?.value || ''}
-                    alt={project.title}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
-                    variants={{
-                      initial: { scale: 1 },
-                      animate: { scale: 1 },
-                      hover: { scale: 1.03 }
-                    }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                </div>
-                <h3 style={{
-                  fontSize: isMobile ? '16px' : '18px',
-                  fontWeight: 500,
-                  letterSpacing: '-0.01em',
-                  marginBottom: '0.5rem',
-                  color: 'var(--text-primary)'
-                }}>
-                  {project.title}
-                </h3>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <span
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 400,
-                      color: 'var(--text-secondary)',
-                      opacity: 0.8,
-                      lineHeight: 1.4,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {getCustomSummary(project.title, project.content_blocks?.find(b => b.type === 'text')?.value?.split('.')[0] + '.' || project.roles?.join(', ') || '')}
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                  <Link to={`/works/${project.slug}`} className="work-card">
+                    <div className="cover">
+                      {cover && <img src={cover} alt={project.title} loading="lazy" />}
+                    </div>
+                    <div style={{ padding: '0.9rem 0.5rem 0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                        <h3 style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em' }}>{project.title}</h3>
+                        <ArrowUpRight size={16} style={{ opacity: 0.6, flexShrink: 0 }} />
+                      </div>
+                      <p
+                        style={{
+                          fontSize: '14px',
+                          lineHeight: 1.45,
+                          color: 'var(--text-secondary)',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {getCustomSummary(project.title, firstSentence)}
+                      </p>
+                      {project.roles?.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: 'auto', paddingTop: '0.25rem' }}>
+                          {project.roles.map(role => (
+                            <span key={role} className="work-tag">{role}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

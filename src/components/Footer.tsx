@@ -1,114 +1,47 @@
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../lib/supabase';
-import type { Logo } from '../lib/types';
-import DomeGallery from './DomeGallery';
-import SplitText from './SplitText';
-import './Footer.css';
+import './Frame.css';
+
+const links = [
+  { label: 'X', href: 'https://x.com/mahmutelipk' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek' },
+  { label: 'Shots', href: 'https://layers.to/mahmutelipek' },
+];
 
 export function Footer() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [logos, setLogos] = useState<Logo[]>([]);
-  const [isInView, setIsInView] = useState(false);
-  const sphereRef = useRef<HTMLDivElement>(null);
-  
-  // Lazy-load: Only render DomeGallery when footer enters viewport
-  useEffect(() => {
-    const el = sphereRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting),
-      { rootMargin: '200px' } // Start loading slightly before visible
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    async function fetchLogos() {
-      const { data, error } = await supabase
-        .from('logos')
-        .select('*')
-        .order('sort_order', { ascending: true });
-
-      if (!error && data && data.length > 0) {
-        setLogos(data);
-      } else {
-        setLogos([
-          { id: 'l1', url: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", name: 'Amazon', website_url: 'https://amazon.com' },
-          { id: 'l2', url: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", name: 'Google', website_url: 'https://google.com' },
-          { id: 'l3', url: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", name: 'Microsoft', website_url: 'https://microsoft.com' },
-          { id: 'l4', url: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg", name: 'Meta', website_url: 'https://meta.com' },
-          { id: 'l5', url: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", name: 'Apple', website_url: 'https://apple.com' },
-          { id: 'l6', url: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", name: 'Netflix', website_url: 'https://netflix.com' }
-        ]);
-      }
-    }
-    fetchLogos();
-  }, []);
-
   return (
-    <div className="monumental-footer-wrapper">
-      <footer className="monumental-footer">
-        
-        {/* Sphere Animation Background — lazy-loaded via IntersectionObserver */}
-        <div ref={sphereRef} className="footer-sphere-wrapper" style={{ 
-          position: 'absolute', 
-          inset: 0, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          zIndex: 0, 
-          opacity: isMobile ? 0.3 : 0.3, 
-          pointerEvents: 'none' 
-        }}>
-          {isInView && logos.length > 0 && (
-            <DomeGallery 
-              images={logos.map(l => ({ src: l.url, alt: l.name }))} 
-              fit={isMobile ? 1.0 : 0.8}
-              segments={isMobile ? 22 : 30}
-              overlayBlurColor="#000000"
-              disableInteraction={true}
-            />
-          )}
-        </div>
+    <footer style={{ marginTop: 'auto' }}>
+      <div className="hatch" />
+      <div className="frame" style={{ padding: '4rem 1.5rem 2rem' }}>
+        <a
+          href="mailto:mahmutelipk@gmail.com"
+          style={{ display: 'inline-block', fontSize: 'clamp(2.5rem, 9vw, 4.5rem)', fontWeight: 300, letterSpacing: '-0.03em', lineHeight: 1 }}
+        >
+          Say hello.
+        </a>
 
-        {/* Hero Area */}
-        <div className="footer-hero" style={{ pointerEvents: 'none' }}>
-            <div className="title-container" style={{ pointerEvents: 'auto' }}>
-                <a href="mailto:mahmutelipk@gmail.com" className="huge-title">
-                  <SplitText 
-                    text="Say hello." 
-                    splitType="words, chars"
-                    delay={40}
-                    duration={1.2}
-                    ease="back.out(1.5)"
-                    from={{ opacity: 0, y: 70, scale: 0.9, rotationX: -15 }}
-                    to={{ opacity: 1, y: 0, scale: 1, rotationX: 0 }}
-                    tag="span"
-                  />
-                </a>
-            </div>
+        <div
+          style={{
+            marginTop: '3rem',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '1rem',
+            justifyContent: 'space-between',
+            fontSize: '13px',
+            color: 'var(--text-secondary)',
+          }}
+        >
+          <span>© {new Date().getFullYear()} Mahmut Elipek</span>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            {links.map(l => (
+              <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" style={{ transition: 'color 0.2s ease' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
+                onMouseLeave={e => (e.currentTarget.style.color = '')}
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
         </div>
-
-        {/* Meta Info */}
-        <div className="footer-meta" style={{ pointerEvents: 'none' }}>
-            <div className="meta-left" style={{ pointerEvents: 'auto' }}>
-                <span>© {new Date().getFullYear()} ME. All rights reserved.</span>
-            </div>
-
-            <div className="meta-right" style={{ pointerEvents: 'auto' }}>
-                <a href="https://x.com/mahmutelipk" className="meta-link" target="_blank" rel="noopener noreferrer">X</a>
-                <a href="https://www.linkedin.com/in/mahmutelipek" className="meta-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a href="https://layers.to/mahmutelipek" className="meta-link" target="_blank" rel="noopener noreferrer">Shots</a>
-            </div>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
   );
 }

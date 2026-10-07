@@ -1,198 +1,61 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import ShinyText from './ShinyText';
+import './Frame.css';
 
 export function Navbar() {
-  const [visible, setVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY > 100) {
-        if (currentScrollY > lastScrollY) {
-          setVisible(false);
-        } else {
-          setVisible(true);
-        }
-      } else {
-        setVisible(true);
-      }
-      
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    <header
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         width: '100%',
         zIndex: 100,
-        color: 'white',
-        mixBlendMode: 'difference',
-        pointerEvents: 'none'
+        background: 'rgba(0, 0, 0, 0.7)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
       }}
+      className="rule-bottom"
     >
       <style>{`
-        .nav-container {
-          width: 100%;
+        .nav-inner {
+          height: 56px;
+          padding: 0 1.5rem;
           display: flex;
-          align-items: baseline;
+          align-items: center;
           justify-content: space-between;
-          padding: 2rem;
-          box-sizing: border-box;
-          pointer-events: auto;
+          font-size: 14px;
         }
-        .nav-col-logo { flex: 1; display: flex; align-items: baseline; gap: 1rem; }
-        .nav-col-disciplines { flex: 0 0 auto; margin-right: 16vw; text-align: left; }
-        .nav-col-navigation { flex: 0 0 auto; }
-        .nav-col-contact { flex: 1; display: flex; justify-content: flex-end; }
-
-        .social-links {
-          display: flex;
-          gap: 0.75rem;
-          font-size: 13px;
-          font-weight: 500;
-          color: white;
+        .nav-links { display: flex; align-items: center; gap: 1.25rem; }
+        .nav-link { opacity: 0.8; transition: opacity 0.2s ease; }
+        .nav-link:hover { opacity: 1; }
+        .nav-cta {
+          padding: 0.35rem 0.9rem;
+          border: 1px solid var(--line);
+          border-radius: 999px;
+          transition: background-color 0.2s ease;
         }
-        .nav-link {
-          transition: opacity 0.2s ease;
-          opacity: 1;
-          text-decoration: none;
-          color: white;
-        }
-        .nav-link:hover {
-          opacity: 0.6;
-        }
-
-        @media (max-width: 1024px) {
-          .nav-container { padding: 1.5rem; flex-wrap: nowrap; gap: 1rem; align-items: center; justify-content: space-between; }
-          .nav-col-logo { width: auto; flex: 1; order: 1; margin-bottom: 0px; display: flex; align-items: center; justify-content: flex-start; }
-          .nav-col-navigation { width: auto; flex: 0 0 auto; order: 2; display: flex; justify-content: center; align-items: center; }
-          .nav-col-contact { width: auto; flex: 1; order: 3; margin-left: 0; display: flex; align-items: center; justify-content: flex-end; }
-          .nav-col-disciplines { display: none; margin-right: 0; }
-          .social-links { gap: 0.25rem; }
-        }
-
-        @media (max-width: 640px) {
-          .nav-container { padding: 1rem; flex-wrap: nowrap; align-items: center; justify-content: space-between; }
-          .nav-col-logo { flex: 1; display: flex; align-items: center; gap: 0.25rem; justify-content: flex-start; }
-          .nav-col-disciplines { display: none; }
-          .nav-col-navigation { flex: 0 0 auto; display: flex; justify-content: center; align-items: center; }
-          .nav-col-contact { flex: 1; display: flex; align-items: center; justify-content: flex-end; }
-        }
+        .nav-cta:hover { background: rgba(255, 255, 255, 0.08); }
       `}</style>
 
-      <div className="nav-container">
-        {/* Logo */}
-        <div className="nav-col-logo">
-          <Link 
-            to="/" 
-            className="nav-link" 
-            style={{ textDecoration: 'none', color: '#ffffff', pointerEvents: 'auto' }}
-            onClick={(e) => {
-              if (window.location.pathname === '/') {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              } else {
-                window.scrollTo(0, 0);
-              }
-            }}
+      <div className="frame" style={{ borderTop: 'none', borderBottom: 'none' }}>
+        <div className="nav-inner">
+          <Link
+            to="/"
+            style={{ fontWeight: 700, letterSpacing: '-0.02em' }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              style={{ fontWeight: 700, fontSize: '14px', letterSpacing: '-0.02em' }}
-            >
-              [me.]
-            </motion.div>
+            [me.]
           </Link>
-        </div>
 
-        {/* Disciplines */}
-        <AnimatePresence>
-          {visible && (
-            <motion.div 
-              className="nav-col-disciplines" 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                lineHeight: 1.3
-              }}
-            >
-              Product & Experience Designer<br />
-              <span style={{ opacity: 0.5 }}>
-                Design Systems · UX<br />
-                Motion · WebGL
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Social Links (replacing Opportunities) */}
-        <AnimatePresence>
-          {visible && (
-            <motion.div 
-              className="nav-col-navigation" 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                lineHeight: 1.3
-              }}
-            >
-              <div className="social-links">
-                <a href="https://x.com/mahmutelipk" target="_blank" rel="noopener noreferrer" className="nav-link">X</a>
-                <span style={{ color: 'white', margin: '0 0.5rem' }}> </span>
-                <a href="https://linkedin.com/in/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">LinkedIn</a>
-                <span style={{ color: 'white', margin: '0 0.5rem' }}> </span>
-                <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">Shots</a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Contact Button */}
-        <div className="nav-col-contact">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <a 
-              href="mailto:mahmutelipk@gmail.com" 
-              style={{ 
-                textDecoration: 'none', 
-                color: 'white',
-                fontSize: '13px',
-                fontWeight: 500,
-                letterSpacing: '0.025em',
-                lineHeight: 1.3
-              }}
-            >
-              <ShinyText text="Get in Touch" speed={3} color="white" shineColor="rgba(255,255,255,0.5)" />
+          <nav className="nav-links">
+            <Link to="/#projects" className="nav-link">Projects</Link>
+            <a href="https://layers.to/mahmutelipek" target="_blank" rel="noopener noreferrer" className="nav-link">
+              Shots
             </a>
-          </motion.div>
+            <a href="mailto:mahmutelipk@gmail.com" className="nav-cta">Get in Touch</a>
+          </nav>
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 }

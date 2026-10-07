@@ -1,0 +1,64 @@
+/* Shared "framed column" visual language: a narrow centered column with
+   hairline side borders, full-bleed horizontal rules and hatched dividers. */
+
+:root {
+  --line: rgba(255, 255, 255, 0.1);
+  --col-width: 720px;
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: var(--col-width);
+  margin: 0 auto;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+/* Full-bleed horizontal hairline anchored to the top or bottom of a block */
+.rule-top::before,
+.rule-bottom::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  height: 1px;
+  background: var(--line);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.rule-top::before { top: 0; }
+.rule-bottom::after { bottom: 0; }
+
+/* Full-bleed hatched divider between sections */
+.hatch {
+  position: relative;
+  height: 24px;
+}
+.hatch::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.08) 0,
+    rgba(255, 255, 255, 0.08) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  pointer-events: none;
+}
+
+.section-title {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
