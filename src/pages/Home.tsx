@@ -13,6 +13,21 @@ import { supabase } from '../lib/supabase';
 import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 
+// Set a URL to turn a name in the intro into a link; leave empty for plain text.
+const PRODUCT_URLS = {
+  flowla: 'https://www.flowla.com',
+  skaplo: '',
+};
+
+function ProductName({ name, url }: { name: string; url: string }) {
+  if (!url) return <strong>{name}</strong>;
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" className="ulink">
+      <strong>{name}</strong>
+    </a>
+  );
+}
+
 const LINKS = [
   { label: 'X', href: 'https://x.com/mahmutelipk', Icon: XLogo },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek', Icon: LinkedInLogo },
@@ -211,8 +226,8 @@ export function Home() {
               projects, and collaborated closely with engineering through production.
             </p>
             <p>
-              Currently, I design product and UI for <strong>Flowla</strong> and independently build{' '}
-              <strong>Skaplo</strong>, a live subscription product I design and develop with AI-assisted workflows.
+              Currently, I design product and UI for <ProductName name="Flowla" url={PRODUCT_URLS.flowla} /> and independently build{' '}
+              <ProductName name="Skaplo" url={PRODUCT_URLS.skaplo} />, a live subscription product I design and develop with AI-assisted workflows.
             </p>
             <p>My focus is simple: understand the problem, find the right solution, and get it shipped.</p>
             <p>
