@@ -187,12 +187,12 @@ export function Home() {
       <main className="rails" style={{ paddingTop: '66px' }}>
         {/* Cover: put the image at public/cover.webp; hidden if missing */}
         {coverOk && (
-          <div className="frame rule-bottom">
+          <div className="frame rule-bottom" style={{ padding: '1.5rem' }}>
             <img
               src="/cover.webp"
               alt=""
               onError={() => setCoverOk(false)}
-              style={{ display: 'block', width: '100%', height: 'clamp(140px, 28vw, 200px)', objectFit: 'cover', objectPosition: 'center 35%' }}
+              style={{ display: 'block', width: '100%', height: 'clamp(140px, 28vw, 200px)', objectFit: 'cover', objectPosition: 'center 35%', borderRadius: 12 }}
             />
           </div>
         )}
