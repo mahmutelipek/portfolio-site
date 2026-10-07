@@ -202,7 +202,7 @@ export function Home() {
               projects. Currently, I design product and UI for{' '}
               <ProductName name="Flowla" url={PRODUCT_URLS.flowla} /> and independently build{' '}
               <ProductName name="Skaplo" url={PRODUCT_URLS.skaplo} />, a live subscription product I design and
-              develop with AI-assisted workflows. I'm also working on <strong>two games</strong>.
+              develop with AI-assisted workflows. I'm also working on <strong>two games</strong>, coming soon to <strong>Steam</strong>.
             </p>
             <p>My focus is simple: understand the problem, find the right solution, and get it shipped.</p>
             <p>
