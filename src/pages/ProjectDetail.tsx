@@ -7,10 +7,22 @@ import '../components/Frame.css';
 import { FitImage, FitVideo } from '../components/FitMedia';
 
 import { motion } from 'framer-motion';
-import { useDocumentTitle, SITE_NAME } from '../lib/useDocumentTitle';
+import { usePageMeta, SITE_NAME } from '../lib/useDocumentTitle';
+import { shareImage } from '../lib/image';
 
 function splitList(value?: string): string[] {
   return (value ?? '').split(',').map(v => v.trim()).filter(Boolean);
+}
+
+/** One or two sentences for the meta description, taken from the project's first text. */
+function describeProject(project: Project): string {
+  const firstText = project.content_blocks?.find(b => b.type === 'text' && b.value?.trim())?.value;
+  const raw = (firstText ?? project.content_body ?? '').replace(/^#+\s*.*$/gm, ' ').replace(/\s+/g, ' ').trim();
+  const fallback = `${project.title}: ${project.roles?.join(', ') || 'a project'} by ${SITE_NAME}.`;
+  if (!raw) return fallback;
+  if (raw.length <= 155) return raw;
+  const cut = raw.slice(0, 155);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), 100))}…`;
 }
 
 function joinList(items: string[]): string {
@@ -156,7 +168,18 @@ export function ProjectDetail() {
   const scope = splitList(project?.industries);
 
   const notFound = !project && !loading;
-  useDocumentTitle(project ? `${project.title} | ${SITE_NAME}` : notFound ? `Project not found | ${SITE_NAME}` : undefined);
+  usePageMeta(
+    project
+      ? {
+          title: `${project.title} | ${SITE_NAME}`,
+          description: describeProject(project),
+          image: project.cover_image_url ? shareImage(project.cover_image_url) : undefined,
+          path: `/works/${project.slug}`,
+        }
+      : notFound
+        ? { title: `Project not found | ${SITE_NAME}`, noindex: true }
+        : {},
+  );
 
   if (loading) {
     return (

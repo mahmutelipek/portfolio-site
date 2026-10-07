@@ -39,3 +39,8 @@ export function fallbackToOriginal(original: string) {
     img.src = original;
   };
 }
+
+/** URL for the social share image (Open Graph / Twitter): a 1200px-wide copy for Supabase images. */
+export function shareImage(url: string): string {
+  return url && canTransform(url) ? resized(url, 1200, 80) : url;
+}

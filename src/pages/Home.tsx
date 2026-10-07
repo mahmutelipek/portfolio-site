@@ -12,7 +12,7 @@ import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 
 import { glassOverlayStyle } from '../lib/glass';
-import { useDocumentTitle, HOME_TITLE } from '../lib/useDocumentTitle';
+import { usePageMeta, HOME_TITLE, HOME_DESCRIPTION } from '../lib/useDocumentTitle';
 import { hasSeenSplash, markSplashSeen } from '../lib/splash';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
@@ -40,7 +40,7 @@ const LINKS = [
 const EMAIL_COLOR = '#ff6b5e';
 
 export function Home() {
-  useDocumentTitle(HOME_TITLE);
+  usePageMeta({ title: HOME_TITLE, description: HOME_DESCRIPTION, path: '/' });
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(() => !globalStore.homeVisited && !hasSeenSplash());
