@@ -240,7 +240,7 @@ export function ProjectDetail() {
             .detail strong { font-weight: 550; color: #fff; }
             .detail-media { width: 100%; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
             .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }
-            .detail-pager a { display: block; padding: 1rem var(--pad); transition: background-color 0.2s ease; }
+            .detail-pager a { display: block; padding: var(--pad); transition: background-color 0.2s ease; }
             .detail-pager a:hover { background: rgba(255, 255, 255, 0.04); }
             .detail-pager .next { text-align: right; border-left: 1px solid var(--line); }
             .detail-pager .pager-label { font-size: 12px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
@@ -249,7 +249,7 @@ export function ProjectDetail() {
 
           {/* Title & meta */}
           <div className="frame detail">
-            <div style={{ padding: 'clamp(1.5rem, 7vw, 2.5rem) var(--pad)' }}>
+            <div style={{ padding: 'var(--pad)' }}>
               <h1>{project.title}</h1>
               <p className="meta">
                 {scope.length > 0 && (
@@ -295,7 +295,7 @@ export function ProjectDetail() {
 
           {/* Content blocks */}
           <div className="frame detail">
-            <div style={{ padding: 'var(--pad)', display: 'flex', flexDirection: 'column', gap: 'clamp(1.25rem, 5vw, 1.75rem)' }}>
+            <div style={{ padding: 'var(--pad)', display: 'flex', flexDirection: 'column', gap: 'var(--pad)' }}>
               {project.content_blocks && project.content_blocks.length > 0 ? (
                 project.content_blocks.map((block) => (
                   <div key={block.id}>

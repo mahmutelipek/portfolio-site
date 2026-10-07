@@ -187,7 +187,7 @@ export function Home() {
             .intro p + p { margin-top: 14px; }
             .intro strong { font-weight: 550; color: #fff; }
           `}</style>
-          <div className="intro" style={{ padding: 'clamp(1.5rem, 7vw, 2.5rem) var(--pad)' }}>
+          <div className="intro" style={{ padding: 'var(--pad)' }}>
             <h1>Mahmut Elipek</h1>
             <p className="role">Product Designer &amp; Design Engineer</p>
 
