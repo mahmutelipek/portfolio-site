@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
@@ -28,11 +28,13 @@ function ProductName({ name, url }: { name: string; url: string }) {
   );
 }
 
+// `color` tints each pill and its icon.
 const LINKS = [
-  { label: 'X', href: 'https://x.com/mahmutelipk', Icon: XLogo },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek', Icon: LinkedInLogo },
-  { label: 'Shots', href: 'https://layers.to/mahmutelipek', Icon: Layers },
+  { label: 'X', href: 'https://x.com/mahmutelipk', Icon: XLogo, color: '#e7e9ea' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahmutelipek', Icon: LinkedInLogo, color: '#3b8fe0' },
+  { label: 'Shots', href: 'https://layers.to/mahmutelipek', Icon: Layers, color: '#b794f6' },
 ];
+const EMAIL_COLOR = '#ff6b5e';
 
 export function Home() {
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
@@ -201,12 +203,13 @@ export function Home() {
             .pill {
               display: inline-flex; align-items: center; gap: 5px;
               padding: 3px 8px; border-radius: 999px;
-              background: rgba(255, 255, 255, 0.08);
+              background: color-mix(in srgb, var(--pill) 16%, transparent);
               color: #fff; font-size: 12.5px; font-weight: 500; line-height: 14px; letter-spacing: -0.09px;
               vertical-align: baseline;
               transition: background-color 0.2s ease;
             }
-            .pill:hover { background: rgba(255, 255, 255, 0.16); }
+            .pill:hover { background: color-mix(in srgb, var(--pill) 28%, transparent); }
+            .pill svg { color: var(--pill); }
           `}</style>
           <div className="intro" style={{ padding: '2.5rem 1.5rem' }}>
             <h1>Mahmut Elipek</h1>
@@ -232,9 +235,9 @@ export function Home() {
             <p>My focus is simple: understand the problem, find the right solution, and get it shipped.</p>
             <p>
               You can find me on{' '}
-              {LINKS.map(({ label, href, Icon }, i) => (
+              {LINKS.map(({ label, href, Icon, color }, i) => (
                 <span key={label}>
-                  <a href={href} target="_blank" rel="noopener noreferrer" className="pill">
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="pill" style={{ '--pill': color } as CSSProperties}>
                     <Icon size={12} />
                     {label}
                   </a>
@@ -244,7 +247,7 @@ export function Home() {
             </p>
             <p>
               Or reach me via{' '}
-              <a href="mailto:mahmutelipk@gmail.com" className="pill">
+              <a href="mailto:mahmutelipk@gmail.com" className="pill" style={{ '--pill': EMAIL_COLOR } as CSSProperties}>
                 <Mail size={12} />
                 Email
               </a>
