@@ -48,7 +48,7 @@ export function Home() {
   useEffect(() => {
     if (hash !== '#projects' || showSplash || loading) return;
     const el = document.getElementById('projects');
-    if (el) lenis?.scrollTo(el, { offset: 0 });
+    if (el) lenis?.scrollTo(el, { offset: -66 });
   }, [hash, showSplash, loading, lenis]);
 
   useEffect(() => {

@@ -13,21 +13,33 @@ export function Navbar() {
     const el = document.getElementById('projects');
     if (!el) return;
     e.preventDefault();
-    if (lenis) lenis.scrollTo(el);
-    else el.scrollIntoView({ behavior: 'smooth' });
+    if (lenis) lenis.scrollTo(el, { offset: -66 });
+    else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 66, behavior: 'smooth' });
   };
 
   return (
+    // Fixed bar. Side rails are drawn here only off the homepage (the homepage
+    // already draws full-height rails). Only the column itself is opaque so the
+    // rails next to it are never covered.
     <header
+      className={pathname === '/' ? undefined : 'rails'}
       style={{
-        position: 'absolute',
+        position: 'fixed',
         top: 0,
         left: 0,
         width: '100%',
-        zIndex: 10,
+        height: 66,
+        zIndex: 100,
+        pointerEvents: 'none',
       }}
     >
       <style>{`
+        .nav-shell {
+          pointer-events: auto;
+          background: rgba(0, 0, 0, 0.85);
+          -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
+        }
         .nav-inner {
           height: 56px;
           padding: 0 0 0 1.5rem;
@@ -50,7 +62,7 @@ export function Navbar() {
         .nav-link:hover { opacity: 1; }
       `}</style>
 
-      <div className="frame">
+      <div className="frame nav-shell">
         <div className="nav-inner">
           <Link
             to="/"
@@ -69,8 +81,8 @@ export function Navbar() {
             </a>
           </div>
         </div>
+        <div className="hatch" />
       </div>
-      <div className="hatch" />
     </header>
   );
 }
