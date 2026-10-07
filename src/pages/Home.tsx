@@ -40,6 +40,7 @@ export function Home() {
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(!globalStore.homeVisited);
+  const [coverOk, setCoverOk] = useState(true);
   const lenis = useLenis();
   const { hash } = useLocation();
 
@@ -184,6 +185,18 @@ export function Home() {
       </AnimatePresence>
 
       <main className="rails" style={{ paddingTop: '66px' }}>
+        {/* Cover: put the image at public/cover.jpg; hidden if missing */}
+        {coverOk && (
+          <div className="frame rule-bottom">
+            <img
+              src="/cover.jpg"
+              alt=""
+              onError={() => setCoverOk(false)}
+              style={{ display: 'block', width: '100%', height: 'clamp(140px, 28vw, 200px)', objectFit: 'cover' }}
+            />
+          </div>
+        )}
+
         {/* Intro */}
         <div className="frame">
           <style>{`
