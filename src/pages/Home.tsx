@@ -81,7 +81,11 @@ export function Home() {
         .neq('is_visible', false)
         .order('sort_order', { ascending: true });
 
-      if (error) {
+      if (import.meta.env.DEV && (error || !data || data.length === 0)) {
+        const { devProjects } = await import('../lib/devProjects');
+        setProjects(devProjects);
+        globalStore.homeProjects = devProjects;
+      } else if (error) {
         console.error('Error fetching projects:', error);
       } else if (data) {
         setProjects(data as Project[]);
