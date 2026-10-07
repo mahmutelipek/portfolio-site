@@ -50,6 +50,17 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
           transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .work-card:hover .cover img { transform: scale(1.03); }
+        .work-arrow {
+          flex-shrink: 0;
+          opacity: 0;
+          transform: translate(-4px, 4px);
+          transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .work-card:hover .work-arrow,
+        .work-card:focus-visible .work-arrow {
+          opacity: 0.8;
+          transform: translate(0, 0);
+        }
         .work-tag {
           padding: 0.15rem 0.55rem;
           border: 1px solid var(--line);
@@ -81,10 +92,8 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                     </div>
                     <div style={{ paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em' }}>
-                          <span className="ulink">{project.title}</span>
-                        </h3>
-                        <ArrowUpRight size={16} style={{ opacity: 0.6, flexShrink: 0 }} />
+                        <h3 style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em' }}>{project.title}</h3>
+                        <ArrowUpRight size={16} className="work-arrow" />
                       </div>
                       <p
                         style={{

@@ -16,7 +16,7 @@ import '../components/Frame.css';
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
 const PRODUCT_URLS = {
   flowla: 'https://www.flowla.com',
-  skaplo: '',
+  skaplo: 'https://skaplo.com',
 };
 
 function ProductName({ name, url }: { name: string; url: string }) {
