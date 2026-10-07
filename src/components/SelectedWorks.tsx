@@ -58,13 +58,6 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
           opacity: 0.8;
           transform: translate(0, 0);
         }
-        .work-tag {
-          padding: 0.15rem 0.55rem;
-          border: 1px solid var(--line);
-          border-radius: 6px;
-          font-size: 12px;
-          color: var(--text-secondary);
-        }
       `}</style>
 
       <div className="frame">
@@ -113,13 +106,6 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                       >
                         {getCustomSummary(project.title, firstSentence)}
                       </p>
-                      {project.roles?.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', paddingTop: '0.25rem' }}>
-                          {project.roles.map(role => (
-                            <span key={role} className="work-tag">{role}</span>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   </Link>
                 </motion.div>
