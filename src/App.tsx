@@ -1,12 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { ReactLenis, useLenis } from 'lenis/react';
 import { supabase } from './lib/supabase';
 import { Home } from './pages/Home';
-import { ProjectDetail } from './pages/ProjectDetail';
-import { Admin } from './pages/Admin';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+
+// Route-level code splitting: the admin panel and detail page load on demand.
+const ProjectDetail = lazy(() => import('./pages/ProjectDetail').then(m => ({ default: m.ProjectDetail })));
+const Admin = lazy(() => import('./pages/Admin').then(m => ({ default: m.Admin })));
 
 // Extend window for gtag
 declare global {
@@ -77,12 +79,14 @@ function AppContent() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {!isAdmin && <Navbar />}
+      <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/works/:slug" element={<ProjectDetail />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
       {!isAdmin && <Footer />}
     </div>
   );

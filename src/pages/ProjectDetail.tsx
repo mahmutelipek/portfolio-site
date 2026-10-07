@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project } from '../lib/types';
 import { globalStore } from '../lib/store';
 import '../components/Frame.css';
+import { FitImage, FitVideo } from '../components/FitMedia';
+
+const MEDIA_SIZES = '(max-width: 720px) 100vw, 672px';
 import { useLenis } from 'lenis/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CountUp from '../components/CountUp';
-import Lottie from 'lottie-react';
-import loadingAnimation from '../../loading.json';
+
+import { glassOverlayStyle } from '../lib/glass';
+const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -144,29 +148,6 @@ export function ProjectDetail() {
     fetchProject();
   }, [slug]);
 
-  useEffect(() => {
-    if (project) {
-      if (project.cover_image_url) {
-        const img = new Image();
-        img.src = project.cover_image_url;
-      }
-      if (project.gallery) {
-        project.gallery.forEach(url => {
-          const img = new Image();
-          img.src = url;
-        });
-      }
-      if (project.content_blocks) {
-        project.content_blocks.forEach(block => {
-          if (block.type === 'image' && block.value) {
-            const img = new Image();
-            img.src = block.value;
-          }
-        });
-      }
-    }
-  }, [project]);
-
   if (loading && !showSplash) {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', color: '#fff' }}>
@@ -193,7 +174,7 @@ export function ProjectDetail() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={glassOverlayStyle}
           >
             <div style={{ 
               position: 'relative', 
@@ -205,11 +186,9 @@ export function ProjectDetail() {
               maxWidth: '95vw',
               maxHeight: '95vw'
             }}>
-              <Lottie 
-                animationData={loadingAnimation} 
-                loop={true} 
-                style={{ position: 'absolute', inset: 0, zIndex: 1, width: '100%', height: '100%' }} 
-              />
+              <Suspense fallback={null}>
+                <SplashLottie />
+              </Suspense>
               <div style={{ 
                 position: 'relative', 
                 zIndex: 2, 
@@ -235,7 +214,7 @@ export function ProjectDetail() {
         <motion.article
           className="rails"
           initial={{ opacity: 0 }}
-          animate={!showSplash ? { opacity: 1 } : { opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
           style={{ paddingTop: '66px', minHeight: '100vh', color: '#ffffff' }}
         >
@@ -248,8 +227,7 @@ export function ProjectDetail() {
             .detail .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.25rem 1.5rem; margin-top: 1.5rem; }
             .detail .meta-label { font-size: 12px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
             .detail .meta-value { color: #fff; }
-            .detail-media { width: 100%; aspect-ratio: 1280 / 768; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
-            .detail-media img, .detail-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+            .detail-media { width: 100%; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
             .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }
             .detail-pager a { display: block; padding: 1.25rem 1.5rem; transition: background-color 0.2s ease; }
             .detail-pager a:hover { background: rgba(255, 255, 255, 0.04); }
@@ -309,23 +287,21 @@ export function ProjectDetail() {
                       </div>
                     ) : block.type === 'image' ? (
                       <motion.div
-                        className="detail-media"
                         initial={{ y: 24, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, ease: 'easeOut' }}
                       >
-                        <img src={block.value} alt="Project visual" />
+                        <FitImage className="detail-media" src={block.value} alt="Project visual" sizes={MEDIA_SIZES} />
                       </motion.div>
                     ) : (
                       <motion.div
-                        className="detail-media"
                         initial={{ y: 24, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, ease: 'easeOut' }}
                       >
-                        <video src={block.value} autoPlay loop muted playsInline />
+                        <FitVideo className="detail-media" src={block.value} />
                       </motion.div>
                     )}
                   </div>
@@ -347,9 +323,7 @@ export function ProjectDetail() {
                     </div>
                   )}
                   {project.cover_image_url && (
-                    <div className="detail-media">
-                      <img src={project.cover_image_url} alt={project.title} />
-                    </div>
+                    <FitImage className="detail-media" src={project.cover_image_url} alt={project.title} sizes={MEDIA_SIZES} />
                   )}
                 </>
               )}

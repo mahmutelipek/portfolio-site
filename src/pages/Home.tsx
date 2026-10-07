@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties, lazy, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
@@ -6,12 +6,13 @@ import { Mail, Layers } from 'lucide-react';
 import { XLogo, LinkedInLogo } from '../components/BrandIcons';
 import { SelectedWorks } from '../components/SelectedWorks';
 import CountUp from '../components/CountUp';
-import Lottie from 'lottie-react';
-import loadingAnimation from '../../loading.json';
 import type { Project } from '../lib/types';
 import { supabase } from '../lib/supabase';
 import { globalStore } from '../lib/store';
 import '../components/Frame.css';
+
+import { glassOverlayStyle } from '../lib/glass';
+const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
 const PRODUCT_URLS = {
@@ -40,7 +41,6 @@ export function Home() {
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(!globalStore.homeVisited);
-  const [coverOk, setCoverOk] = useState(true);
   const lenis = useLenis();
   const { hash } = useLocation();
 
@@ -124,18 +124,6 @@ export function Home() {
     fetchData();
   }, []);
 
-  // Preload project images in the background while splash screen is active
-  useEffect(() => {
-    if (projects.length > 0) {
-      projects.forEach(p => {
-        if (p.cover_image_url) {
-          const img = new Image();
-          img.src = p.cover_image_url;
-        }
-      });
-    }
-  }, [projects]);
-
   return (
     <>
       <AnimatePresence>
@@ -145,7 +133,7 @@ export function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={glassOverlayStyle}
           >
             <div style={{ 
               position: 'relative', 
@@ -157,11 +145,9 @@ export function Home() {
               maxWidth: '95vw',
               maxHeight: '95vw'
             }}>
-              <Lottie 
-                animationData={loadingAnimation} 
-                loop={true} 
-                style={{ position: 'absolute', inset: 0, zIndex: 1, width: '100%', height: '100%' }} 
-              />
+              <Suspense fallback={null}>
+                <SplashLottie />
+              </Suspense>
               <div style={{ 
                 position: 'relative', 
                 zIndex: 2, 
@@ -185,18 +171,6 @@ export function Home() {
       </AnimatePresence>
 
       <main className="rails" style={{ paddingTop: '66px' }}>
-        {/* Cover: put the image at public/cover.webp; hidden if missing */}
-        {coverOk && (
-          <div className="frame rule-bottom" style={{ padding: '1.5rem' }}>
-            <img
-              src="/cover.webp"
-              alt=""
-              onError={() => setCoverOk(false)}
-              style={{ display: 'block', width: '100%', height: 'clamp(100px, 20vw, 140px)', objectFit: 'cover', objectPosition: 'center 45%', borderRadius: 12 }}
-            />
-          </div>
-        )}
-
         {/* Intro */}
         <div className="frame">
           <style>{`

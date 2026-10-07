@@ -1,311 +1,80 @@
-# Mahmut Elipek Kişisel Portföy Web Sitesi Dokümantasyonu
+# Mahmut Elipek Portföy Sitesi
 
-## Genel Bakış
+Kişisel portföy sitesi. React + TypeScript + Vite ile yazıldı, veriler Supabase'den geliyor, Vercel'de yayınlanıyor.
 
-Bu proje, Mahmut Elipek adlı ürün ve deneyim tasarımcısının kişisel portföy web sitesidir. Modern, etkileşimli ve görsel açıdan çarpıcı bir deneyim sunmak için React, TypeScript, Three.js ve Supabase kullanılarak geliştirilmiştir.
+## Teknoloji
 
----
+- **React 19**, **TypeScript**, **Vite 7**
+- **React Router** (sayfalar), **Framer Motion** (animasyonlar), **Lenis** (yumuşak kaydırma)
+- **Lottie** (açılış animasyonu), **Lucide** (ikonlar)
+- **Supabase**: veritabanı (`projects`, `logos`, `site_settings`) ve görsel depolama (`portfolio` bucket'ı)
+- **Yazı tipi**: Switzer (değişken font, `public/fonts/Switzer-Variable.ttf`, kendi sunucumuzdan)
 
-## Teknoloji Yığını
+## Çalıştırma
 
-### Frontend
-- **React 19** - Kullanıcı arayüzü kütüphanesi
-- **TypeScript** - Tip güvenliği için
-- **Vite 7** - Build aracı ve geliştirme sunucusu
-- **React Router DOM 7** - Yönlendirme
-- **Framer Motion 12** - Animasyon kütüphanesi
-- **Three.js / React Three Fiber** - 3D grafikler ve WebGL efektleri
-- **@use-gesture/react** - Dokunmatik ve fare etkileşimleri
-
-### Backend & Veritabanı
-- **Supabase** - PostgreSQL veritabanı ve autentikasyon
-- **@supabase/supabase-js** - Supabase istemci kütüphanesi
-
-### UI & Fonts
-- **Lucide React** - İkon kütüphanesi
-- **Geist** - Font ailesi
-- **Mona Sans** - Birincil font
-- **Suisse Intl Mono** - Monospace font
-
----
-
-## Proje Yapısı
-
-```
-portfolio-site/
-├── public/
-│   └── fonts/
-│       └── Suisse_Intl_Mono.ttf
-├── src/
-│   ├── components/
-│   │   ├── AuraHero.tsx          # 3D parçacık efekti içeren hero bölümü
-│   │   ├── DecryptedText.tsx     # Şifreli metin animasyonu bileşeni
-│   │   ├── DomeGallery.tsx       # Kubik galeri - şirket logoları için
-│   │   ├── Footer.tsx            # Site altbilgisi
-│   │   ├── Hero.tsx              # Alternatif hero bileşeni
-│   │   ├── Navbar.tsx            # Navigasyon barı
-│   │   ├── OrbitImages.tsx       # Dönen görseller bileşeni
-│   │   ├── PixelCard.tsx         # Piksel kart bileşeni
-│   │   ├── PixelCard.css         # Piksel kart stilleri
-│   │   ├── SelectedWorks.tsx     # Seçilmiş çalışmalar bölümü
-│   │   └── ShinyText.tsx         # Parlak metin efekti
-│   ├── lib/
-│   │   ├── supabase.ts           # Supabase istemci yapılandırması
-│   │   └── types.ts              # TypeScript tip tanımlamaları
-│   ├── pages/
-│   │   ├── Admin.tsx             # Yönetici paneli (CRUD işlemleri)
-│   │   ├── Home.tsx              # Ana sayfa
-│   │   └── ProjectDetail.tsx     # Proje detay sayfası
-│   ├── styles/
-│   ├── App.tsx                   # Ana uygulama bileşeni
-│   ├── App.css                   # App düzeyinde stiller
-│   ├── index.css                 # Global stiller ve CSS değişkenleri
-│   └── main.tsx                  # React uygulama giriş noktası
-├── supabase_schema.sql           # Veritabanı şeması
-├── site_settings.sql              # Site ayarları
-├── update_schema.sql              # Şema güncellemeleri
-├── about_blocks_schema.sql        # Hakkında blokları şeması
-├── dummy_data.sql                 # Örnek veriler
-├── seed.js                        # Veri tohumlama scripti
-├── package.json                   # NPM bağımlılıkları
-├── tsconfig.json                  # TypeScript yapılandırması
-├── vite.config.ts                # Vite yapılandırması
-└── .env.example                   # Çevre değişkenleri şablonu
-```
-
----
-
-## Sayfalar ve Rotalar
-
-| Yol | Bileşen | Açıklama |
-|-----|----------|----------|
-| `/` | `Home` | Ana sayfa - hero, çalışmalar ve galeri |
-| `/works/:slug` | `ProjectDetail` | Proje detay sayfası |
-| `/admin` | `Admin` | Yönetici paneli |
-
----
-
-## Bileşenler
-
-### 1. AuraHero
-3D parçacık sürüsü (particle swarm) efekti içeren etkileşimli hero bölümü. React Three Fiber ve Three.js kullanılarak oluşturulmuştur. Yaklaşık 19.683 parçacık içeren kübik bir yapıdadır.
-
-**Özellikler:**
-- Otomatik dönen parçacık animasyonu
-- Unreal Bloom post-processing efekti
-- Fresnel shader efekti
-- Tam ekran kaplama
-
-### 2. Navbar
-Sabit pozisyonlu navigasyon barı. Scroll pozisyonuna göre animasyonlar içerir.
-
-**Özellikler:**
-- "me." logosu
-- Sosyal medya bağlantıları (X, LinkedIn, Layers)
-- "Get in Touch" parlak metin efekti
-- Mobil uyumlu tasarım
-
-### 3. SelectedWorks
-Seçilmiş çalışmaları listeleyen bölüm.
-
-**Özellikler:**
-- Framer Motion ile yumuşak geçiş animasyonları
-- Hover durumunda görsel büyütme efekti
-- Proje rolleri ve başlık görüntüleme
-
-### 4. DomeGallery
-Şirket logolarını sergileyen interaktif kubik galeri.
-
-**Özellikler:**
-- 3D küresel düzen
-- Sürükleme ile döndürme
-- Tıklama ile büyütme efekti
-- Eylemsellik (inertia) animasyonu
-
-### 5. ProjectDetail
-Proje detay sayfası.
-
-**Özellikler:**
-- Esnek içerik blokları sistemi
-- Görsel galeri
-- Proje meta bilgileri (müşteri, rol, yıl)
-- Responsive tasarım
-
-### 6. Admin
-Yönetici paneli - projeler ve logolar için CRUD işlemleri.
-
-**Özellikler:**
-- Proje ekleme/düzenleme/silme
-- Logo ekleme/düzenleme/silme
-- Sürükle-bırak sıralama
-- Görsel yükleme
-- İçerik bloğu yönetimi
-
----
-
-## Veritabanı Şeması
-
-### Projects Tablosu
-
-```sql
-CREATE TABLE public.projects (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  title text NOT NULL,
-  slug text NOT NULL UNIQUE,
-  client text NOT NULL,
-  date date NOT NULL,
-  cover_image_url text NOT NULL,
-  gallery jsonb DEFAULT '[]'::jsonb,
-  content_body text,
-  roles text[] DEFAULT '{}'::text[],
-  sort_order integer DEFAULT 0,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-```
-
-### Logos Tablosu
-
-```sql
-CREATE TABLE public.logos (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  name text,
-  url text NOT NULL,
-  website_url text,
-  sort_order integer DEFAULT 0,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-```
-
----
-
-## Tip Tanımlamaları
-
-### Project
-```typescript
-interface Project {
-  id: string;
-  title: string;
-  slug: string;
-  client: string;
-  date: string;
-  cover_image_url: string;
-  gallery?: string[];
-  content_body?: string;
-  roles: string[];
-  sort_order?: number;
-  content_blocks?: ContentBlock[];
-}
-```
-
-### ContentBlock
-```typescript
-interface ContentBlock {
-  id: string;
-  type: 'text' | 'image';
-  title?: string;
-  value: string;
-}
-```
-
-### Logo
-```typescript
-interface Logo {
-  id: string;
-  url: string;
-  name: string;
-  website_url?: string;
-  sort_order?: number;
-}
-```
-
----
-
-## CSS Değişkenleri
-
-```css
-:root {
-  --bg-color: #030303;
-  --text-primary: #F5F5F7;
-  --text-secondary: #86868B;
-  --border-color: #1D1D1F;
-  --accent-color: #FFFFFF;
-  --font-mono: 'Mona Sans', sans-serif;
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
-  --spacing-xxl: 8rem;
-}
-```
-
----
-
-## Kurulum
-
-### 1. Bağımlılıkları Yükleyin
 ```bash
-cd portfolio-site
 npm install
+cp .env.example .env   # VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY değerlerini doldur
+npm run dev            # http://localhost:5173
+npm run build          # üretim derlemesi (dist/)
 ```
 
-### 2. Çevre Değişkenlerini Ayarlayın
-`.env` dosyası oluşturun ve aşağıdaki değişkenleri ekleyin:
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+`.env` yoksa `npm run dev` altı örnek proje gösterir (`src/lib/devProjects.ts`). Bu örnekler üretim derlemesine girmez.
+
+## Yapı
+
+```
+src/
+├── components/
+│   ├── BrandIcons.tsx     # X ve LinkedIn logoları (SVG)
+│   ├── Clock.tsx          # Footer'daki canlı saat (saat dilimi ve yer adı dosyanın başında)
+│   ├── CountUp.tsx        # Açılıştaki 0-100 sayacı
+│   ├── Footer.tsx
+│   ├── Frame.css          # Ortak "çerçeveli sütun" stilleri (şeritler, ayraçlar, çizgiler)
+│   ├── Navbar.tsx         # Sabit üst çubuk
+│   ├── SelectedWorks.tsx  # Anasayfadaki proje listesi
+│   └── SplashLottie.tsx   # Lottie animasyonu (ayrı parça olarak geç yüklenir)
+├── lib/
+│   ├── devProjects.ts     # Sadece geliştirmede kullanılan örnek projeler
+│   ├── image.ts           # Supabase görsellerini küçültülmüş boyutlarda isteyen yardımcı
+│   ├── store.ts           # Sayfalar arası basit önbellek
+│   ├── supabase.ts        # Supabase istemcisi
+│   └── types.ts
+└── pages/
+    ├── Home.tsx           # Tanıtım yazısı, bağlantılar, projeler
+    ├── ProjectDetail.tsx  # /works/:slug
+    └── Admin.tsx          # /admin (içerik yönetimi)
+public/
+└── fonts/Switzer-Variable.ttf
 ```
 
-### 3. Veritabanını Yapılandırın
-Supabase SQL editöründe `supabase_schema.sql` dosyasını çalıştırın.
+## Sayfalar
 
-### 4. Geliştirme Sunucusunu Başlatın
-```bash
-npm run dev
-```
+| Yol | Sayfa |
+|-----|-------|
+| `/` | Anasayfa. Kısa tanıtım, bağlantılar ve proje listesi |
+| `/works/:slug` | Proje detayı. Bilgiler, metin ve görsel blokları, önceki/sonraki |
+| `/admin` | Yönetim paneli (projeler, logolar, ayarlar) |
 
----
+`Admin` ve `ProjectDetail` ayrı parçalar halinde (lazy) yüklenir, ilk açılışta indirilmez.
 
-## Özel Efektler
+## Tasarım dili
 
-### ShinyText
-Metin üzerinde parlama efekti oluşturan bileşen. CSS gradient ve Framer Motion kullanılarak yapılmıştır.
+Ortada 720px'lik dar bir sütun, iki yanında ince taralı şeritler (`.rails`), bölümler arasında taralı bantlar (`.hatch`). Yatay çizgiler sütunun dışına taşmaz. Ortak değerler `src/components/Frame.css` içinde. Metin Switzer, giriş yazısında 14px / 20px satır yüksekliği.
 
-### DecryptedText
-Rastgele karakterlerle şifreleme efekti uygulayan bileşen. Hover veya tıklama ile metni çözer.
+Anasayfadaki isim ve ünvan, tanıtım metni, bağlantı rozetleri ve ürün adresleri (`PRODUCT_URLS`) `src/pages/Home.tsx` içinde.
 
-### ParticleSwarm (AuraHero)
-Three.js instanced mesh kullanarak oluşturulan 3D parçacık sistemi. Fresnel efekti ve bloom post-processing içerir.
+## Görseller
 
----
+- **Yükleme (Admin):** Görseller tarayıcıda WebP'ye çevrilir, en çok 1920px ve yaklaşık 1,5 MB'a küçültülür, uzun süreli önbellek başlığıyla yüklenir.
+- **Gösterim:** `src/lib/image.ts`, Supabase'in görsel dönüştürme adresini (`/storage/v1/render/image/public/...`) kullanıp ekranda gereken boyutu (700 ve 1400px) ister. Dönüştürme çalışmazsa orijinal görsele döner.
+- **Yükleme sırası:** İlk proje görseli hemen, diğerleri kaydırıldıkça yüklenir (`loading="lazy"`).
+- `optimize-images.js`: Eski, büyük görselleri toplu olarak WebP'ye çeviren tek seferlik betik (`.env` gerekir).
 
-## Güvenlik
+## Yayın
 
-- Row Level Security (RLS) etkin
-- Public SELECT politikaları
-- Authenticated kullanıcılar için INSERT/UPDATE/DELETE politikaları
+Vercel `main` branch'ini yayınlar. `vercel.json` tüm adresleri `index.html`'e yönlendirir. Vercel'de aynı iki ortam değişkeni (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) tanımlı olmalı.
 
----
+## Veritabanı
 
-## Performans İpuçları
-
-1. **Görseller**: WebP formatı kullanın ve sıkıştırın
-2. **3D Efektler**: AuraHero'daki parçacık sayısını azaltabilirsiniz
-3. **Code Splitting**: React.lazy() kullanarak sayfaları ayırabilirsiniz
-4. **Lazy Loading**: Görseller için lazy loading uygulayın
-
----
-
-## Gelecek Geliştirmeler
-
-- Blog/eğitim yazıları bölümü
-- İletişim formu entegrasyonu
-- Dark/Light mode toggle
-- Çeviri desteği (i18n)
-- PWA desteği
-
----
-
-## Lisans
-
-Tüm hakları Mahmut Elipek'e aittir. © 2026
+Şema dosyaları kök dizinde: `supabase_schema.sql`, `site_settings.sql`, `about_blocks_schema.sql`, `visibility_schema.sql`, `add_link_column.sql`, `update_schema.sql`. Yeni bir Supabase projesinde Supabase SQL Editor'de çalıştır.

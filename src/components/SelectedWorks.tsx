@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import type { Project } from '../lib/types';
+import { FitImage } from './FitMedia';
 import './Frame.css';
 
 interface SelectedWorksProps {
@@ -38,15 +39,11 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
         }
         .work-card:hover { background: rgba(255, 255, 255, 0.03); }
         .work-card .cover {
-          aspect-ratio: 21 / 9;
           overflow: hidden;
           border-radius: 12px;
           background: #111;
         }
         .work-card .cover img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
           transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .work-card:hover .cover img { transform: scale(1.03); }
@@ -87,9 +84,17 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                   transition={{ duration: 0.5, delay: index === 0 ? 0 : 0.05 }}
                 >
                   <Link to={`/works/${project.slug}`} className="work-card">
-                    <div className="cover">
-                      {cover && <img src={cover} alt={project.title} loading="lazy" />}
-                    </div>
+                    {cover ? (
+                      <FitImage
+                        className="cover"
+                        src={cover}
+                        alt={project.title}
+                        sizes="(max-width: 720px) 100vw, 672px"
+                        priority={index === 0}
+                      />
+                    ) : (
+                      <div className="cover" style={{ aspectRatio: '16 / 10' }} />
+                    )}
                     <div style={{ paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
                         <h3 style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em' }}>{project.title}</h3>

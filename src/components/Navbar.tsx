@@ -18,11 +18,8 @@ export function Navbar() {
   };
 
   return (
-    // Fixed bar. Side rails are drawn here only off the homepage (the homepage
-    // already draws full-height rails). Only the column itself is opaque so the
-    // rails next to it are never covered.
+    // Fixed bar. Only the column is opaque so the page's side rails stay visible.
     <header
-      className={pathname === '/' ? undefined : 'rails'}
       style={{
         position: 'fixed',
         top: 0,

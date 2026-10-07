@@ -95,9 +95,9 @@ export function Admin() {
     if (!isVideo && !isSVG) {
       try {
         const options = {
-          maxSizeMB: 3, 
-          maxWidthOrHeight: 2560, 
-          initialQuality: 0.95, 
+          maxSizeMB: 1.5,
+          maxWidthOrHeight: 1920,
+          initialQuality: 0.85,
           useWebWorker: true,
           fileType: 'image/webp'
         };
@@ -114,7 +114,7 @@ export function Admin() {
 
     const { error: uploadError } = await supabase.storage
       .from('portfolio')
-      .upload(filePath, fileToUpload);
+      .upload(filePath, fileToUpload, { cacheControl: '31536000' });
 
     if (uploadError) {
       alert('Upload failed: ' + uploadError.message + '\nMake sure you have a public bucket named "portfolio".');
