@@ -231,19 +231,19 @@ export function ProjectDetail() {
           style={{ paddingTop: '66px', minHeight: '100vh', color: '#ffffff' }}
         >
           <style>{`
-            .detail { font-size: 13px; line-height: 21px; letter-spacing: -0.09px; color: #d4d4d4; }
+            .detail { font-size: 14px; line-height: 22px; letter-spacing: -0.09px; color: #d4d4d4; }
             .detail h1 { font-size: clamp(1.5rem, 5vw, 1.75rem); line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; color: #fff; overflow-wrap: anywhere; }
-            .detail h3 { font-size: 15px; line-height: 21px; font-weight: 600; color: #fff; margin-bottom: 0.5rem; overflow-wrap: anywhere; }
+            .detail h3 { font-size: 15px; line-height: 22px; font-weight: 600; color: #fff; margin-bottom: 0.5rem; overflow-wrap: anywhere; }
             .detail p { font-size: inherit; margin: 0; overflow-wrap: anywhere; }
             .detail p + p { margin-top: 0.75rem; }
-            .detail .meta { margin-top: 1.25rem; }
+            .detail .meta { margin-top: 0.5rem; }
             .detail strong { font-weight: 550; color: #fff; }
             .detail-media { width: 100%; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
             .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }
             .detail-pager a { display: block; padding: 1.25rem 1.5rem; transition: background-color 0.2s ease; }
             .detail-pager a:hover { background: rgba(255, 255, 255, 0.04); }
             .detail-pager .next { text-align: right; border-left: 1px solid var(--line); }
-            .detail-pager .pager-label { font-size: 11px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
+            .detail-pager .pager-label { font-size: 12px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
             .detail-pager .pager-title { font-size: 15px; font-weight: 500; color: #fff; overflow-wrap: anywhere; }
           `}</style>
 
