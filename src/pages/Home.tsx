@@ -15,7 +15,7 @@ import { glassOverlayStyle } from '../lib/glass';
 import { useDocumentTitle, HOME_TITLE } from '../lib/useDocumentTitle';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
-// Label for the green status dot next to the name (tooltip + screen readers).
+// Text shown next to the green status dot, opposite the name.
 const STATUS_LABEL = 'Open to work';
 
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
@@ -187,6 +187,8 @@ export function Home() {
               color: #d4d4d4;
             }
             .intro-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+            .status { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; white-space: nowrap; font-size: 12.5px; line-height: 20px; color: var(--text-secondary); }
+            @media (max-width: 740px) { .status { font-size: 13px; } }
             .status-dot { position: relative; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
             .status-dot::after {
               content: '';
@@ -211,7 +213,10 @@ export function Home() {
           <div className="intro" style={{ padding: 'var(--pad)' }}>
             <div className="intro-head">
               <h1>Mahmut Elipek</h1>
-              <span className="status-dot" role="img" aria-label={STATUS_LABEL} title={STATUS_LABEL} />
+              <span className="status">
+                <span className="status-dot" aria-hidden="true" />
+                {STATUS_LABEL}
+              </span>
             </div>
             <p className="role">Product Designer &amp; Design Engineer</p>
 
