@@ -185,14 +185,14 @@ export function Home() {
       </AnimatePresence>
 
       <main className="rails" style={{ paddingTop: '66px' }}>
-        {/* Cover: put the image at public/cover.jpg; hidden if missing */}
+        {/* Cover: put the image at public/cover.webp; hidden if missing */}
         {coverOk && (
           <div className="frame rule-bottom">
             <img
-              src="/cover.jpg"
+              src="/cover.webp"
               alt=""
               onError={() => setCoverOk(false)}
-              style={{ display: 'block', width: '100%', height: 'clamp(140px, 28vw, 200px)', objectFit: 'cover' }}
+              style={{ display: 'block', width: '100%', height: 'clamp(140px, 28vw, 200px)', objectFit: 'cover', objectPosition: 'center 35%' }}
             />
           </div>
         )}
