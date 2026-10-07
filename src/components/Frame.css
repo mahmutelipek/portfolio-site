@@ -1,5 +1,6 @@
-/* Shared "framed column" visual language: a narrow centered column with
-   hairline side borders, full-bleed horizontal rules and hatched dividers. */
+/* Shared "framed column" visual language: a narrow centered column flanked
+   by hatched side rails, with hairline rules and hatched dividers that stop
+   at the rails. */
 
 :root {
   --line: rgba(255, 255, 255, 0.1);
@@ -53,33 +54,28 @@
   .rails::after { display: none; }
 }
 
-/* Full-bleed horizontal hairline anchored to the top or bottom of a block */
+/* Horizontal hairline anchored to the top or bottom of a block, spanning only
+   the column so it ends at the side rails instead of crossing them. */
 .rule-top::before,
 .rule-bottom::after {
   content: '';
   position: absolute;
-  left: 50%;
-  width: 100vw;
+  left: 0;
+  right: 0;
   height: 1px;
   background: var(--line);
-  transform: translateX(-50%);
   pointer-events: none;
 }
 .rule-top::before { top: 0; }
 .rule-bottom::after { bottom: 0; }
 
-/* Full-bleed hatched divider between sections */
+/* Hatched divider between sections, same width as the column */
 .hatch {
   position: relative;
+  width: 100%;
+  max-width: var(--col-width);
   height: 10px;
-}
-.hatch::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto;
-  left: 50%;
-  width: 100vw;
-  transform: translateX(-50%);
+  margin: 0 auto;
   background: var(--hatch);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
