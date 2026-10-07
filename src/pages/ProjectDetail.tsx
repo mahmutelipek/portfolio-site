@@ -117,7 +117,7 @@ export function ProjectDetail() {
         .select('*')
         .eq('slug', slug)
         .neq('is_visible', false)
-        .single();
+        .maybeSingle();
         
       if (error) {
         console.error('Error fetching project:', error);

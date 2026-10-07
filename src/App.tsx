@@ -28,7 +28,7 @@ function AppContent() {
   // Fetch GA ID and Initialize
   useEffect(() => {
     const fetchGA = async () => {
-      const { data } = await supabase.from('site_settings').select('value').eq('key', 'google_analytics_id').single();
+      const { data } = await supabase.from('site_settings').select('value').eq('key', 'google_analytics_id').maybeSingle();
       if (data?.value) {
         setGaId(data.value);
         
