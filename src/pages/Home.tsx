@@ -15,6 +15,9 @@ import { glassOverlayStyle } from '../lib/glass';
 import { useDocumentTitle, HOME_TITLE } from '../lib/useDocumentTitle';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 
+// Label for the green status dot next to the name (tooltip + screen readers).
+const STATUS_LABEL = 'Open to work';
+
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
 const PRODUCT_URLS = {
   flowla: 'https://www.flowla.com',
@@ -183,6 +186,18 @@ export function Home() {
               letter-spacing: -0.09px;
               color: #d4d4d4;
             }
+            .intro-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+            .status-dot { position: relative; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+            .status-dot::after {
+              content: '';
+              position: absolute;
+              inset: 0;
+              border-radius: 50%;
+              background: #22c55e;
+              animation: status-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+            }
+            @keyframes status-ping { 0% { transform: scale(1); opacity: 0.7; } 75%, 100% { transform: scale(3); opacity: 0; } }
+            @media (prefers-reduced-motion: reduce) { .status-dot::after { animation: none; } }
             .intro h1 { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: -0.09px; color: #fff; }
             .intro .role { color: #a1a1a1; margin-bottom: 24px; }
             .intro p { margin: 0; font-size: inherit; }
@@ -194,7 +209,10 @@ export function Home() {
             .intro strong { font-weight: 550; color: #fff; }
           `}</style>
           <div className="intro" style={{ padding: 'var(--pad)' }}>
-            <h1>Mahmut Elipek</h1>
+            <div className="intro-head">
+              <h1>Mahmut Elipek</h1>
+              <span className="status-dot" role="img" aria-label={STATUS_LABEL} title={STATUS_LABEL} />
+            </div>
             <p className="role">Product Designer &amp; Design Engineer</p>
 
             <p>
