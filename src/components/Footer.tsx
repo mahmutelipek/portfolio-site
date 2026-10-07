@@ -8,7 +8,7 @@ const links = [
 
 export function Footer() {
   return (
-    <footer style={{ marginTop: 'auto' }}>
+    <footer className="rails" style={{ marginTop: 'auto' }}>
       <div className="hatch" />
       <div className="frame" style={{ padding: '4rem 1.5rem 2rem' }}>
         <a

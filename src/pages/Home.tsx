@@ -52,7 +52,7 @@ export function Home() {
   useEffect(() => {
     if (hash !== '#projects' || showSplash || loading) return;
     const el = document.getElementById('projects');
-    if (el) lenis?.scrollTo(el, { offset: -56 });
+    if (el) lenis?.scrollTo(el, { offset: -66 });
   }, [hash, showSplash, loading, lenis]);
 
   useEffect(() => {
@@ -188,7 +188,7 @@ export function Home() {
         )}
       </AnimatePresence>
 
-      <main style={{ paddingTop: '56px' }}>
+      <main className="rails" style={{ paddingTop: '66px' }}>
         {/* Profile */}
         <div className="frame">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '2rem 1.5rem' }}>

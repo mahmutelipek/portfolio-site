@@ -11,8 +11,46 @@
   width: 100%;
   max-width: var(--col-width);
   margin: 0 auto;
+}
+
+/* Thin hatched side rails on both outer edges of the column. Apply to a
+   position-relative wrapper that spans the page height. */
+:root {
+  --hatch: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.14) 0,
+    rgba(255, 255, 255, 0.14) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  --rail: 10px;
+}
+.rails {
+  position: relative;
+}
+.rails::before,
+.rails::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--rail);
+  background: var(--hatch);
+  pointer-events: none;
+}
+.rails::before {
+  right: calc(50% + var(--col-width) / 2);
   border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
+}
+.rails::after {
+  left: calc(50% + var(--col-width) / 2);
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+@media (max-width: 740px) {
+  .rails::before,
+  .rails::after { display: none; }
 }
 
 /* Full-bleed horizontal hairline anchored to the top or bottom of a block */
@@ -33,7 +71,7 @@
 /* Full-bleed hatched divider between sections */
 .hatch {
   position: relative;
-  height: 24px;
+  height: 10px;
 }
 .hatch::before {
   content: '';
@@ -42,13 +80,7 @@
   left: 50%;
   width: 100vw;
   transform: translateX(-50%);
-  background: repeating-linear-gradient(
-    -45deg,
-    rgba(255, 255, 255, 0.08) 0,
-    rgba(255, 255, 255, 0.08) 1px,
-    transparent 1px,
-    transparent 6px
-  );
+  background: var(--hatch);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   pointer-events: none;

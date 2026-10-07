@@ -14,7 +14,6 @@ export function Navbar() {
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
       }}
-      className="rule-bottom"
     >
       <style>{`
         .nav-inner {
@@ -37,7 +36,7 @@ export function Navbar() {
         .nav-cta:hover { background: rgba(255, 255, 255, 0.08); }
       `}</style>
 
-      <div className="frame" style={{ borderTop: 'none', borderBottom: 'none' }}>
+      <div className="frame">
         <div className="nav-inner">
           <Link
             to="/"
@@ -56,6 +55,7 @@ export function Navbar() {
           </nav>
         </div>
       </div>
+      <div className="hatch" />
     </header>
   );
 }
