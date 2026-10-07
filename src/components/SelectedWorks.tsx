@@ -59,7 +59,7 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
         }
       `}</style>
 
-      <div className="frame rule-top">
+      <div className="frame">
         <h2 className="section-title">Projects</h2>
         <div style={{ position: 'relative' }} className="rule-top">
           <div className="works-grid">

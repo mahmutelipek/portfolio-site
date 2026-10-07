@@ -5,14 +5,11 @@ export function Navbar() {
   return (
     <header
       style={{
-        position: 'fixed',
+        position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
-        zIndex: 100,
-        background: 'rgba(0, 0, 0, 0.7)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+        zIndex: 10,
       }}
     >
       <style>{`

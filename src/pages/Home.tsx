@@ -52,7 +52,7 @@ export function Home() {
   useEffect(() => {
     if (hash !== '#projects' || showSplash || loading) return;
     const el = document.getElementById('projects');
-    if (el) lenis?.scrollTo(el, { offset: -66 });
+    if (el) lenis?.scrollTo(el, { offset: 0 });
   }, [hash, showSplash, loading, lenis]);
 
   useEffect(() => {
@@ -233,7 +233,6 @@ export function Home() {
         {/* Connect */}
         <div className="frame">
           <h2 className="section-title">Connect</h2>
-          <div className="rule-top connect-grid">
             <style>{`
               .connect-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
               .connect-item {
@@ -253,6 +252,7 @@ export function Home() {
                 background: #0d0d0d; font-size: 13px; font-weight: 600;
               }
             `}</style>
+          <div className="rule-top connect-grid">
             {CONNECT.map(c => (
               <a key={c.label} href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="connect-item">
                 <span className="connect-icon">{c.short}</span>
