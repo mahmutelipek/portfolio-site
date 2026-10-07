@@ -47,6 +47,10 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
           transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .work-card:hover .cover img { transform: scale(1.03); }
+        .work-desc { font-size: 14px; }
+        @media (max-width: 740px) {
+          .work-desc { font-size: 15px; }
+        }
         .work-arrow {
           flex-shrink: 0;
           opacity: 0;
@@ -94,8 +98,8 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
                         <ArrowUpRight size={16} className="work-arrow" />
                       </div>
                       <p
+                        className="work-desc"
                         style={{
-                          fontSize: '14px',
                           lineHeight: 1.45,
                           color: 'var(--text-secondary)',
                           display: '-webkit-box',

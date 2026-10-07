@@ -245,6 +245,11 @@ export function ProjectDetail() {
             .detail-pager .next { text-align: right; border-left: 1px solid var(--line); }
             .detail-pager .pager-label { font-size: 12px; line-height: 16px; color: var(--text-secondary); margin-bottom: 4px; }
             .detail-pager .pager-title { font-size: 15px; font-weight: 500; color: #fff; overflow-wrap: anywhere; }
+            @media (max-width: 740px) {
+              .detail { font-size: 15px; line-height: 23px; }
+              .detail h3 { line-height: 23px; }
+              .detail-pager .pager-label { font-size: 13px; }
+            }
           `}</style>
 
           {/* Title & meta */}

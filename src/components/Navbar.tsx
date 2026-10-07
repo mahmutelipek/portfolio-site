@@ -32,9 +32,6 @@ export function Navbar() {
       }}
     >
       <style>{`
-        @media (max-width: 740px) {
-          .nav-header { padding: 0 var(--rail); }
-        }
         .nav-shell {
           pointer-events: auto;
           background: rgba(0, 0, 0, 0.85);
@@ -61,6 +58,10 @@ export function Navbar() {
         .nav-cta:hover { background: rgba(255, 255, 255, 0.08); }
         .nav-link { opacity: 0.8; transition: opacity 0.2s ease; }
         .nav-link:hover { opacity: 1; }
+        @media (max-width: 740px) {
+          .nav-header { padding: 0 var(--rail); }
+          .nav-inner { font-size: 15px; }
+        }
       `}</style>
 
       <div className="frame nav-shell">

@@ -133,3 +133,11 @@ a:hover .ulink,
 }
 a.pill:hover { background: color-mix(in srgb, var(--pill, #e7e9ea) 28%, transparent); }
 .pill svg { color: var(--pill, #e7e9ea); }
+
+@media (max-width: 740px) {
+  .pill { font-size: 13px; line-height: 15px; }
+}
+.footer-meta { font-size: 13px; }
+@media (max-width: 740px) {
+  .footer-meta { font-size: 14px; }
+}

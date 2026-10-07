@@ -184,6 +184,10 @@ export function Home() {
             .intro h1 { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: -0.09px; color: #fff; }
             .intro .role { color: #a1a1a1; margin-bottom: 24px; }
             .intro p { margin: 0; font-size: inherit; }
+            @media (max-width: 740px) {
+              .intro { font-size: 15px; line-height: 23px; }
+              .intro h1, .intro .role { font-size: 15px; line-height: 23px; }
+            }
             .intro p + p { margin-top: 14px; }
             .intro strong { font-weight: 550; color: #fff; }
           `}</style>
