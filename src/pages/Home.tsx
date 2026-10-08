@@ -14,9 +14,9 @@ import '../components/Frame.css';
 
 import { glassOverlayStyle } from '../lib/glass';
 import { usePageMeta, HOME_TITLE, HOME_DESCRIPTION } from '../lib/useDocumentTitle';
-import { whenIdle } from '../lib/idle';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
-const AsciiCover = lazy(() => import('../components/AsciiCover'));
+const loadCover = () => import('../components/AsciiCover');
+const AsciiCover = lazy(loadCover);
 
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
 const PRODUCT_URLS = {
@@ -47,17 +47,21 @@ export function Home() {
   const [logos, setLogos] = useState<Logo[]>(globalStore.logos);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(() => !globalStore.homeVisited);
-  const [coverReady, setCoverReady] = useState(false);
+  // The cover's one-off setup is heavy, so it starts the moment the splash is dismissed; its code
+  // downloads while the splash plays. Without a splash it starts straight away.
+  const [coverReady, setCoverReady] = useState(() => globalStore.homeVisited);
   const lenis = useLenis();
   const { hash } = useLocation();
 
-  // Scroll to #projects when arriving from another route (e.g. "/#projects")
-  // The cover does a heavy one-off setup, so it starts after the splash is gone and the browser is idle.
   useEffect(() => {
-    if (showSplash) return;
-    return whenIdle(() => setCoverReady(true), 1500);
+    void loadCover();
+  }, []);
+
+  useEffect(() => {
+    if (!showSplash) setCoverReady(true);
   }, [showSplash]);
 
+  // Scroll to #projects when arriving from another route (e.g. "/#projects")
   useEffect(() => {
     if (hash !== '#projects' || showSplash || loading) return;
     const el = document.getElementById('projects');
