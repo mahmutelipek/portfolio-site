@@ -17,6 +17,12 @@ const MAX_W = 108;
 const MAX_H = 38;
 const GAP = 44;
 const STRIP_H = 68;
+// Per-logo size multipliers (by logo id) for marks that carry fine print, which the automatic
+// sizing cannot know about. Applied after the clamps above.
+const SIZE_BOOST: Record<string, number> = {
+  'eb94e5c8-0804-4218-bf1d-d449cab7f1b9': 1.4, // The View Hospital ("In Affiliation With Cedars Sinai")
+  'a78cc546-ac93-4fe4-abac-fbeafcb4cca1': 1.45, // Nickelodeon Play! ("nickelodeon")
+};
 const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1, density: 0.3, invert: false };
 
 interface Placed {
@@ -38,6 +44,7 @@ function place(logo: Logo, box: LogoBox | null): Placed {
   let k = Math.sqrt(TARGET_WEIGHT / (fw * fh * Math.pow(Math.min(b.density, DENSITY_CAP), DENSITY_POWER)));
   k = Math.min(k, MAX_W / fw, MAX_H / fh);
   if (!box) k = 44; // measurement failed: show the whole canvas at a modest fixed size
+  k *= SIZE_BOOST[logo.id] ?? 1;
   return { logo, w: fw * k, h: fh * k, canvas: k, left: -b.x0 * k, top: -b.y0 * k, invert: b.invert };
 }
 
