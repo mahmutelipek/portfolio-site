@@ -5,8 +5,9 @@ import { useLenis } from 'lenis/react';
 import { Mail, Layers } from 'lucide-react';
 import { XLogo, LinkedInLogo } from '../components/BrandIcons';
 import { SelectedWorks } from '../components/SelectedWorks';
+import { LogoMarquee } from '../components/LogoMarquee';
 import CountUp from '../components/CountUp';
-import type { Project } from '../lib/types';
+import type { Project, Logo } from '../lib/types';
 import { supabase } from '../lib/supabase';
 import { globalStore } from '../lib/store';
 import '../components/Frame.css';
@@ -41,6 +42,7 @@ const EMAIL_COLOR = '#ff6b5e';
 export function Home() {
   usePageMeta({ title: HOME_TITLE, description: HOME_DESCRIPTION, path: '/' });
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
+  const [logos, setLogos] = useState<Logo[]>(globalStore.logos);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(() => !globalStore.homeVisited);
   const lenis = useLenis();
@@ -66,6 +68,19 @@ export function Home() {
       document.body.style.overflow = '';
     };
   }, [showSplash, lenis]);
+
+  useEffect(() => {
+    if (globalStore.logos.length > 0) return;
+    supabase
+      .from('logos')
+      .select('*')
+      .order('sort_order', { ascending: true })
+      .then(({ data }) => {
+        if (!data || data.length === 0) return;
+        globalStore.logos = data as Logo[];
+        setLogos(data as Logo[]);
+      });
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -207,6 +222,9 @@ export function Home() {
         </div>
 
         <div className="hatch" />
+
+        <LogoMarquee logos={logos} />
+        {logos.length > 0 && <div className="hatch" />}
 
         {!loading && projects.length > 0 && <SelectedWorks projects={projects} />}
         {!loading && projects.length === 0 && (
