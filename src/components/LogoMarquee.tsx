@@ -1,20 +1,73 @@
+import { useEffect, useState } from 'react';
 import type { Logo } from '../lib/types';
+import { measureLogo, type LogoBox } from '../lib/logoMetrics';
 import './Frame.css';
 
 interface LogoMarqueeProps {
   logos: Logo[];
 }
 
+// Every logo is scaled so its visible content covers about the same area, which keeps
+// wide wordmarks and square emblems looking equally heavy, then clamped so neither
+// gets too tall or too wide. The gap between logos is the same everywhere.
+const TARGET_AREA = 1400;
+const MAX_W = 100;
+const MAX_H = 34;
+const GAP = 48;
+const STRIP_H = 64;
+const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1 };
+
+interface Placed {
+  logo: Logo;
+  w: number;
+  h: number;
+  /** Size of the full canvas when the content fills w x h, and where the content starts. */
+  canvas: number;
+  left: number;
+  top: number;
+}
+
+function place(logo: Logo, box: LogoBox | null): Placed {
+  const b = box ?? WHOLE_CANVAS;
+  const fw = b.x1 - b.x0;
+  const fh = b.y1 - b.y0;
+  // Content size at scale 1 is (fw, fh) canvas fractions; find the scale for the target area.
+  let k = Math.sqrt(TARGET_AREA / (fw * fh));
+  k = Math.min(k, MAX_W / fw, MAX_H / fh);
+  if (!box) k = 44; // measurement failed: show the whole canvas at a modest fixed size
+  return { logo, w: fw * k, h: fh * k, canvas: k, left: -b.x0 * k, top: -b.y0 * k };
+}
+
 /** Slowly scrolling strip of the logos managed in the admin ("Teams (Logos)" tab). */
 export function LogoMarquee({ logos }: LogoMarqueeProps) {
-  const items = logos.filter(l => l.url);
-  if (items.length === 0) return null;
+  const [placed, setPlaced] = useState<Placed[] | null>(null);
+  const urls = logos.filter(l => l.url);
+  const key = urls.map(l => l.id + l.url).join('|');
+
+  useEffect(() => {
+    let live = true;
+    Promise.all(urls.map(l => measureLogo(l.url))).then(boxes => {
+      if (live) setPlaced(urls.map((l, i) => place(l, boxes[i])));
+    });
+    return () => { live = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+
+  if (urls.length === 0) return null;
 
   const group = (hidden: boolean) => (
     <ul className={hidden ? 'logo-group logo-dup' : 'logo-group'} aria-hidden={hidden || undefined}>
-      {items.map(logo => (
-        <li key={logo.id} className="logo-item">
-          <img src={logo.url} alt={hidden ? '' : logo.name} width={148} height={148} decoding="async" draggable={false} />
+      {(placed ?? []).map(p => (
+        <li key={p.logo.id} className="logo-item" style={{ width: p.w, height: p.h }}>
+          <img
+            src={p.logo.url}
+            alt={hidden ? '' : p.logo.name}
+            width={p.canvas}
+            height={p.canvas}
+            decoding="async"
+            draggable={false}
+            style={{ width: p.canvas, height: p.canvas, left: p.left, top: p.top }}
+          />
         </li>
       ))}
     </ul>
@@ -25,33 +78,32 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
       <style>{`
         .logo-strip {
           position: relative;
+          height: ${STRIP_H}px;
           overflow: hidden;
           -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
           mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
         }
         .logo-track {
           display: flex;
+          align-items: center;
+          height: 100%;
           width: max-content;
-          animation: logo-scroll 60s linear infinite;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          animation: logo-scroll 70s linear infinite;
         }
+        .logo-track.ready { opacity: 1; }
         .logo-strip:hover .logo-track { animation-play-state: paused; }
-        .logo-group { display: flex; flex: none; list-style: none; }
+        .logo-group { display: flex; align-items: center; flex: none; list-style: none; }
         .logo-item {
           position: relative;
           flex: none;
-          width: 124px;
-          height: 64px;
+          margin-right: ${GAP}px;
+          overflow: hidden;
         }
-        /* Logos sit small on a 512px canvas with transparent padding, so the canvas is drawn
-           larger than the cell and neighbouring canvases overlap where they are empty. */
         .logo-item img {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 148px;
-          height: 148px;
           max-width: none;
-          transform: translate(-50%, -50%);
           opacity: 0.65;
           transition: opacity 0.2s ease;
           user-select: none;
@@ -62,14 +114,14 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
         }
         @media (prefers-reduced-motion: reduce) {
           .logo-track { animation: none; width: 100%; }
-          .logo-group { flex-wrap: wrap; justify-content: center; }
+          .logo-group { flex: 1 1 auto; min-width: 0; flex-wrap: wrap; justify-content: center; row-gap: 20px; padding-left: ${GAP / 2}px; }
           .logo-dup { display: none; }
-          .logo-strip { -webkit-mask-image: none; mask-image: none; }
+          .logo-strip { height: auto; padding: 20px 0; -webkit-mask-image: none; mask-image: none; }
         }
       `}</style>
       <h2 className="section-title">Worked with</h2>
-      <div className="logo-strip rule-top" style={{ position: 'relative' }}>
-        <div className="logo-track">
+      <div className="logo-strip rule-top">
+        <div className={placed ? 'logo-track ready' : 'logo-track'}>
           {group(false)}
           {group(true)}
         </div>
