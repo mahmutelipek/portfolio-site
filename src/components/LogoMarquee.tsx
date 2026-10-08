@@ -67,6 +67,15 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
             alt={hidden ? '' : p.logo.name}
             width={p.canvas}
             height={p.canvas}
+            crossOrigin="anonymous"
+            onError={e => {
+              // A host without CORS headers: show the logo anyway, just without measuring it.
+              const img = e.currentTarget;
+              if (img.crossOrigin) {
+                img.removeAttribute('crossorigin');
+                img.src = p.logo.url;
+              }
+            }}
             decoding="async"
             draggable={false}
             style={{ width: p.canvas, height: p.canvas, left: p.left, top: p.top, filter: p.invert ? 'invert(1)' : undefined }}

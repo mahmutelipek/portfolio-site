@@ -13,7 +13,7 @@ export interface LogoBox {
   invert: boolean;
 }
 
-const SCAN = 256;
+const SCAN = 192;
 const VISIBLE_MIN = 12 / 255;
 const SOLID = 200 / 255;
 const DARK = 0.35;

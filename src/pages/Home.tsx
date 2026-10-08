@@ -14,6 +14,7 @@ import '../components/Frame.css';
 
 import { glassOverlayStyle } from '../lib/glass';
 import { usePageMeta, HOME_TITLE, HOME_DESCRIPTION } from '../lib/useDocumentTitle';
+import { whenIdle } from '../lib/idle';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 const AsciiCover = lazy(() => import('../components/AsciiCover'));
 
@@ -46,10 +47,17 @@ export function Home() {
   const [logos, setLogos] = useState<Logo[]>(globalStore.logos);
   const [loading, setLoading] = useState(!globalStore.homeVisited);
   const [showSplash, setShowSplash] = useState(() => !globalStore.homeVisited);
+  const [coverReady, setCoverReady] = useState(false);
   const lenis = useLenis();
   const { hash } = useLocation();
 
   // Scroll to #projects when arriving from another route (e.g. "/#projects")
+  // The cover does a heavy one-off setup, so it starts after the splash is gone and the browser is idle.
+  useEffect(() => {
+    if (showSplash) return;
+    return whenIdle(() => setCoverReady(true), 1500);
+  }, [showSplash]);
+
   useEffect(() => {
     if (hash !== '#projects' || showSplash || loading) return;
     const el = document.getElementById('projects');
@@ -164,9 +172,13 @@ export function Home() {
       <main className="rails" style={{ paddingTop: '66px' }}>
         {/* Cover (loads after the first paint; the box is reserved so nothing jumps) */}
         <div className="frame" style={{ padding: 'var(--pad)' }}>
-          <Suspense fallback={<div className="ascii-cover" />}>
-            <AsciiCover />
-          </Suspense>
+          {coverReady ? (
+            <Suspense fallback={<div className="ascii-cover" />}>
+              <AsciiCover />
+            </Suspense>
+          ) : (
+            <div className="ascii-cover" />
+          )}
         </div>
         <div className="hatch" />
 
@@ -235,6 +247,8 @@ export function Home() {
         <LogoMarquee logos={logos} />
         {logos.length > 0 && <div className="hatch" />}
 
+        {/* Keeps the footer below the fold until the projects arrive, so it does not jump */}
+        {loading && <div aria-hidden style={{ minHeight: '100vh' }} />}
         {!loading && projects.length > 0 && <SelectedWorks projects={projects} />}
         {!loading && projects.length === 0 && (
           <section style={{ padding: '4rem 2rem', textAlign: 'center', color: '#666' }}>

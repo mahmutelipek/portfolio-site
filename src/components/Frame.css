@@ -155,3 +155,6 @@ a.pill:hover { background: color-mix(in srgb, var(--pill, #e7e9ea) 28%, transpar
   left: 0;
   top: -5cqw;
 }
+
+.ascii-cover canvas { animation: cover-in 0.8s ease both; }
+@keyframes cover-in { from { opacity: 0; } to { opacity: 1; } }

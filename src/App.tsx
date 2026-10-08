@@ -5,6 +5,7 @@ import { supabase } from './lib/supabase';
 import { Home } from './pages/Home';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { whenIdle } from './lib/idle';
 
 // Route-level code splitting: the admin panel and detail page load on demand.
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail').then(m => ({ default: m.ProjectDetail })));
@@ -25,29 +26,31 @@ function AppContent() {
 
   const lenis = useLenis();
 
-  // Fetch GA ID and Initialize
+  // Fetch GA ID and initialize. The gtag queue is ready straight away; the (large) Google script
+  // itself loads once the page has finished loading and the browser is idle.
   useEffect(() => {
+    let cancelIdle = () => {};
     const fetchGA = async () => {
       const { data } = await supabase.from('site_settings').select('value').eq('key', 'google_analytics_id').maybeSingle();
-      if (data?.value) {
-        setGaId(data.value);
-        
-        // Inject Tag Manager Script
+      if (!data?.value) return;
+      setGaId(data.value);
+
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function() {
+        window.dataLayer.push(arguments);
+      };
+      window.gtag('js', new Date());
+      window.gtag('config', data.value);
+
+      cancelIdle = whenIdle(() => {
         const script = document.createElement('script');
         script.src = `https://www.googletagmanager.com/gtag/js?id=${data.value}`;
         script.async = true;
         document.head.appendChild(script);
-
-        // Initialize gtag
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = function() {
-          window.dataLayer.push(arguments);
-        };
-        window.gtag('js', new Date());
-        window.gtag('config', data.value);
-      }
+      }, 4000);
     };
     fetchGA();
+    return () => cancelIdle();
   }, []);
 
   // Track Page Views on Route Change
