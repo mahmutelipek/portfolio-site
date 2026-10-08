@@ -37,14 +37,14 @@ body {
 
 ::selection,
 *::selection {
-  background: #ff7a1a !important;
-  color: #000000 !important;
+  background: #66666b !important;
+  color: #ffffff !important;
 }
 
 ::-moz-selection,
 *::-moz-selection {
-  background: #ff7a1a !important;
-  color: #000000 !important;
+  background: #66666b !important;
+  color: #ffffff !important;
 }
 
 a {
