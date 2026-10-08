@@ -10,11 +10,11 @@ interface LogoMarqueeProps {
 // Every logo is scaled so its visible content covers about the same area, which keeps
 // wide wordmarks and square emblems looking equally heavy, then clamped so neither
 // gets too tall or too wide. The gap between logos is the same everywhere.
-const TARGET_AREA = 1400;
-const MAX_W = 100;
-const MAX_H = 34;
+const TARGET_AREA = 2300;
+const MAX_W = 136;
+const MAX_H = 46;
 const GAP = 48;
-const STRIP_H = 64;
+const STRIP_H = 80;
 const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1 };
 
 interface Placed {
@@ -79,6 +79,10 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
         .logo-strip {
           position: relative;
           height: ${STRIP_H}px;
+        }
+        /* The edge fade lives on the scrolling area only, so the strip's top border stays whole. */
+        .logo-viewport {
+          height: 100%;
           overflow: hidden;
           -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
           mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
@@ -116,14 +120,17 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
           .logo-track { animation: none; width: 100%; }
           .logo-group { flex: 1 1 auto; min-width: 0; flex-wrap: wrap; justify-content: center; row-gap: 20px; padding-left: ${GAP / 2}px; }
           .logo-dup { display: none; }
-          .logo-strip { height: auto; padding: 20px 0; -webkit-mask-image: none; mask-image: none; }
+          .logo-strip { height: auto; }
+          .logo-viewport { padding: 24px 0; -webkit-mask-image: none; mask-image: none; }
         }
       `}</style>
       <h2 className="section-title">Worked with</h2>
       <div className="logo-strip rule-top">
-        <div className={placed ? 'logo-track ready' : 'logo-track'}>
-          {group(false)}
-          {group(true)}
+        <div className="logo-viewport">
+          <div className={placed ? 'logo-track ready' : 'logo-track'}>
+            {group(false)}
+            {group(true)}
+          </div>
         </div>
       </div>
     </div>
