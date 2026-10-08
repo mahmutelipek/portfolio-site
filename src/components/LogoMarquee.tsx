@@ -10,14 +10,14 @@ interface LogoMarqueeProps {
 // Every logo is scaled so it carries about the same visual weight: its content box area
 // is weighted by how much of that box is ink, so a bold wordmark ends up smaller than a
 // fine-lined one of the same width. Sizes are then clamped, and the gap is the same everywhere.
-const TARGET_WEIGHT = 880;
+const TARGET_WEIGHT = 560;
 const DENSITY_POWER = 0.85;
 const DENSITY_CAP = 0.55; // solid blobs stop shrinking here, so their small details stay readable
-const MAX_W = 136;
-const MAX_H = 46;
-const GAP = 48;
-const STRIP_H = 80;
-const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1, density: 0.3 };
+const MAX_W = 108;
+const MAX_H = 38;
+const GAP = 44;
+const STRIP_H = 68;
+const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1, density: 0.3, invert: false };
 
 interface Placed {
   logo: Logo;
@@ -27,6 +27,7 @@ interface Placed {
   canvas: number;
   left: number;
   top: number;
+  invert: boolean;
 }
 
 function place(logo: Logo, box: LogoBox | null): Placed {
@@ -37,7 +38,7 @@ function place(logo: Logo, box: LogoBox | null): Placed {
   let k = Math.sqrt(TARGET_WEIGHT / (fw * fh * Math.pow(Math.min(b.density, DENSITY_CAP), DENSITY_POWER)));
   k = Math.min(k, MAX_W / fw, MAX_H / fh);
   if (!box) k = 44; // measurement failed: show the whole canvas at a modest fixed size
-  return { logo, w: fw * k, h: fh * k, canvas: k, left: -b.x0 * k, top: -b.y0 * k };
+  return { logo, w: fw * k, h: fh * k, canvas: k, left: -b.x0 * k, top: -b.y0 * k, invert: b.invert };
 }
 
 /** Slowly scrolling strip of the logos managed in the admin ("Teams (Logos)" tab). */
@@ -68,7 +69,7 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
             height={p.canvas}
             decoding="async"
             draggable={false}
-            style={{ width: p.canvas, height: p.canvas, left: p.left, top: p.top }}
+            style={{ width: p.canvas, height: p.canvas, left: p.left, top: p.top, filter: p.invert ? 'invert(1)' : undefined }}
           />
         </li>
       ))}
