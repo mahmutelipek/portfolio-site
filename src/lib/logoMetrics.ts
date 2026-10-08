@@ -7,6 +7,8 @@ export interface LogoBox {
   y0: number;
   x1: number;
   y1: number;
+  /** Share of the content box that is ink (0 to 1): high for bold marks, low for fine lines. */
+  density: number;
 }
 
 const SCAN = 256;
@@ -26,10 +28,12 @@ function measure(url: string): Promise<LogoBox | null> {
         if (!ctx) return resolve(null);
         ctx.drawImage(img, 0, 0, SCAN, SCAN);
         const { data } = ctx.getImageData(0, 0, SCAN, SCAN);
-        let x0 = SCAN, y0 = SCAN, x1 = -1, y1 = -1;
+        let x0 = SCAN, y0 = SCAN, x1 = -1, y1 = -1, ink = 0;
         for (let y = 0; y < SCAN; y++) {
           for (let x = 0; x < SCAN; x++) {
-            if (data[(y * SCAN + x) * 4 + 3] > ALPHA_MIN) {
+            const a = data[(y * SCAN + x) * 4 + 3];
+            ink += a / 255;
+            if (a > ALPHA_MIN) {
               if (x < x0) x0 = x;
               if (x > x1) x1 = x;
               if (y < y0) y0 = y;
@@ -44,6 +48,7 @@ function measure(url: string): Promise<LogoBox | null> {
           y0: Math.max(0, y0 - 1) / SCAN,
           x1: Math.min(SCAN, x1 + 2) / SCAN,
           y1: Math.min(SCAN, y1 + 2) / SCAN,
+          density: Math.min(1, ink / ((x1 - x0 + 1) * (y1 - y0 + 1))),
         });
       } catch {
         resolve(null); // canvas tainted or unreadable: caller falls back to the whole canvas

@@ -140,18 +140,18 @@ a.pill:hover { background: color-mix(in srgb, var(--pill, #e7e9ea) 28%, transpar
   .footer-meta { font-size: 14px; }
 }
 
-/* Short animated cover. The canvas keeps its 2:1 shape and is positioned so the pond's far
-   bank (80% down the piece) sits near the bottom of the box; the sky above it is cropped. */
+/* Short animated cover. The canvas keeps its 2:1 shape (a 200x100 piece) and is shifted up
+   so the box shows the band holding the picture's subject; the rest is cropped. */
 .ascii-cover {
   position: relative;
   overflow: hidden;
   container-type: inline-size;
   height: clamp(100px, 20vw, 140px);
   border-radius: 12px;
-  background: #0b0a16;
+  background: #030408;
 }
 .ascii-cover canvas {
   position: absolute;
   left: 0;
-  top: calc(96% - 40cqw);
+  top: -5cqw;
 }

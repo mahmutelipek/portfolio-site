@@ -7,15 +7,17 @@ interface LogoMarqueeProps {
   logos: Logo[];
 }
 
-// Every logo is scaled so its visible content covers about the same area, which keeps
-// wide wordmarks and square emblems looking equally heavy, then clamped so neither
-// gets too tall or too wide. The gap between logos is the same everywhere.
-const TARGET_AREA = 2300;
+// Every logo is scaled so it carries about the same visual weight: its content box area
+// is weighted by how much of that box is ink, so a bold wordmark ends up smaller than a
+// fine-lined one of the same width. Sizes are then clamped, and the gap is the same everywhere.
+const TARGET_WEIGHT = 880;
+const DENSITY_POWER = 0.85;
+const DENSITY_CAP = 0.55; // solid blobs stop shrinking here, so their small details stay readable
 const MAX_W = 136;
 const MAX_H = 46;
 const GAP = 48;
 const STRIP_H = 80;
-const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1 };
+const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1, density: 0.3 };
 
 interface Placed {
   logo: Logo;
@@ -31,8 +33,8 @@ function place(logo: Logo, box: LogoBox | null): Placed {
   const b = box ?? WHOLE_CANVAS;
   const fw = b.x1 - b.x0;
   const fh = b.y1 - b.y0;
-  // Content size at scale 1 is (fw, fh) canvas fractions; find the scale for the target area.
-  let k = Math.sqrt(TARGET_AREA / (fw * fh));
+  // Content size at scale 1 is (fw, fh) canvas fractions; find the scale for the target weight.
+  let k = Math.sqrt(TARGET_WEIGHT / (fw * fh * Math.pow(Math.min(b.density, DENSITY_CAP), DENSITY_POWER)));
   k = Math.min(k, MAX_W / fw, MAX_H / fh);
   if (!box) k = 44; // measurement failed: show the whole canvas at a modest fixed size
   return { logo, w: fw * k, h: fh * k, canvas: k, left: -b.x0 * k, top: -b.y0 * k };
