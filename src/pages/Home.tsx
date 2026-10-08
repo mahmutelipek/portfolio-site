@@ -15,6 +15,7 @@ import '../components/Frame.css';
 import { glassOverlayStyle } from '../lib/glass';
 import { usePageMeta, HOME_TITLE, HOME_DESCRIPTION } from '../lib/useDocumentTitle';
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
+const AsciiCover = lazy(() => import('../components/AsciiCover'));
 
 // Set a URL to turn a name in the intro into a link; leave empty for plain text.
 const PRODUCT_URLS = {
@@ -161,6 +162,14 @@ export function Home() {
       </AnimatePresence>
 
       <main className="rails" style={{ paddingTop: '66px' }}>
+        {/* Cover (loads after the first paint; the box is reserved so nothing jumps) */}
+        <div className="frame" style={{ padding: 'var(--pad)' }}>
+          <Suspense fallback={<div className="ascii-cover" />}>
+            <AsciiCover />
+          </Suspense>
+        </div>
+        <div className="hatch" />
+
         {/* Intro */}
         <div className="frame">
           <style>{`
