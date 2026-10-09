@@ -911,82 +911,10 @@ export function Admin() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               
               <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333' }}>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                    <div>
-                      <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem' }}>Favicon (.png)</h3>
-                      <p style={{ color: '#888', fontSize: '0.85rem' }}>Upload your site's favicon. Best size: 512x512px.</p>
-                    </div>
-                    <div style={{ width: '64px', height: '64px', background: '#1a1a1a', borderRadius: '8px', border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                      <img 
-                        src={`https://gwyhhcxxrybuvskzeyqt.supabase.co/storage/v1/object/public/portfolio/favicon.png?t=${Date.now()}`} 
-                        key={saveStatus === 'Favicon Updated' ? 'refresh' : 'standard'}
-                        alt="Favicon Preview" 
-                        style={{ width: '32px', height: '32px', objectFit: 'contain' }} 
-                        onError={(e) => { (e.target as any).style.display = 'none'; }}
-                        onLoad={(e) => { (e.target as any).style.display = 'block'; }}
-                      />
-                    </div>
-                 </div>
-                 <input type="file" accept="image/png" onChange={async e => {
-                   const file = e.target.files?.[0];
-                   if(file) {
-                     setSaveStatus('Uploading Favicon...');
-                     const { error } = await supabase.storage.from('portfolio').upload('favicon.png', file, { upsert: true });
-                     if (error) alert("Error uploading favicon: " + error.message);
-                     else {
-                       setSaveStatus('Favicon Updated');
-                       setTimeout(() => setSaveStatus(null), 2000);
-                     }
-                   }
-                 }} />
-              </div>
-
-              <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333' }}>
-                 <div style={{ marginBottom: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem' }}>OG Image (Social Sharing)</h3>
-                    <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1rem' }}>Social preview image (1200x630px). Best for Twitter, LinkedIn, etc.</p>
-                    
-                    <div style={{ width: '100%', aspectRatio: '1.91/1', background: '#1a1a1a', borderRadius: '8px', border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                      <img 
-                        src={`https://gwyhhcxxrybuvskzeyqt.supabase.co/storage/v1/object/public/portfolio/og-image.jpg?t=${Date.now()}`} 
-                        key={saveStatus === 'OG Image Updated' ? 'refresh' : 'standard'}
-                        alt="OG Preview" 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                        onError={(e) => { (e.target as any).style.display = 'none'; }}
-                        onLoad={(e) => { (e.target as any).style.display = 'block'; }}
-                      />
-                    </div>
-                 </div>
-                 <input type="file" accept="image/*" onChange={async e => {
-                   const file = e.target.files?.[0];
-                   if(file) {
-                     try {
-                       setSaveStatus('Compressing...');
-                       // Optimize for WhatsApp (under 300KB, max 1200px)
-                       const options = {
-                         maxSizeMB: 0.3,
-                         maxWidthOrHeight: 1200,
-                         useWebWorker: true,
-                         fileType: 'image/jpeg'
-                       };
-                       
-                       const importCompression = await import('browser-image-compression');
-                       const imageCompression = importCompression.default;
-                       const compressedFile = await imageCompression(file, options);
-                       
-                       setSaveStatus('Uploading...');
-                       const { error } = await supabase.storage.from('portfolio').upload('og-image.jpg', compressedFile, { upsert: true });
-                       if (error) alert("Error uploading OG image: " + error.message);
-                       else {
-                         setSaveStatus('OG Image Updated');
-                         setTimeout(() => setSaveStatus(null), 2000);
-                       }
-                     } catch (err) {
-                        alert("Compression error: " + err);
-                        setSaveStatus(null);
-                     }
-                   }
-                 }} />
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem' }}>Favicon and share image</h3>
+                <p style={{ color: '#888', fontSize: '0.85rem' }}>
+                  These now live in the site itself (public/favicon.svg, public/og-image.jpg and the icon files next to them), so they are changed in the code, not here.
+                </p>
               </div>
 
               <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333' }}>

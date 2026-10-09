@@ -29,7 +29,7 @@ export function StorageCleanup() {
       if (!scan || scan.unused.length === 0) return;
       const size = mb(scan.unused.reduce((s, f) => s + f.size, 0));
       if (!window.confirm(`Permanently delete ${scan.unused.length} unused files (${size} MB)? This cannot be undone.`)) return;
-      const { removed, errors } = await deleteUploads(supabase, scan.unused.map(f => f.name));
+      const { removed, errors } = await deleteUploads(supabase, scan.unused.map(f => f.path));
       const wanted = scan.unused.length;
       const note =
         errors.length > 0 ? ` Errors: ${errors.join('; ')}`
@@ -54,8 +54,8 @@ export function StorageCleanup() {
     <div style={{ background: '#0a0a0a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333' }}>
       <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem' }}>Storage cleanup</h3>
       <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1rem' }}>
-        Finds uploaded files that no project, logo or setting uses anymore (old covers, replaced images) and deletes them.
-        Files in use, the favicon and the share image are never touched.
+        Finds uploaded files that no project, logo or setting uses anymore (old covers, replaced images, the old Supabase favicon and share image) and deletes them.
+        Files that are still in use are never touched.
       </p>
       <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
         <button onClick={onScan} disabled={busy} style={button(true)}>{busy ? 'Working…' : 'Scan storage'}</button>
