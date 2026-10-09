@@ -30,7 +30,11 @@ function measure(url: string): Promise<LogoBox | null> {
         canvas.height = SCAN;
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         if (!ctx) return resolve(null);
-        ctx.drawImage(img, 0, 0, SCAN, SCAN);
+        // Fit inside the square the way the displayed <img> does, so logos that are not square
+        // (an SVG sized 120x24, say) are measured as they appear, not stretched.
+        const iw = img.naturalWidth || SCAN, ih = img.naturalHeight || SCAN;
+        const fit = Math.min(SCAN / iw, SCAN / ih);
+        ctx.drawImage(img, (SCAN - iw * fit) / 2, (SCAN - ih * fit) / 2, iw * fit, ih * fit);
         const { data } = ctx.getImageData(0, 0, SCAN, SCAN);
         // Dark ink vanishes on the site's black background, so a logo whose solid parts are mostly
         // dark is measured (and shown) inverted. Faint dark pixels, like a soft shadow, are ignored.
