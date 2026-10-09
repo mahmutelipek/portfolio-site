@@ -22,6 +22,7 @@ export function FitImage({ src, alt, sizes, className, priority = false }: FitIm
   return (
     <div className={className} style={{ aspectRatio: RATIO, background: 'rgba(255, 255, 255, 0.03)' }}>
       <img
+        className="fit-img"
         {...responsiveImage(src)}
         sizes={sizes}
         alt={alt}
@@ -37,7 +38,6 @@ export function FitImage({ src, alt, sizes, className, priority = false }: FitIm
           objectFit: 'contain',
           display: 'block',
           opacity: loaded ? 1 : 0,
-          transition: 'opacity 0.35s ease',
         }}
       />
     </div>

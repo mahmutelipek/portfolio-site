@@ -50,9 +50,6 @@ export function SelectedWorks({ projects }: SelectedWorksProps) {
           border-radius: 12px;
           background: #111;
         }
-        .work-card .cover img {
-          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
         .work-card:hover .cover img { transform: scale(1.03); }
         .work-desc { font-size: 14px; }
         @media (max-width: 740px) {

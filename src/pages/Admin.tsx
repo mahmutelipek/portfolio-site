@@ -3,6 +3,7 @@ import imageCompression from 'browser-image-compression';
 import { Link } from 'react-router-dom';
 import { usePageMeta, SITE_NAME } from '../lib/useDocumentTitle';
 import { supabase } from '../lib/supabase';
+import { StorageCleanup } from '../components/StorageCleanup';
 import type { Project, Logo, ContentBlock } from '../lib/types';
 import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Save, Eye, EyeOff } from 'lucide-react';
 
@@ -1017,6 +1018,8 @@ export function Admin() {
                  </div>
               </div>
 
+
+              <StorageCleanup />
             </div>
           </main>
         )}
