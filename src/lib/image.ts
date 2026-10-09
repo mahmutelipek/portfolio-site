@@ -6,8 +6,9 @@ import { SITE_URL } from './useDocumentTitle';
 const OBJECT_PATH = '/storage/v1/object/public/';
 const RENDER_PATH = '/storage/v1/render/image/public/';
 
-// Covers served from this site: /covers/<name>.webp is the 1600px file and /covers/<name>-800.webp the small one.
-const LOCAL_COVER = /^\/covers\/([\w-]+)\.webp$/;
+// Images served from this site (public/covers and public/projects/<slug>): <dir>/<name>.webp is the
+// 1600px file and <dir>/<name>-800.webp the small one.
+const LOCAL_IMAGE = /^(\/(?:covers|projects\/[\w-]+))\/([\w-]+)\.webp$/;
 
 function canTransform(url: string): boolean {
   return url.includes(OBJECT_PATH) && !/\.(svg|gif)(\?|$)/i.test(url);
@@ -25,8 +26,11 @@ function resized(url: string, width: number, quality: number): string {
  * returned unchanged.
  */
 export function responsiveImage(url: string, widths: number[] = [700, 1400], quality = 75) {
-  const local = LOCAL_COVER.exec(url);
-  if (local) return { src: `/covers/${local[1]}-800.webp`, srcSet: `/covers/${local[1]}-800.webp 800w, ${url} 1600w` };
+  const local = LOCAL_IMAGE.exec(url);
+  if (local) {
+    const small = `${local[1]}/${local[2]}-800.webp`;
+    return { src: small, srcSet: `${small} 800w, ${url} 1600w` };
+  }
   if (!url || !canTransform(url)) return { src: url, srcSet: undefined };
   const sorted = [...widths].sort((a, b) => a - b);
   return {
