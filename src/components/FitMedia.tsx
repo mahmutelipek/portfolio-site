@@ -44,16 +44,26 @@ export function FitImage({ src, alt, sizes, className, priority = false }: FitIm
   );
 }
 
+/**
+ * Videos start in the 1280 x 768 box and switch to their own ratio once it is known, so a 16:9 clip
+ * fills its box with no bars (images keep the fixed box and are fitted inside it).
+ */
 export function FitVideo({ src, className }: { src: string; className?: string }) {
+  const [ratio, setRatio] = useState(RATIO);
   return (
-    <div className={className} style={{ aspectRatio: RATIO }}>
+    <div className={className} style={{ aspectRatio: ratio }}>
       <video
         src={src}
         autoPlay
         loop
         muted
         playsInline
-        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+        preload="metadata"
+        onLoadedMetadata={e => {
+          const { videoWidth: w, videoHeight: h } = e.currentTarget;
+          if (w && h) setRatio(`${w} / ${h}`);
+        }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
     </div>
   );
