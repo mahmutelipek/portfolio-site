@@ -1,9 +1,13 @@
 import type { SyntheticEvent } from 'react';
+import { SITE_URL } from './useDocumentTitle';
 
 // Supabase Storage serves originals from /object/public/ and resized copies
 // from /render/image/public/ (image transformations).
 const OBJECT_PATH = '/storage/v1/object/public/';
 const RENDER_PATH = '/storage/v1/render/image/public/';
+
+// Covers served from this site: /covers/<name>.webp is the 1600px file and /covers/<name>-800.webp the small one.
+const LOCAL_COVER = /^\/covers\/([\w-]+)\.webp$/;
 
 function canTransform(url: string): boolean {
   return url.includes(OBJECT_PATH) && !/\.(svg|gif)(\?|$)/i.test(url);
@@ -21,6 +25,8 @@ function resized(url: string, width: number, quality: number): string {
  * returned unchanged.
  */
 export function responsiveImage(url: string, widths: number[] = [700, 1400], quality = 75) {
+  const local = LOCAL_COVER.exec(url);
+  if (local) return { src: `/covers/${local[1]}-800.webp`, srcSet: `/covers/${local[1]}-800.webp 800w, ${url} 1600w` };
   if (!url || !canTransform(url)) return { src: url, srcSet: undefined };
   const sorted = [...widths].sort((a, b) => a - b);
   return {
@@ -42,6 +48,7 @@ export function fallbackToOriginal(original: string) {
 
 /** URL for the social share image (Open Graph / Twitter): a 1200px-wide copy for Supabase images. */
 export function shareImage(url: string): string {
+  if (url.startsWith('/')) return `${SITE_URL}${url}`; // Open Graph needs an absolute address
   return url && canTransform(url) ? resized(url, 1200, 80) : url;
 }
 

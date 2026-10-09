@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 export const SITE_NAME = 'Mahmut Elipek';
-const SITE_URL = 'https://www.mahmutelipek.com';
+export const SITE_URL = 'https://www.mahmutelipek.com';
 export const HOME_TITLE = `${SITE_NAME} | Product Designer & Design Engineer`;
 export const HOME_DESCRIPTION =
   'Product designer and design engineer with 5 years of experience taking web and mobile products from idea to production.';
