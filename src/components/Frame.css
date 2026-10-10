@@ -184,7 +184,6 @@ a.pill:hover { background: color-mix(in srgb, var(--pill, #e7e9ea) 28%, transpar
   max-width: calc(100vw - 32px);
   max-height: calc(100dvh - 120px);
   cursor: default;
-  touch-action: pan-y;
 }
 .lightbox-media img,
 .lightbox-media video {
