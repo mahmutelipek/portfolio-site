@@ -26,19 +26,18 @@ export async function findUnusedUploads(db: SupabaseClient): Promise<{ total: nu
     if (!data || data.length < 1000) break;
   }
 
-  const [projects, logos, settings, about] = await Promise.all([
+  const [projects, logos, settings] = await Promise.all([
     db.from('projects').select('cover_image_url, gallery, content_blocks'),
     db.from('logos').select('url'),
     db.from('site_settings').select('value'),
-    db.from('about_blocks').select('content'),
   ]);
-  for (const r of [projects, logos, settings, about]) {
+  for (const r of [projects, logos, settings]) {
     if (r.error) throw new Error(`Could not read what is in use: ${r.error.message}`);
   }
   // Never continue on an empty answer: it would make every file look unused.
   if (!projects.data?.length) throw new Error('No projects were returned, so nothing can be judged unused.');
 
-  const inUse = JSON.stringify([projects.data, logos.data, settings.data, about.data]);
+  const inUse = JSON.stringify([projects.data, logos.data, settings.data]);
   const unused = files.filter(f => !inUse.includes(f.path.slice(FOLDER.length + 1)));
 
   const { data: root, error: rootError } = await db.storage.from(BUCKET).list('', { limit: 100 });
