@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { responsiveImage, fallbackToOriginal } from '../lib/image';
 
 // Project media is authored at 1280x768. The box keeps that ratio and the media is
@@ -15,12 +15,32 @@ interface FitImageProps {
   className?: string;
   /** Load immediately (above the fold) instead of lazily. */
   priority?: boolean;
+  /** When set, the box is a button that opens the media full-screen. */
+  onOpen?: () => void;
 }
 
-export function FitImage({ src, alt, sizes, className, priority = false }: FitImageProps) {
+/** Props that make a media box act as a keyboard-reachable "click to zoom" button. */
+function zoomable(className: string | undefined, label: string, onOpen?: () => void) {
+  if (!onOpen) return { className };
+  return {
+    className: `${className ?? ''} zoomable`.trim(),
+    role: 'button' as const,
+    tabIndex: 0,
+    'aria-label': label,
+    onClick: onOpen,
+    onKeyDown: (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onOpen();
+      }
+    },
+  };
+}
+
+export function FitImage({ src, alt, sizes, className, priority = false, onOpen }: FitImageProps) {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className={className} style={{ aspectRatio: RATIO, background: 'rgba(255, 255, 255, 0.03)' }}>
+    <div {...zoomable(className, `Enlarge: ${alt}`, onOpen)} style={{ aspectRatio: RATIO, background: 'rgba(255, 255, 255, 0.03)' }}>
       <img
         className="fit-img"
         {...responsiveImage(src)}
@@ -48,9 +68,9 @@ export function FitImage({ src, alt, sizes, className, priority = false }: FitIm
  * Videos fill the same 1280 x 768 box as the images. A clip with another shape (16:9, say) is scaled to
  * cover the box, so there are no bars; only a sliver of its edges is trimmed.
  */
-export function FitVideo({ src, className }: { src: string; className?: string }) {
+export function FitVideo({ src, className, onOpen }: { src: string; className?: string; onOpen?: () => void }) {
   return (
-    <div className={className} style={{ aspectRatio: RATIO }}>
+    <div {...zoomable(className, 'Enlarge video', onOpen)} style={{ aspectRatio: RATIO }}>
       <video
         src={src}
         autoPlay

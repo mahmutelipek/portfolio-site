@@ -5,6 +5,7 @@ import type { Project } from '../lib/types';
 import { globalStore } from '../lib/store';
 import '../components/Frame.css';
 import { FitImage, FitVideo, COLUMN_SIZES } from '../components/FitMedia';
+import Lightbox, { type LightboxItem } from '../components/Lightbox';
 
 import { motion } from 'framer-motion';
 import { usePageMeta, SITE_NAME } from '../lib/useDocumentTitle';
@@ -65,6 +66,7 @@ export function ProjectDetail() {
   const [loading, setLoading] = useState(!isCached);
   const [prevProject, setPrevProject] = useState<{title: string, slug: string} | null>(null);
   const [nextProject, setNextProject] = useState<{title: string, slug: string} | null>(null);
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -138,6 +140,20 @@ export function ProjectDetail() {
     (project?.content_blocks ?? []).filter(b => b.type === 'image').slice(0, EAGER_MEDIA).map(b => b.id)
   );
 
+  // Every image / video of the page, in order, for the click-to-zoom viewer.
+  const zoomItems: LightboxItem[] = [];
+  const zoomIndexOf = new Map<string, number>();
+  for (const b of project?.content_blocks ?? []) {
+    if ((b.type === 'image' || b.type === 'video') && b.value) {
+      zoomIndexOf.set(b.id, zoomItems.length);
+      zoomItems.push({ type: b.type, src: b.value });
+    }
+  }
+  const openZoom = (id: string) => () => {
+    const i = zoomIndexOf.get(id);
+    if (i !== undefined) setZoomIndex(i);
+  };
+
   const notFound = !project && !loading;
   usePageMeta(
     project
@@ -192,6 +208,10 @@ export function ProjectDetail() {
             .detail .meta { margin-top: 0.5rem; }
             .detail strong { font-weight: 550; color: #fff; }
             .detail-media { width: 100%; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
+            .detail-media video { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+            .detail-media.zoomable { cursor: zoom-in; }
+            .detail-media.zoomable:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.5); outline-offset: 3px; }
+            @media (hover: hover) { .detail-media.zoomable:hover :is(img, video) { transform: scale(1.025); } }
             .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }
             .detail-pager a { display: block; padding: var(--pad); transition: background-color 0.2s ease; }
             .detail-pager a:hover { background: rgba(255, 255, 255, 0.04); }
@@ -277,6 +297,7 @@ export function ProjectDetail() {
                           alt="Project visual"
                           sizes={MEDIA_SIZES}
                           priority={eagerImages.has(block.id)}
+                          onOpen={openZoom(block.id)}
                         />
                       </motion.div>
                     ) : (
@@ -286,7 +307,7 @@ export function ProjectDetail() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, ease: 'easeOut' }}
                       >
-                        <FitVideo className="detail-media" src={block.value} />
+                        <FitVideo className="detail-media" src={block.value} onOpen={openZoom(block.id)} />
                       </motion.div>
                     )}
                   </div>
@@ -340,6 +361,7 @@ export function ProjectDetail() {
           </div>
         </motion.article>
       )}
+      <Lightbox items={zoomItems} index={zoomIndex} onChange={setZoomIndex} />
     </>
   );
 }
