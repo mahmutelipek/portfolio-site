@@ -20,8 +20,11 @@ interface FitImageProps {
 }
 
 /**
- * "Click to zoom" label that follows the pointer over its parent box (fine pointers only; the CSS
- * hides it on touch). Position is written straight to the element, so it never lags the cursor.
+ * "Click to zoom" label that follows the mouse over its parent box (fine pointers only; the CSS
+ * hides it on touch). The pointer is tracked on the window and re-checked on scroll too, because a
+ * page that scrolls under a still cursor fires no pointer events: otherwise the label would ride
+ * along with the image instead of staying under the cursor. Position is written straight to the
+ * element, once per frame.
  */
 function ZoomPill() {
   const pill = useRef<HTMLSpanElement>(null);
@@ -29,26 +32,45 @@ function ZoomPill() {
     const el = pill.current;
     const box = el?.parentElement;
     if (!el || !box) return;
-    const move = (e: PointerEvent) => {
+    let pointer: { x: number; y: number } | null = null;
+    let frame = 0;
+
+    const sync = () => {
+      frame = 0;
       const r = box.getBoundingClientRect();
+      const inside =
+        pointer !== null &&
+        pointer.x >= r.left && pointer.x <= r.right && pointer.y >= r.top && pointer.y <= r.bottom &&
+        // something else (header, lightbox) may be on top of the box at that point
+        box.contains(document.elementFromPoint(pointer.x, pointer.y));
+      if (!inside || !pointer) {
+        el.classList.remove('on');
+        return;
+      }
       const halfW = el.offsetWidth / 2 + 8;
       const halfH = el.offsetHeight / 2 + 8;
-      el.style.left = `${Math.min(Math.max(e.clientX - r.left, halfW), r.width - halfW)}px`;
-      el.style.top = `${Math.min(Math.max(e.clientY - r.top, halfH), r.height - halfH)}px`;
-    };
-    const enter = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return;
-      move(e);
+      el.style.left = `${Math.min(Math.max(pointer.x - r.left, halfW), r.width - halfW)}px`;
+      el.style.top = `${Math.min(Math.max(pointer.y - r.top, halfH), r.height - halfH)}px`;
       el.classList.add('on');
     };
-    const leave = () => el.classList.remove('on');
-    box.addEventListener('pointerenter', enter);
-    box.addEventListener('pointermove', move);
-    box.addEventListener('pointerleave', leave);
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(sync); };
+
+    const move = (e: PointerEvent) => {
+      pointer = e.pointerType === 'mouse' ? { x: e.clientX, y: e.clientY } : null;
+      schedule();
+    };
+    const gone = () => { pointer = null; schedule(); };
+
+    window.addEventListener('pointermove', move, { passive: true });
+    window.addEventListener('scroll', schedule, { passive: true });
+    document.documentElement.addEventListener('pointerleave', gone);
+    window.addEventListener('blur', gone);
     return () => {
-      box.removeEventListener('pointerenter', enter);
-      box.removeEventListener('pointermove', move);
-      box.removeEventListener('pointerleave', leave);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('scroll', schedule);
+      document.documentElement.removeEventListener('pointerleave', gone);
+      window.removeEventListener('blur', gone);
+      if (frame) cancelAnimationFrame(frame);
     };
   }, []);
   return (

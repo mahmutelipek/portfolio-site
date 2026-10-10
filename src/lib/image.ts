@@ -6,9 +6,9 @@ import { SITE_URL } from './useDocumentTitle';
 const OBJECT_PATH = '/storage/v1/object/public/';
 const RENDER_PATH = '/storage/v1/render/image/public/';
 
-// Images served from this site (public/covers and public/projects/<slug>): <dir>/<name>.webp is the
-// 1600px file and <dir>/<name>-800.webp the small one.
-const LOCAL_IMAGE = /^(\/(?:covers|projects\/[\w-]+))\/([\w-]+)\.webp$/;
+// Covers served from this site (public/covers): <name>.webp is the 1600px file and <name>-800.webp
+// the small one.
+const LOCAL_IMAGE = /^(\/covers)\/([\w-]+)\.webp$/;
 
 function canTransform(url: string): boolean {
   return url.includes(OBJECT_PATH) && !/\.(svg|gif)(\?|$)/i.test(url);
