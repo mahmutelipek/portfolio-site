@@ -197,7 +197,7 @@ export function ProjectDetail() {
             .detail strong { font-weight: 550; color: #fff; }
             .detail-media { width: 100%; background: #0a0a0a; overflow: hidden; border-radius: 12px; }
             .detail-media video { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-            .detail-media.zoomable { cursor: zoom-in; }
+            .detail-media.zoomable { position: relative; cursor: zoom-in; }
             .detail-media.zoomable:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.5); outline-offset: 3px; }
             @media (hover: hover) { .detail-media.zoomable:hover :is(img, video) { transform: scale(1.025); } }
             .detail-pager { display: grid; grid-template-columns: 1fr 1fr; }

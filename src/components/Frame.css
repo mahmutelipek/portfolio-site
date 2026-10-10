@@ -211,3 +211,35 @@ a.pill:hover { background: color-mix(in srgb, var(--pill, #e7e9ea) 28%, transpar
 .lightbox-btn:hover { background: rgba(60, 60, 64, 0.8); border-color: rgba(255, 255, 255, 0.3); }
 .lightbox-btn:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.6); outline-offset: 2px; }
 .lightbox-close { top: 16px; right: 16px; }
+
+/* "Click to zoom" label that follows the pointer over zoomable media (FitMedia.tsx). Mouse only. */
+.zoom-pill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(20, 20, 22, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 12.5px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.92;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.18s ease, scale 0.18s ease;
+}
+.zoom-pill.on { opacity: 1; scale: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .zoom-pill { display: inline-flex; }
+  .detail-media.zoomable:has(.zoom-pill) { cursor: none; }
+}
