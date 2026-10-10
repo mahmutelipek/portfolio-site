@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
-import { responsiveImage } from '../lib/image';
 
 export interface LightboxItem {
   type: 'image' | 'video';
@@ -17,14 +16,11 @@ interface LightboxProps {
 
 const SWIPE_DISTANCE = 60;
 
-/** Largest candidate of a responsive image (what the viewer shows full-screen). */
-function largest(src: string): string {
-  const { src: small, srcSet } = responsiveImage(src, [1200, 2400]);
-  const last = srcSet?.split(',').pop()?.trim().split(' ')[0];
-  return last || small;
-}
-
-/** Click-to-zoom viewer for project media: Esc / backdrop / button close, arrows or swipe to browse. */
+/**
+ * Click-to-zoom viewer for project media. It shows the original file, not the resized, re-compressed
+ * copies used in the page, since the point of zooming is detail. Esc / backdrop / button close;
+ * arrows or swipe to browse.
+ */
 export default function Lightbox({ items, index, onChange }: LightboxProps) {
   const lenis = useLenis();
   const open = index !== null && items[index] !== undefined;
@@ -66,7 +62,7 @@ export default function Lightbox({ items, index, onChange }: LightboxProps) {
     if (!open || index === null || items.length < 2) return;
     [index - 1, index + 1].forEach(i => {
       const item = items[(i + items.length) % items.length];
-      if (item.type === 'image') new Image().src = largest(item.src);
+      if (item.type === 'image') new Image().src = item.src;
     });
   }, [open, index, items]);
 
@@ -104,7 +100,7 @@ export default function Lightbox({ items, index, onChange }: LightboxProps) {
             onClick={e => e.stopPropagation()}
           >
             {item.type === 'image' ? (
-              <img {...responsiveImage(item.src, [1200, 2400])} sizes="100vw" alt="Project visual" draggable={false} />
+              <img src={item.src} alt="Project visual" draggable={false} />
             ) : (
               <video src={item.src} autoPlay loop muted playsInline controls />
             )}
