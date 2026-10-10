@@ -26,7 +26,7 @@ export function shareImage(project) {
   const cover = project.cover_image_url;
   if (!cover) return null;
   const local = /^\/covers\/([\w-]+)\.webp$/.exec(cover);
-  if (local) return { url: `${SITE}/covers/${local[1]}-og.jpg?v=1`, type: 'image/jpeg', sized: true };
+  if (local) return { url: `${SITE}/covers/${local[1]}-og.jpg?v=2`, type: 'image/jpeg', sized: true };
   if (cover.startsWith('/')) return { url: `${SITE}${cover}`, type: null, sized: false };
   if (cover.includes('/storage/v1/object/public/') && !/\.(svg|gif)(\?|$)/i.test(cover)) {
     return { url: `${cover.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/')}?width=1200&quality=80&resize=contain`, type: null, sized: false };
