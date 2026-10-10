@@ -25,7 +25,7 @@ function resized(url: string, width: number, quality: number): string {
  * right-sized copy. Other URLs (data URIs, external hosts, svg/gif) are
  * returned unchanged.
  */
-export function responsiveImage(url: string, widths: number[] = [800, 1400], quality = 85) {
+export function responsiveImage(url: string, widths: number[] = [800, 1400], quality = 90) {
   const local = LOCAL_IMAGE.exec(url);
   if (local) {
     const small = `${local[1]}/${local[2]}-800.webp`;

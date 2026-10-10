@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 
@@ -8,70 +8,49 @@ export interface LightboxItem {
 }
 
 interface LightboxProps {
-  items: LightboxItem[];
-  /** Index of the open item, or null when closed. */
-  index: number | null;
-  onChange: (index: number | null) => void;
+  /** The media to enlarge, or null when closed. */
+  item: LightboxItem | null;
+  onClose: () => void;
 }
 
-const SWIPE_DISTANCE = 60;
-
 /**
- * Click-to-zoom viewer for project media. It shows the original file, not the resized, re-compressed
- * copies used in the page, since the point of zooming is detail. Esc / backdrop / button close;
- * arrows or swipe to browse.
+ * Click-to-zoom viewer for one image or video. It shows the original file, not the resized,
+ * re-compressed copies used in the page, since the point of zooming is detail. Esc, the backdrop
+ * and the close button dismiss it.
  */
-export default function Lightbox({ items, index, onChange }: LightboxProps) {
+export default function Lightbox({ item, onClose }: LightboxProps) {
   const lenis = useLenis();
-  const open = index !== null && items[index] !== undefined;
+  const open = item !== null;
   const closeRef = useRef<HTMLButtonElement>(null);
-  const opener = useRef<HTMLElement | null>(null);
-
-  const go = useCallback(
-    (to: number) => onChange((to + items.length) % items.length),
-    [items.length, onChange],
-  );
+  /** The element to hand focus back to on close; set only when it was opened with the keyboard. */
+  const returnTo = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; });
 
   // Page scroll is locked while open; focus moves into the dialog and returns on close.
   useEffect(() => {
     if (!open) return;
-    opener.current = document.activeElement as HTMLElement | null;
+    // After a mouse click the opener must not get focus back, or it shows a focus ring on the image.
+    const opener = document.activeElement as HTMLElement | null;
+    returnTo.current = opener?.matches(':focus-visible') ? opener : null;
     lenis?.stop();
     document.documentElement.style.overflow = 'hidden';
     closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCloseRef.current();
+    };
+    window.addEventListener('keydown', onKey);
     return () => {
+      window.removeEventListener('keydown', onKey);
       lenis?.start();
       document.documentElement.style.overflow = '';
-      opener.current?.focus?.();
+      returnTo.current?.focus?.();
     };
   }, [open, lenis]);
 
-  useEffect(() => {
-    if (!open || index === null) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onChange(null);
-      else if (items.length > 1 && e.key === 'ArrowRight') go(index + 1);
-      else if (items.length > 1 && e.key === 'ArrowLeft') go(index - 1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, index, items.length, go, onChange]);
-
-  // Warm the neighbours so browsing feels instant.
-  useEffect(() => {
-    if (!open || index === null || items.length < 2) return;
-    [index - 1, index + 1].forEach(i => {
-      const item = items[(i + items.length) % items.length];
-      if (item.type === 'image') new Image().src = item.src;
-    });
-  }, [open, index, items]);
-
-  const item = open && index !== null ? items[index] : null;
-  const many = items.length > 1;
-
   return (
     <AnimatePresence>
-      {item && index !== null && (
+      {item && (
         <motion.div
           className="lightbox"
           role="dialog"
@@ -82,21 +61,13 @@ export default function Lightbox({ items, index, onChange }: LightboxProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
-          onClick={() => onChange(null)}
+          onClick={onClose}
         >
           <motion.div
-            key={index}
             className="lightbox-media"
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            drag={many ? 'x' : false}
-            dragSnapToOrigin
-            dragElastic={0.2}
-            onDragEnd={(_, info) => {
-              if (info.offset.x <= -SWIPE_DISTANCE) go(index + 1);
-              else if (info.offset.x >= SWIPE_DISTANCE) go(index - 1);
-            }}
             onClick={e => e.stopPropagation()}
           >
             {item.type === 'image' ? (
@@ -111,38 +82,12 @@ export default function Lightbox({ items, index, onChange }: LightboxProps) {
             type="button"
             className="lightbox-btn lightbox-close"
             aria-label="Close"
-            onClick={e => { e.stopPropagation(); onChange(null); }}
+            onClick={e => { e.stopPropagation(); onClose(); }}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <path d="M3 3l10 10M13 3L3 13" />
             </svg>
           </button>
-
-          {many && (
-            <>
-              <button
-                type="button"
-                className="lightbox-btn lightbox-prev"
-                aria-label="Previous"
-                onClick={e => { e.stopPropagation(); go(index - 1); }}
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M10 3L5 8l5 5" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="lightbox-btn lightbox-next"
-                aria-label="Next"
-                onClick={e => { e.stopPropagation(); go(index + 1); }}
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 3l5 5-5 5" />
-                </svg>
-              </button>
-              <div className="lightbox-count" aria-live="polite">{index + 1} / {items.length}</div>
-            </>
-          )}
         </motion.div>
       )}
     </AnimatePresence>

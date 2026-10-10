@@ -98,9 +98,9 @@ export function Admin() {
     if (!isVideo && !isSVG) {
       try {
         const options = {
-          maxSizeMB: 1.5,
-          maxWidthOrHeight: 1920,
-          initialQuality: 0.85,
+          maxSizeMB: 4,
+          maxWidthOrHeight: 2560,
+          initialQuality: 0.92,
           useWebWorker: true,
           fileType: 'image/webp'
         };
