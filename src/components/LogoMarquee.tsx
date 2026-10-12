@@ -22,8 +22,10 @@ const STRIP_H = 68;
 const SIZE_BOOST: Record<string, number> = {
   'eb94e5c8-0804-4218-bf1d-d449cab7f1b9': 1.4, // The View Hospital ("In Affiliation With Cedars Sinai")
   'a78cc546-ac93-4fe4-abac-fbeafcb4cca1': 1.45, // Nickelodeon Play! ("nickelodeon")
-  '3fb4b8ef-3824-417b-9415-1505aca802c5': 1.3, // Donnerstag (a wide, thin wordmark)
+  '3fb4b8ef-3824-417b-9415-1505aca802c5': 1.2, // Donnerstag (a wide, thin wordmark)
   '169b1992-900a-43de-886a-c95572c27e1b': 1.1, // Firecrawl (flame + wordmark)
+  '00f6f7f9-f326-46ca-bd40-fc24dacbd006': 1.2, // Tersane Istanbul (small lettering)
+  '96ffa83d-f40f-495d-989d-545b728c8401': 1.15, // The Land of Legends (small lettering)
 };
 const WHOLE_CANVAS: LogoBox = { x0: 0, y0: 0, x1: 1, y1: 1, density: 0.3, invert: false };
 
