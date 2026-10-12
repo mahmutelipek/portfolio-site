@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { ReactLenis, useLenis } from 'lenis/react';
+import { Analytics } from '@vercel/analytics/react';
 import { supabase } from './lib/supabase';
 import { Home } from './pages/Home';
 import { Navbar } from './components/Navbar';
@@ -101,6 +102,7 @@ function App() {
       <BrowserRouter>
         <AppContent />
       </BrowserRouter>
+      <Analytics />
     </ReactLenis>
   );
 }
