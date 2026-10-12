@@ -15,6 +15,14 @@ import '../components/Frame.css';
 import { glassOverlayStyle } from '../lib/glass';
 import { usePageMeta, HOME_TITLE, HOME_DESCRIPTION } from '../lib/useDocumentTitle';
 import { whenIdle } from '../lib/idle';
+/** Answers to the requests the page started before the app loaded (see vite.config.ts); each can be used once. */
+function takeEarly(name: 'projects' | 'logos'): Promise<unknown[] | null> | null {
+  const early = (window as Window & { __early?: Partial<Record<'projects' | 'logos', Promise<unknown[] | null>>> }).__early;
+  const answer = early?.[name] ?? null;
+  if (early) delete early[name];
+  return answer;
+}
+
 const SplashLottie = lazy(() => import('../components/SplashLottie'));
 const loadCover = () => import('../components/AsciiCover');
 const AsciiCover = lazy(loadCover);
@@ -49,16 +57,26 @@ export function Home() {
   // With a remembered list there is nothing to wait for: it shows at once and is refreshed in place.
   const [loading, setLoading] = useState(!globalStore.homeVisited && globalStore.homeProjects.length === 0);
   const [showSplash, setShowSplash] = useState(() => !globalStore.homeVisited);
-  // The cover's one-off setup is heavy, so it is prepared behind the splash (as soon as the page is
-  // idle) and is already there when the splash lifts. Without a splash it starts straight away.
+  // The cover's one-off setup is heavy, so it is prepared behind the splash (right after the project list
+  // is on screen) and is normally there when the splash lifts. Without a splash it starts straight away.
   const [coverReady, setCoverReady] = useState(() => globalStore.homeVisited);
   const lenis = useLenis();
   const { hash } = useLocation();
 
   useEffect(() => {
     void loadCover();
-    return whenIdle(() => setCoverReady(true), 800);
   }, []);
+
+  // The cover's setup is one long task that freezes the page for a moment. It starts once the project list
+  // is on screen, so it never holds the list back (or after 3.5 s, if the data is slow, so it still shows).
+  useEffect(() => {
+    if (coverReady) return;
+    if (loading) {
+      const timer = window.setTimeout(() => setCoverReady(true), 3500);
+      return () => window.clearTimeout(timer);
+    }
+    return whenIdle(() => setCoverReady(true), 300);
+  }, [loading, coverReady]);
 
   // Scroll to #projects when arriving from another route (e.g. "/#projects")
   useEffect(() => {
@@ -84,21 +102,25 @@ export function Home() {
   useEffect(() => {
     if (globalStore.logosFresh) return;
     globalStore.logosFresh = true;
-    supabase
-      .from('logos')
-      .select('*')
-      .order('sort_order', { ascending: true })
-      .then(({ data }) => {
-        if (!data || data.length === 0) return;
-        globalStore.logos = data as Logo[];
-        setLogos(data as Logo[]);
-        saveHomeCache({ logos: data as Logo[] });
-      });
+    const early = takeEarly('logos');
+    const request = early
+      ? early.then(rows => rows ?? supabase.from('logos').select('*').order('sort_order', { ascending: true }).then(r => r.data))
+      : supabase.from('logos').select('*').order('sort_order', { ascending: true }).then(r => r.data);
+    request.then(data => {
+      if (!data || data.length === 0) return;
+      globalStore.logos = data as Logo[];
+      setLogos(data as Logo[]);
+      saveHomeCache({ logos: data as Logo[] });
+    });
   }, []);
 
   useEffect(() => {
-    const queryProjects = () =>
-      supabase.from('projects').select('*').neq('is_visible', false).order('sort_order', { ascending: true });
+    const queryProjects = async (): Promise<{ data: Project[] | null; error: unknown }> => {
+      const early = takeEarly('projects');
+      const rows = early ? await early : null;
+      if (rows) return { data: rows as Project[], error: null };
+      return supabase.from('projects').select('*').neq('is_visible', false).order('sort_order', { ascending: true });
+    };
 
     async function fetchData() {
       if (globalStore.homeVisited && globalStore.homeProjects.length > 0) {
@@ -229,7 +251,7 @@ export function Home() {
               projects. Currently, I design product and UI for{' '}
               <ProductName name="Flowla" url={PRODUCT_URLS.flowla} /> and independently build{' '}
               <ProductName name="Skaplo" url={PRODUCT_URLS.skaplo} />, a live subscription product I design and
-              develop with AI-assisted workflows. I'm also working on <strong>two games</strong>, coming soon to <strong>Steam</strong>.
+              develop with AI-assisted workflows. I'm also working on <strong>three games</strong>, coming soon to <strong>Steam</strong>.
             </p>
             <p>My focus is simple: understand the problem, find the right solution, and get it shipped.</p>
             <p>

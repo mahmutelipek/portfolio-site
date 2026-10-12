@@ -80,8 +80,9 @@ public/
 ## Anasayfa
 
 - **Açılış (splash):** Siteye her tam yüklemede (adrese girme, yenileme) Lottie animasyonu ve 0-100 sayacı çıkar. Site içinde gezinirken anasayfaya dönünce tekrar çıkmaz (`globalStore.homeVisited`).
-- **ASCII kapak:** Tanıtımın üstünde alçak bir şerit. `ascii.rest`'in "earthrise" parçası, orijinal 15 kare/sn hızında çalışır. İlk hazırlığı ağır olduğu için açılışın arkasında, tarayıcı boşalınca (`whenIdle`) hazırlanır.
-- **Logo bandı:** `logos` tablosundaki logolar yatay kayar. `logoMetrics.ts` her logonun görünür kutusunu ve yoğunluğunu ölçer, `LogoMarquee.tsx` hepsini gözle eşit görünecek boyuta getirir. Bir logo hâlâ büyük ya da küçük duruyorsa `SIZE_BOOST` listesine logo id'siyle bir çarpan eklenir. Koyu logolar otomatik ters çevrilir.
+- **ASCII kapak:** Tanıtımın üstünde alçak bir şerit. `ascii.rest`'in "earthrise" parçası, orijinal 15 kare/sn hızında çalışır. İlk hazırlığı ağır olduğu için (tek parça, hızlı olmayan cihazlarda saniyeye yaklaşır) proje listesi ekrana geldikten hemen sonra, açılışın arkasında hazırlanır; liste geç gelirse 3,5 saniyede yine başlar.
+- **Liste verisi:** `index.html`'e Vite eklentisi (`vite.config.ts`) küçük bir betik ekler. Betik, proje ve logo isteklerini sayfa açılır açılmaz, uygulama paketi inerken başlatır. `Home.tsx` cevapları `window.__early` üzerinden alır, yoksa kendi isteğine döner. Son liste ve logolar ayrıca tarayıcıda saklanır (`src/lib/store.ts`): sonraki ziyarette liste hemen çıkar, taze veri gelince yerinde güncellenir. İstek hata verirse iki kez daha denenir. Detay sayfaları bu saklanan kopyadan beslenmez.
+- **Logo bandı:** `logos` tablosundaki logolar yatay kayar. `logoMetrics.ts` her logonun görünür kutusunu ve yoğunluğunu ölçer, `LogoMarquee.tsx` hepsini gözle eşit görünecek boyuta getirir. Bant sürekli kayar, üstüne gelince durmaz. Bir logo hâlâ büyük ya da küçük duruyorsa `SIZE_BOOST` listesine logo id'siyle bir çarpan eklenir. Koyu logolar otomatik ters çevrilir.
 - **Seçili metin rengi:** Space gray (`src/index.css`, `::selection`).
 - **Google Analytics:** Ölçüm kimliği `site_settings`'te, Admin'den girilir. Betik, sayfa boşalınca eklenir (`App.tsx`).
 
@@ -140,7 +141,9 @@ Vercel `main` branch'ini yayınlar. `vercel.json`:
 2. `/works/:slug` → `api/project?slug=:slug`
 3. diğer her adres → `index.html`
 
-Vercel'de aynı iki ortam değişkeni (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) tanımlı olmalı; `api/` fonksiyonları da bunları kullanır. Çalışma branch'indeki push'lar önizleme yayını üretir; önizleme, GitHub'ın geçici hız sınırına takılıp hata verebilir, kodla ilgisi yoktur.
+Vercel'de aynı iki ortam değişkeni (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) tanımlı olmalı; `api/` fonksiyonları da bunları kullanır. Derleme sırasında bu ikisinden Supabase'e `preconnect` etiketi ve yukarıdaki erken istek betiği üretilir (değişkenler yoksa eklenmez).
+
+`vercel.json` ayrıca hash'li dosyalara (`/assets/*`) bir yıl, yazı tipine 30 gün önbellek süresi verir. Kapaklar ve logolar her seferinde kontrol edilir ki değiştirince hemen görünsün. Çalışma branch'indeki push'lar önizleme yayını üretir; önizleme, GitHub'ın geçici hız sınırına takılıp hata verebilir, kodla ilgisi yoktur.
 
 ## Veritabanı
 

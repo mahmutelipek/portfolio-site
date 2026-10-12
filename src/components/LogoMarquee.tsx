@@ -116,7 +116,6 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
           animation: logo-scroll 70s linear infinite;
         }
         .logo-track.ready { opacity: 1; }
-        .logo-strip:hover .logo-track { animation-play-state: paused; }
         .logo-group { display: flex; align-items: center; flex: none; list-style: none; }
         .logo-item {
           position: relative;
