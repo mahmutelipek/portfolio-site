@@ -9,7 +9,7 @@ import { LogoMarquee } from '../components/LogoMarquee';
 import CountUp from '../components/CountUp';
 import type { Project, Logo } from '../lib/types';
 import { supabase } from '../lib/supabase';
-import { globalStore } from '../lib/store';
+import { globalStore, saveHomeCache } from '../lib/store';
 import '../components/Frame.css';
 
 import { glassOverlayStyle } from '../lib/glass';
@@ -46,7 +46,8 @@ export function Home() {
   usePageMeta({ title: HOME_TITLE, description: HOME_DESCRIPTION, path: '/' });
   const [projects, setProjects] = useState<Project[]>(globalStore.homeProjects);
   const [logos, setLogos] = useState<Logo[]>(globalStore.logos);
-  const [loading, setLoading] = useState(!globalStore.homeVisited);
+  // With a remembered list there is nothing to wait for: it shows at once and is refreshed in place.
+  const [loading, setLoading] = useState(!globalStore.homeVisited && globalStore.homeProjects.length === 0);
   const [showSplash, setShowSplash] = useState(() => !globalStore.homeVisited);
   // The cover's one-off setup is heavy, so it is prepared behind the splash (as soon as the page is
   // idle) and is already there when the splash lifts. Without a splash it starts straight away.
@@ -81,7 +82,8 @@ export function Home() {
   }, [showSplash, lenis]);
 
   useEffect(() => {
-    if (globalStore.logos.length > 0) return;
+    if (globalStore.logosFresh) return;
+    globalStore.logosFresh = true;
     supabase
       .from('logos')
       .select('*')
@@ -90,20 +92,26 @@ export function Home() {
         if (!data || data.length === 0) return;
         globalStore.logos = data as Logo[];
         setLogos(data as Logo[]);
+        saveHomeCache({ logos: data as Logo[] });
       });
   }, []);
 
   useEffect(() => {
+    const queryProjects = () =>
+      supabase.from('projects').select('*').neq('is_visible', false).order('sort_order', { ascending: true });
+
     async function fetchData() {
       if (globalStore.homeVisited && globalStore.homeProjects.length > 0) {
         return;
       }
 
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .neq('is_visible', false)
-        .order('sort_order', { ascending: true });
+      // A transient failure (cold Supabase, flaky mobile network) gets two more tries before giving up.
+      let result = await queryProjects();
+      for (let retry = 1; retry <= 2 && result.error; retry++) {
+        await new Promise(resolve => setTimeout(resolve, 700 * retry));
+        result = await queryProjects();
+      }
+      const { data, error } = result;
 
       if (import.meta.env.DEV && (error || !data || data.length === 0)) {
         const { devProjects } = await import('../lib/devProjects');
@@ -111,10 +119,12 @@ export function Home() {
         globalStore.homeProjects = devProjects;
         for (const p of devProjects) globalStore.projectDetails[p.slug] ??= p;
       } else if (error) {
+        // Keeps whatever list is already on screen (the remembered one), if any.
         console.error('Error fetching projects:', error);
       } else if (data) {
         setProjects(data as Project[]);
         globalStore.homeProjects = data as Project[];
+        saveHomeCache({ projects: data as Project[] });
         // These are full rows, so project pages can open without another request.
         for (const p of data as Project[]) globalStore.projectDetails[p.slug] ??= p;
       }
