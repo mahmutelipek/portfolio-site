@@ -84,7 +84,7 @@ public/
 - **Liste verisi:** `index.html`'e Vite eklentisi (`vite.config.ts`) küçük bir betik ekler. Betik, proje ve logo isteklerini sayfa açılır açılmaz, uygulama paketi inerken başlatır. `Home.tsx` cevapları `window.__early` üzerinden alır, yoksa kendi isteğine döner. Son liste ve logolar ayrıca tarayıcıda saklanır (`src/lib/store.ts`): sonraki ziyarette liste hemen çıkar, taze veri gelince yerinde güncellenir. İstek hata verirse iki kez daha denenir. Detay sayfaları bu saklanan kopyadan beslenmez.
 - **Logo bandı:** `logos` tablosundaki logolar yatay kayar. `logoMetrics.ts` her logonun görünür kutusunu ve yoğunluğunu ölçer, `LogoMarquee.tsx` hepsini gözle eşit görünecek boyuta getirir. Bant sürekli kayar, üstüne gelince durmaz. Bir logo hâlâ büyük ya da küçük duruyorsa `SIZE_BOOST` listesine logo id'siyle bir çarpan eklenir. Koyu logolar otomatik ters çevrilir.
 - **Seçili metin rengi:** Space gray (`src/index.css`, `::selection`).
-- **Google Analytics:** Ölçüm kimliği `site_settings`'te, Admin'den girilir. Betik, sayfa boşalınca eklenir (`App.tsx`).
+- **Analitik:** Sadece Google Analytics (GA4) kullanılır; Vercel Web Analytics denendi ve kaldırıldı. Ölçüm kimliği `site_settings`'te, Admin'den girilir. Betik, sayfa boşalınca eklenir (`App.tsx`).
 
 ## Tasarım dili
 
