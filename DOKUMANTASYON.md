@@ -61,7 +61,7 @@ src/
 public/
 ├── covers/                # Proje kapakları (aşağıda "Kapaklar")
 ├── fonts/Switzer-Variable.ttf
-├── logos/flowla.svg       # Yerel logo
+├── logos/                 # Yerel logolar: flowla.svg, donnerstag.svg
 ├── favicon.svg, favicon.ico, favicon-32.png, icon-192.png, icon-512.png, apple-touch-icon.png
 └── og-image.jpg           # Genel paylaşım görseli (1200x630)
 ```
