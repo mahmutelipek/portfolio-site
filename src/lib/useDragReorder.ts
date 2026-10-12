@@ -66,3 +66,53 @@ export function useDragReorder<T extends Row>(
 
   return { dragId, overId, handlers };
 }
+
+/**
+ * Drag-and-drop ordering for a list kept in component state (no saving here, the caller does that).
+ * `handleProps(id)` goes on a small grip, so text fields inside a row stay selectable; `targetProps(id)`
+ * goes on the whole row, which is also what the browser shows while dragging.
+ */
+export function useDragList<T extends { id: string }>(items: T[], onChange: (items: T[]) => void) {
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
+
+  const reset = () => {
+    setDragId(null);
+    setOverId(null);
+  };
+
+  const handleProps = (id: string) => ({
+    draggable: true,
+    onDragStart: (e: DragEvent<HTMLElement>) => {
+      const row = e.currentTarget.closest('[data-drag-row]');
+      if (row) e.dataTransfer.setDragImage(row, 24, 24);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', id);
+      setDragId(id);
+    },
+    onDragEnd: reset,
+  });
+
+  const targetProps = (id: string) => ({
+    'data-drag-row': '',
+    onDragOver: (e: DragEvent<HTMLElement>) => {
+      if (!dragId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (overId !== id) setOverId(id);
+    },
+    onDrop: (e: DragEvent<HTMLElement>) => {
+      e.preventDefault();
+      const from = items.findIndex(i => i.id === dragId);
+      const to = items.findIndex(i => i.id === id);
+      reset();
+      if (from < 0 || to < 0 || from === to) return;
+      const next = [...items];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      onChange(next);
+    },
+  });
+
+  return { dragId, overId, handleProps, targetProps };
+}

@@ -129,7 +129,7 @@ Simgeler (`favicon.svg` ve yedekleri) siteyle birlikte yayınlanır, Supabase'te
 
 `/admin`, Supabase Auth ile giriş ister. Üç sekme var:
 
-- **Projects:** Proje ekleme, düzenleme, gizleme/gösterme. Sıra, satırı sürükleyip bırakarak değiştirilir. Metin, görsel ve video blokları buradan eklenir. Kaydet, projenin tamamını yazar: eski bir sekmeden kaydetmek veritabanında sonradan yapılan değişikliklerin üstüne yazabilir.
+- **Projects:** Proje ekleme, düzenleme, gizleme/gösterme. Sıra, satırı sürükleyip bırakarak değiştirilir. Metin, görsel ve video blokları buradan eklenir; bloklar kartın sağ üstündeki tutamaktan sürüklenerek sıralanır. Kaydet, projenin tamamını yazar: eski bir sekmeden kaydetmek veritabanında sonradan yapılan değişikliklerin üstüne yazabilir.
 - **Teams (Logos):** "Worked with" bandındaki logolar. Sıra, kartı sürükleyip bırakarak değiştirilir (`src/lib/useDragReorder.ts`, her iki liste için ortak).
 - **Site Assets:** Google Analytics kimliği ve **Storage temizleme**. Temizleme aracı, projelerin, logoların ve ayarların işaret etmediği dosyaları (eski kapaklar, değiştirilmiş görseller, deneme yüklemeleri) listeler; seçip silebilirsin. Silmeden önce listeyi kontrol et.
 

@@ -5,8 +5,8 @@ import { usePageMeta, SITE_NAME } from '../lib/useDocumentTitle';
 import { supabase } from '../lib/supabase';
 import { StorageCleanup } from '../components/StorageCleanup';
 import type { Project, Logo, ContentBlock } from '../lib/types';
-import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Save, Eye, EyeOff, GripVertical } from 'lucide-react';
-import { useDragReorder } from '../lib/useDragReorder';
+import { Trash2, LogOut, Image as ImageIcon, Type, Plus, Save, Eye, EyeOff, GripVertical } from 'lucide-react';
+import { useDragReorder, useDragList } from '../lib/useDragReorder';
 
 export function Admin() {
   usePageMeta({ title: `Admin | ${SITE_NAME}`, noindex: true });
@@ -147,15 +147,6 @@ export function Admin() {
     setEditingProject({ ...editingProject, content_blocks: blocks });
   };
 
-  const moveBlock = (index: number, direction: 'up' | 'down') => {
-    if (!editingProject?.content_blocks) return;
-    const blocks = [...editingProject.content_blocks];
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= blocks.length) return;
-    [blocks[index], blocks[newIndex]] = [blocks[newIndex], blocks[index]];
-    setEditingProject({ ...editingProject, content_blocks: blocks });
-  };
-
   const deleteBlock = (id: string) => {
     if (!editingProject) return;
     const blocks = editingProject.content_blocks?.filter(b => b.id !== id);
@@ -230,6 +221,9 @@ export function Admin() {
 
   const projectOrder = useDragReorder('projects', projects, setProjects, fetchData);
   const logoOrder = useDragReorder('logos', logos, setLogos, fetchData);
+  const blockOrder = useDragList(editingProject?.content_blocks ?? [], blocks => {
+    if (editingProject) setEditingProject({ ...editingProject, content_blocks: blocks });
+  });
 
   const saveProject = async () => {
     if (!editingProject) return;
@@ -525,10 +519,22 @@ export function Admin() {
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     {editingProject.content_blocks?.map((block, index) => (
-                      <div key={block.id} style={{ background: '#1a1a1a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #333', position: 'relative' }}>
+                      <div
+                        key={block.id}
+                        {...blockOrder.targetProps(block.id)}
+                        style={{
+                          background: '#1a1a1a',
+                          padding: '1.5rem',
+                          borderRadius: '12px',
+                          border: '1px solid #333',
+                          position: 'relative',
+                          opacity: blockOrder.dragId === block.id ? 0.4 : 1,
+                          outline: blockOrder.overId === block.id && blockOrder.dragId !== block.id ? '2px solid #fff' : 'none',
+                          outlineOffset: '3px',
+                        }}
+                      >
                         <div style={{ position: 'absolute', right: '1rem', top: '1rem', display: 'flex', gap: '0.5rem' }}>
-                           <button onClick={() => moveBlock(index, 'up')} style={{ border: '1px solid #333', background: '#0a0a0a', borderRadius: '4px', cursor: 'pointer', padding: '4px', color: '#fff' }}><ArrowUp size={14} /></button>
-                           <button onClick={() => moveBlock(index, 'down')} style={{ border: '1px solid #333', background: '#0a0a0a', borderRadius: '4px', cursor: 'pointer', padding: '4px', color: '#fff' }}><ArrowDown size={14} /></button>
+                           <div title="Drag to reorder" {...blockOrder.handleProps(block.id)} style={{ border: '1px solid #333', background: '#0a0a0a', borderRadius: '4px', cursor: 'grab', padding: '4px', color: '#888', display: 'flex', alignItems: 'center' }}><GripVertical size={14} /></div>
                            <button onClick={() => deleteBlock(block.id)} style={{ border: 'none', background: '#2d0000', borderRadius: '4px', cursor: 'pointer', padding: '4px', color: '#ff4444' }}><Trash2 size={14} /></button>
                         </div>
 
