@@ -5,7 +5,8 @@ import { usePageMeta, SITE_NAME } from '../lib/useDocumentTitle';
 import { supabase } from '../lib/supabase';
 import { StorageCleanup } from '../components/StorageCleanup';
 import type { Project, Logo, ContentBlock } from '../lib/types';
-import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Save, Eye, EyeOff } from 'lucide-react';
+import { Trash2, ArrowUp, ArrowDown, LogOut, Image as ImageIcon, Type, Plus, Save, Eye, EyeOff, GripVertical } from 'lucide-react';
+import { useDragReorder } from '../lib/useDragReorder';
 
 export function Admin() {
   usePageMeta({ title: `Admin | ${SITE_NAME}`, noindex: true });
@@ -161,27 +162,6 @@ export function Admin() {
     setEditingProject({ ...editingProject, content_blocks: blocks });
   };
 
-  const reorderProject = async (index: number, direction: 'up' | 'down') => {
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= projects.length) return;
-
-    const p1 = projects[index];
-    const p2 = projects[newIndex];
-
-    if (p1.sort_order === p2.sort_order) {
-      for (let i = 0; i < projects.length; i++) {
-        await supabase.from('projects').update({ sort_order: i }).eq('id', projects[i].id);
-      }
-      await fetchData();
-      return;
-    }
-
-    const { error: e1 } = await supabase.from('projects').update({ sort_order: p2.sort_order }).eq('id', p1.id);
-    const { error: e2 } = await supabase.from('projects').update({ sort_order: p1.sort_order }).eq('id', p2.id);
-
-    if (!e1 && !e2) fetchData();
-  };
-
   const optimizeExistingImages = async () => {
     if (!window.confirm("This will download, compress (to WebP), and re-upload all unoptimized legacy images. It might take a minute or two. Proceed?")) return;
     
@@ -248,27 +228,8 @@ export function Admin() {
     setTimeout(() => { setIsOptimizing(false); setOptimizingStatus(''); }, 3000);
   };
 
-  const reorderLogo = async (index: number, direction: 'left' | 'right') => {
-    const newIndex = direction === 'left' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= logos.length) return;
-
-    const l1 = logos[index];
-    const l2 = logos[newIndex];
-
-    if (l1.sort_order === l2.sort_order) {
-      for (let i = 0; i < logos.length; i++) {
-        await supabase.from('logos').update({ sort_order: i }).eq('id', logos[i].id);
-      }
-      await fetchData();
-      return;
-    }
-
-    const { error: e1 } = await supabase.from('logos').update({ sort_order: l2.sort_order }).eq('id', l1.id);
-    const { error: e2 } = await supabase.from('logos').update({ sort_order: l1.sort_order }).eq('id', l2.id);
-
-    if (!e1 && !e2) fetchData();
-  };
-
+  const projectOrder = useDragReorder('projects', projects, setProjects, fetchData);
+  const logoOrder = useDragReorder('logos', logos, setLogos, fetchData);
 
   const saveProject = async () => {
     if (!editingProject) return;
@@ -400,51 +361,24 @@ export function Admin() {
                       </tr>
                     </thead>
                     <tbody>
-                      {projects.map((p, index) => (
-                        <tr key={p.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
+                      {projects.map((p) => (
+                        <tr
+                          key={p.id}
+                          {...projectOrder.handlers(p.id)}
+                          style={{
+                            borderBottom: '1px solid #1a1a1a',
+                            opacity: projectOrder.dragId === p.id ? 0.4 : 1,
+                            boxShadow: projectOrder.overId === p.id && projectOrder.dragId !== p.id ? 'inset 0 2px 0 #fff' : 'none',
+                          }}
+                        >
                           <td style={{ padding: '1rem' }}>
                             <div style={{ width: '60px', height: '40px', background: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                               {p.cover_image_url && <img src={p.cover_image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                             </div>
                           </td>
                           <td style={{ padding: '1rem' }}>
-                            <div style={{ display: 'flex', gap: '0.4rem' }}>
-                              <button 
-                                onClick={() => reorderProject(index, 'up')} 
-                                disabled={index === 0} 
-                                style={{ 
-                                  padding: '0.4rem',
-                                  background: '#1a1a1a',
-                                  border: '1px solid #333',
-                                  borderRadius: '6px',
-                                  color: '#fff',
-                                  cursor: index === 0 ? 'default' : 'pointer',
-                                  opacity: index === 0 ? 0.2 : 1,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center'
-                                }}
-                              >
-                                <ArrowUp size={14} />
-                              </button>
-                              <button 
-                                onClick={() => reorderProject(index, 'down')} 
-                                disabled={index === projects.length - 1} 
-                                style={{ 
-                                  padding: '0.4rem',
-                                  background: '#1a1a1a',
-                                  border: '1px solid #333',
-                                  borderRadius: '6px',
-                                  color: '#fff',
-                                  cursor: index === projects.length - 1 ? 'default' : 'pointer',
-                                  opacity: index === projects.length - 1 ? 0.2 : 1,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center'
-                                }}
-                              >
-                                <ArrowDown size={14} />
-                              </button>
+                            <div title="Drag to reorder" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666', cursor: 'grab' }}>
+                              <GripVertical size={18} />
                             </div>
                           </td>
                           <td style={{ padding: '1rem', fontWeight: 500 }}>{p.title}</td>
@@ -746,8 +680,9 @@ export function Admin() {
               </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '1.5rem' }}>
-              {logos.map((logo, index) => (
+              {logos.map((logo) => (
                 <div key={logo.id} 
+                  {...logoOrder.handlers(logo.id)}
                   onMouseEnter={() => setHoveredLogoId(logo.id)}
                   onMouseLeave={() => {
                     setHoveredLogoId(null);
@@ -764,12 +699,15 @@ export function Admin() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '1rem',
-                    cursor: 'default',
-                    color: '#fff'
+                    cursor: 'grab',
+                    color: '#fff',
+                    opacity: logoOrder.dragId === logo.id ? 0.4 : 1,
+                    outline: logoOrder.overId === logo.id && logoOrder.dragId !== logo.id ? '2px solid #fff' : 'none',
+                    outlineOffset: '2px'
                   }}
                 >
                   {logo.url ? (
-                    <img src={logo.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={logo.url} draggable={false} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ color: '#ccc', textAlign: 'center' }}>
                       <ImageIcon size={24} style={{ marginBottom: '0.25rem' }} />
@@ -819,10 +757,6 @@ export function Admin() {
                       </div>
                     ) : (
                       <>
-                         <div style={{ display: 'flex', gap: '0.4rem', width: '100%' }}>
-                           <button onClick={() => reorderLogo(index, 'left')} disabled={index === 0} style={{ flex: 1, padding: '0.4rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', color: '#fff', cursor: 'pointer', opacity: index === 0 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowUp size={14} style={{ transform: 'rotate(-90deg)' }} /></button>
-                           <button onClick={() => reorderLogo(index, 'right')} disabled={index === logos.length - 1} style={{ flex: 1, padding: '0.4rem', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', color: '#fff', cursor: 'pointer', opacity: index === logos.length - 1 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowDown size={14} style={{ transform: 'rotate(-90deg)' }} /></button>
-                         </div>
                           <div style={{ display: 'flex', gap: '0.4rem', width: '100%' }}>
                             <label style={{ 
                               flex: 1,
